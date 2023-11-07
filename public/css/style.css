@@ -1,0 +1,272 @@
+/* Add Font */
+@font-face {
+  font-family: "iranSans";
+  src: url("../fonts/iranSans.eot") format("embedded-opentype"),
+    url("../fonts/iranSans.woff") format("woff"),
+    url("../fonts/iranSans.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body * {
+  font-family: iranSans;
+  font-size: 14px;
+  -webkit-print-color-adjust: exact !important;
+  /* Chrome, Safari 6 – 15.3, Edge */
+  color-adjust: exact !important;
+  /* Firefox 48 – 96 */
+  print-color-adjust: exact !important;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+}
+
+/* colors */
+.lightGray {
+  color: #b3b3b3;
+}
+/* end of colors */
+
+.zIndex-100 {
+  z-index: 100;
+}
+.zIndex-200 {
+  z-index: 200;
+}
+
+.borderRadius-15 {
+  border-radius: 15px;
+}
+.borderRadius50 {
+  border-radius: 50%;
+}
+
+.font10 {
+  font-size: 10px;
+}
+.font9 {
+  font-size: 9px;
+}
+
+.font12 {
+  font-size: 12px;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
+
+.transitionAll {
+  transition: 2s ease;
+}
+
+.margin100 {
+  margin-top: 100px;
+}
+
+/* login */
+.inputDesignPrimary input[type="text"],
+.inputDesignPrimary input[type="password"] {
+  background: transparent !important;
+  width: 100% !important;
+  border: 1px solid rgba(139, 139, 139, 0.99);
+  border-radius: 14px;
+  padding: 15px 15px !important;
+  color: #ffffff !important;
+  cursor: default;
+}
+
+.inputDesignPrimary input[type="text"]:disabled,
+.inputDesignPrimary input[type="password"]:disabled {
+  background: #4b4b4b !important;
+}
+
+.inputDesignPrimary input::placeholder,
+.selectDesign input::placeholder {
+  color: #a9a9a9 !important;
+  text-align: right !important;
+  font-size: 12px !important;
+}
+
+.inputDesignPrimary input[type="text"]:focus,
+.inputDesignPrimary input[type="password"]:focus {
+  outline: none !important;
+  border: 1px solid #62a9ff !important;
+  border-radius: 14px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.buttonDesignPrimary {
+  background: #0077ff;
+  padding: 13px 12px;
+  border-radius: 14px;
+  transition: all 0.2s ease-in-out;
+}
+.buttonDesignPrimary:hover {
+  background: #008cff;
+  padding: 13px 12px;
+  border-radius: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.forgetPass {
+  color: #7dd6fc;
+  font-size: 12px;
+}
+
+.forgetPass:hover {
+  color: #5dc1ff;
+
+  font-size: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.text-decoration {
+  text-decoration: none;
+}
+.text-decoration:hover {
+  text-decoration: underline;
+}
+
+.eyeInputPass {
+  margin-top: 21px;
+  margin-right: 13px;
+}
+
+.login-main-img {
+  left: 0;
+  right: 0;
+  background-image: url(../images/avl-login-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  object-fit: cover;
+  height: 750px;
+}
+.login-back-img {
+  left: 0;
+  right: 0;
+  background-image: url(../images/avl-main-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  object-fit: cover;
+}
+
+.invert {
+  filter: invert(1);
+}
+
+.bg-login {
+  background: linear-gradient(
+    to bottom right,
+    #3939399e 0%,
+    #1a1b1a 50%,
+    #00eeff 500%
+  );
+}
+
+.font15 {
+  font-size: 18px;
+}
+
+.orBorder {
+  width: 50%;
+  height: 1px;
+  border: 1px solid rgba(145, 145, 145, 0.511);
+}
+
+.res-main {
+  width: 60%;
+  height: 100%;
+}
+
+.sso:hover {
+  background: rgb(9, 50, 83);
+}
+
+.w75 {
+  width: 75px;
+}
+
+/* end of login  */
+
+/* navBar */
+.sidebar {
+  /* position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0; */
+  /* height: 100vh; */
+  /* width: 300px; */
+  background-color: #343a40;
+  /* padding-top: 20px; */
+}
+
+.sidebar .nav-link:hover {
+  color: #fff;
+  border-radius: 15px;
+  background-color: #246bdd;
+}
+
+.sidebarItems {
+  background-color: #34383b;
+}
+
+.sidebar-link {
+  padding: 10px;
+  margin: 0px 30px;
+  color: #fff;
+  border-radius: 15px;
+  transition: background-color 0.3s;
+}
+
+.sidebar-link:hover {
+  background-color: #246bdd;
+  border-radius: 15px;
+}
+
+.navBtn {
+  background-color: transparent;
+}
+
+.dropDown {
+  bottom: 20px;
+}
+
+.navHeader {
+  height: 100px;
+}
+
+.navIconProfile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.navProfilePic {
+  object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* .changeProfilePic {
+} */
+.changeProfilePic:hover {
+  background-color: #5f5f5f;
+  opacity: 0.3;
+}
+
+.offcanvasBtn {
+  background-color: transparent;
+}
+.offcanvasBtn:hover {
+  background-color: #246bdd;
+}
+.offcanvas {
+  background-color: #34383b;
+}
+
+/* navBar End */
