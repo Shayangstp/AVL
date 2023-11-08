@@ -109,12 +109,18 @@ const Sidebar = () => {
                         افزودن دستگاه
                       </span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-2" className="sidebar-link">
+                    <Nav.Link
+                      // onClick={() => navigate("/")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font10">
                         مشاهده دستگاه ها
                       </span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-3" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/addVehicle")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font10">
                         افزودن مدل دستگاه
                       </span>

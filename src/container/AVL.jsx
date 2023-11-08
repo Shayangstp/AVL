@@ -5,6 +5,7 @@ import Home from "../components/Home";
 import AddUserForm from "../components/userManagement/AddUserForm";
 import MainLayout from "../components/layout/MainLayout";
 import AddDevice from "../components/device/AddDevice";
+import AddVehicle from "../components/device/AddVehicle";
 
 const AVL = () => {
   return (
@@ -17,6 +18,7 @@ const AVL = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/addUser" element={<AddUserForm />} />
           <Route path="/addDevice" element={<AddDevice />} />
+          <Route path="/addVehicle" element={<AddVehicle />} />
         </Routes>
       </MainLayout>
     </Fragment>

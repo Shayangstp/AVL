@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getDeviceType } from "../services/deviceServices";
 
 const initialState = {
   deviceNumber: "",
@@ -13,7 +14,30 @@ const initialState = {
   driverName: "",
   driverNumber: "",
   vehicleGas: "",
+  vehicleAddType: "",
 };
+
+export const handleVehicleTypeOptions = createAsyncThunk(
+  "device/handleVehicleTypeOptions",
+  async (obj, { dispatch, getState }) => {
+    try {
+      const getDeviceTypeRes = await getDeviceType();
+      console.log(getDeviceTypeRes);
+      if (getDeviceTypeRes.data.code === 200) {
+        const itemsFromApi = getDeviceTypeRes.data.foundedItem;
+        const itemsModified = itemsFromApi.map((item, index) => {
+          return {
+            label: item.name,
+            value: index + 1,
+          };
+        });
+        dispatch(RsetVehicleTypeOptions(itemsModified));
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
 
 const deviceSlices = createSlice({
   name: "device",
@@ -52,8 +76,11 @@ const deviceSlices = createSlice({
     RsetDriverNumber: (state, action) => {
       return { ...state, driverNumber: action.payload };
     },
-    RsetDriverGas: (state, action) => {
-      return { ...state, driverGas: action.payload };
+    RsetVehicleGas: (state, action) => {
+      return { ...state, vehicleGas: action.payload };
+    },
+    RsetVehicleAddType: (state, action) => {
+      return { ...state, vehicleAddType: action.payload };
     },
   },
 });
@@ -70,7 +97,8 @@ export const {
   RsetVehicleUsing,
   RsetDriverName,
   RsetDriverNumber,
-  RsetDriverGas,
+  RsetVehicleGas,
+  RsetVehicleAddType,
 } = deviceSlices.actions;
 
 export const selectDeviceNumber = (state) => state.device.deviceNumber;
@@ -86,6 +114,7 @@ export const selectVehicleCompany = (state) => state.device.vehicleCompany;
 export const selectVehicleUsing = (state) => state.device.vehicleUsing;
 export const selectDriverName = (state) => state.device.driverName;
 export const selectDriverNumber = (state) => state.device.driverNumber;
-export const selectDriverGas = (state) => state.device.driverGas;
+export const selectVehicleGas = (state) => state.device.vehicleGas;
+export const selectVehicleAddType = (state) => state.device.vehicleAddType;
 
 export default deviceSlices.reducer;
