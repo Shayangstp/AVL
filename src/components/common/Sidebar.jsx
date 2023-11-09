@@ -110,7 +110,7 @@ const Sidebar = () => {
                       </span>
                     </Nav.Link>
                     <Nav.Link
-                      // onClick={() => navigate("/")}
+                      onClick={() => navigate("/deviceList")}
                       className="sidebar-link"
                     >
                       <span className="ms-4 lightGray font10">

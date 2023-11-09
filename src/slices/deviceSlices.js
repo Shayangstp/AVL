@@ -15,6 +15,16 @@ const initialState = {
   driverNumber: "",
   vehicleGas: "",
   vehicleAddType: "",
+
+  //filter
+  deviceImeiFilter: "",
+  deviceNumberFilter: "",
+  driverNameFilter: "",
+  driverNumberFilter: "",
+  vehicleNumberFilter: "",
+  deviceCategoryFilter: "",
+  vehicleCompanyFilter: "",
+  vehicleUsingFilter: "",
 };
 
 export const handleVehicleTypeOptions = createAsyncThunk(
@@ -82,6 +92,32 @@ const deviceSlices = createSlice({
     RsetVehicleAddType: (state, action) => {
       return { ...state, vehicleAddType: action.payload };
     },
+
+    //filter
+    RsetDeviceImeiFilter: (state, action) => {
+      return { ...state, deviceImeiFilter: action.payload };
+    },
+    RsetDeviceNumberFilter: (state, action) => {
+      return { ...state, deviceNumberFilter: action.payload };
+    },
+    RsetDriverNameFilter: (state, action) => {
+      return { ...state, driverNameFilter: action.payload };
+    },
+    RsetDriverNumberFilter: (state, action) => {
+      return { ...state, driverNameFilter: action.payload };
+    },
+    RsetVehicleNumberFilter: (state, action) => {
+      return { ...state, vehicleNumberFilter: action.payload };
+    },
+    RsetDeviceCategoryFilter: (state, action) => {
+      return { ...state, deviceCategoryFilter: action.payload };
+    },
+    RsetVehicleCompanyFilter: (state, action) => {
+      return { ...state, vehicleCompanyFilter: action.payload };
+    },
+    RsetVehicleUsingFilter: (state, action) => {
+      return { ...state, vehicleUsingFilter: action.payload };
+    },
   },
 });
 
@@ -99,6 +135,15 @@ export const {
   RsetDriverNumber,
   RsetVehicleGas,
   RsetVehicleAddType,
+  //filter
+  RsetDeviceImeiFilter,
+  RsetDeviceNumberFilter,
+  RsetDriverNameFilter,
+  RsetDriverNumberFilter,
+  RsetVehicleNumberFilter,
+  RsetDeviceCategoryFilter,
+  RsetVehicleCompanyFilter,
+  RsetVehicleUsingFilter,
 } = deviceSlices.actions;
 
 export const selectDeviceNumber = (state) => state.device.deviceNumber;
@@ -116,5 +161,19 @@ export const selectDriverName = (state) => state.device.driverName;
 export const selectDriverNumber = (state) => state.device.driverNumber;
 export const selectVehicleGas = (state) => state.device.vehicleGas;
 export const selectVehicleAddType = (state) => state.device.vehicleAddType;
+export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;
+export const selectDeviceNumberFilter = (state) =>
+  state.device.deviceNumberFilter;
+export const selectDriverNameFilter = (state) => state.device.driverNameFilter;
+export const selectDriverNumberFilter = (state) =>
+  state.device.driverNumberFilter;
+export const selectVehicleNumberFilter = (state) =>
+  state.device.vehicleNumberFilter;
+export const selectDeviceCategoryFilter = (state) =>
+  state.device.deviceCategoryFilter;
+export const selectVehicleCompanyFilter = (state) =>
+  state.device.vehicleCompanyFilter;
+export const selectVehicleUsingFilter = (state) =>
+  state.device.vehicleUsingFilter;
 
 export default deviceSlices.reducer;

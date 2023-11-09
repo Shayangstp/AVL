@@ -36,11 +36,11 @@ const AddVehicle = () => {
   };
 
   return (
-    <Container className="h-75 mt-5 border border-primary d-flex flex-column flex-md-row">
-      <div className="mt-4">
-        <Form>
-          <div className="mb-4">-افزودن مدل دستگاه ﺟﺪﯾﺪ</div>
-          <Row>
+    <Container className="h-75 mt-5 d-flex flex-column flex-md-row justify-content-md-between">
+      <Form>
+        <div className="border p-5 borderRadius-15">
+          <Row className="">
+            <div className="mb-4">-افزودن مدل دستگاه ﺟﺪﯾﺪ</div>
             <Form.Group as={Col} md="12">
               <Form.Label className="required-field">نام مدل: </Form.Label>
               <Form.Control
@@ -57,10 +57,10 @@ const AddVehicle = () => {
             </Form.Group>
           </Row>
           <Row className="mt-4 mb-5">
-            <Col className="d-flex flex-column flex-sm-row mt-4 justify-content-center">
+            <Col className="d-flex flex-column flex-sm-row mt-4 justify-conten-center">
               <Button
                 variant="success"
-                className="mb-3 me-5 font12 px-5"
+                className="mb-3 me-sm-5 font12 px-5"
                 onClick={(e) => {
                   console.log("hi");
                   handleAddVehicleType(e);
@@ -81,19 +81,19 @@ const AddVehicle = () => {
               </Button>
             </Col>
           </Row>
-        </Form>
-      </div>
-      <div className="w-75 ms-5">
+        </div>
+      </Form>
+      <Col md="7" className="border borderRadius-15 h-100">
         <ul className="ms-5 mt-4">
           {items.map((i, idx) => {
             return (
-              <li key={idx} className="text-secondary">
+              <li key={idx} className="text-secondary mt-4">
                 {i}
               </li>
             );
           })}
         </ul>
-      </div>
+      </Col>
     </Container>
   );
 };
