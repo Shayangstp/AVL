@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RsetLoading, RsetUser } from "./mainSlices";
 import { errorMessage, successMessage } from "../utils/msg";
 import { postUserAuth, postForgetPassword } from "../services/loginServices";
-import { useNavigate } from "react-router-dom";
 
 const initialState = {
   username: "",

@@ -1,17 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import {
   RsetVehicleAddType,
   selectVehicleAddType,
+  RsetVehicleAdded,
+  selectVehicleAdded,
 } from "../../slices/deviceSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
+import { postAddVehicle } from "../../services/deviceServices";
+import { errorMessage, successMessage } from "../../utils/msg";
+import { getDeviceType } from "../../services/deviceServices";
+import { useNavigate } from "react-router";
 
 const AddVehicle = () => {
-  const items = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const vehicleAddType = useSelector(selectVehicleAddType);
   const formErrors = useSelector(selectFormErrors);
+  const vehicleAdded = useSelector(selectVehicleAdded);
 
   const vehicleAddTypeIsValid = vehicleAddType !== "";
 
@@ -26,14 +33,39 @@ const AddVehicle = () => {
     return errors;
   };
 
-  const handleAddVehicleType = (e) => {
+  const handleAddVehicleType = async (e) => {
     e.preventDefault();
     if (vehicleAddTypeIsValid) {
       console.log(vehicleAddType);
+      const value = {
+        vehicleType: vehicleAddType,
+      };
+      const postAddVehicleRes = await postAddVehicle(value);
+      console.log(postAddVehicleRes);
+      if (postAddVehicleRes.data.code === 200) {
+        successMessage("مدل دستگاه با موفقیت اضافه شد");
+        navigate(0);
+      } else {
+        errorMessage("خطا!");
+      }
     } else {
       dispatch(RsetFormErrors(validation({ vehicleAddType })));
     }
   };
+
+  const getVehicleModles = async () => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const getDeviceTypeRes = await getDeviceType(token);
+    console.log(getDeviceTypeRes);
+    dispatch(RsetVehicleAdded(getDeviceTypeRes.data.foundedItem));
+  };
+
+  useEffect(() => {
+    getVehicleModles();
+  }, []);
+
+  console.log(vehicleAdded);
 
   return (
     <Container className="h-75 mt-5 d-flex flex-column flex-md-row justify-content-md-between">
@@ -85,10 +117,10 @@ const AddVehicle = () => {
       </Form>
       <Col md="7" className="border borderRadius-15 h-100">
         <ul className="ms-5 mt-4">
-          {items.map((i, idx) => {
+          {vehicleAdded.map((i, idx) => {
             return (
               <li key={idx} className="text-secondary mt-4">
-                {i}
+                {i.name}
               </li>
             );
           })}

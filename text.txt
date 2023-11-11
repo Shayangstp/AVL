@@ -1,3 +1,25 @@
  fontawesome :
  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  import { faTrash } from "@fortawesome/free-solid-svg-icons";
+
+ // "R": "http://192.168.5.254:8008",
+
+
+
+ api edit --> put
+ api/v1/device/edit
+ {
+    "vehicleId":"654231366d44c03d8201fe60",--> _id
+    "simNumber":"",
+    "deviceIMEI":"",
+    "plate":"",
+    "name":"",
+    "driverName":"",
+    "driverPhoneNumber":"",
+    "trackerModel":"",
+    "fuel":"",
+    "model":"گاميون",
+    "usage":"" 
+}
+
+

@@ -1,7 +1,7 @@
 import React from "react";
 
 const AddUserForm = () => {
-  return <div>add user</div>;
+  return <div></div>;
 };
 
 export default AddUserForm;

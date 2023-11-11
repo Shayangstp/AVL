@@ -32,6 +32,10 @@ import {
   handleVehicleTypeOptions,
 } from "../../slices/deviceSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
+import { postAddDevice } from "../../services/deviceServices";
+import { errorMessage, successMessage } from "../../utils/msg";
+import { useNavigate } from "react-router";
+import { selectUser } from "../../slices/mainSlices";
 
 const gpsValues = [
   {
@@ -58,6 +62,7 @@ const gpsValues = [
 
 const AddDevice = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const deviceNumber = useSelector(selectDeviceNumber);
   const deviceImei = useSelector(selectDeviceImei);
   const deviceType = useSelector(selectDeviceType);
@@ -71,10 +76,12 @@ const AddDevice = () => {
   const driverNumber = useSelector(selectDriverNumber);
   const vehicleGas = useSelector(selectVehicleGas);
   const formErrors = useSelector(selectFormErrors);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     dispatch(RsetDeviceTypeOptions(gpsValues));
   }, []);
+
   useEffect(() => {
     dispatch(handleVehicleTypeOptions());
   }, []);
@@ -161,21 +168,40 @@ const AddDevice = () => {
     return errors;
   };
 
-  const handleDeviceAdd = (e) => {
+  const handleDeviceAdd = async (e) => {
     e.preventDefault();
-    console.log("hi");
     if (addDeviceFormIsValid) {
+      const values = {
+        simNumber: deviceNumber,
+        deviceIMEI: deviceImei,
+        trackerModel: deviceType.label,
+        plate: vehicleNumber,
+        model: vehicleType.label,
+        creator: vehicleCompany,
+        usage: vehicleUsing,
+        driverName: driverName,
+        driverPhoneNumber: driverNumber,
+        fuel: vehicleGas,
+      };
+      const postAddDeviceRes = await postAddDevice(values);
+      console.log(postAddDeviceRes);
+      if (postAddDeviceRes.data.code === 201) {
+        successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
+        handleResetAddDeviceForm();
+      } else {
+        errorMessage("خطا!");
+      }
       console.log({
-        deviceNumber,
-        deviceImei,
-        deviceType,
-        vehicleNumber,
-        vehicleType,
-        vehicleCompany,
-        vehicleUsing,
-        driverName,
-        driverNumber,
-        vehicleGas,
+        simNumber: deviceNumber,
+        deviceIMEI: deviceImei,
+        trackerModel: deviceType.label,
+        plate: vehicleNumber,
+        model: vehicleType.label,
+        creator: vehicleCompany,
+        usage: vehicleUsing,
+        name: driverName,
+        driverPhoneNumber: driverNumber,
+        fuel: vehicleGas,
       });
     } else {
       dispatch(

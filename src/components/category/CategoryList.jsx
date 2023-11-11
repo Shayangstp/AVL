@@ -17,30 +17,12 @@ import {
   faEye,
   faFilter,
   faPlus,
-  faPen,
-  faScrewdriverWrench,
-  faLocation,
-  faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment-jalaali";
 import { Redirect, Link } from "react-router-dom";
 import DeviceFilter from "./DeviceFilter";
-import { getDeviceList } from "../../services/deviceServices";
-import {
-  RsetDeviceList,
-  selectDeviceList,
-  RsetCurrentDevice,
-  selectCurrentDevice,
-} from "../../slices/deviceSlices";
-import {
-  RsetDeviceEditModal,
-  selectDeviceEditModal,
-} from "../../slices/modalSlices";
-import { errorMessage } from "../../utils/msg";
-import DeviceTable from "./DeviceTable";
-import DeviceEditeModal from "../common/modals/deviceModals/DeviceEditeModal";
 
-const DeviceList = ({ setPageTitle }) => {
+const CategoryList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -52,97 +34,38 @@ const DeviceList = ({ setPageTitle }) => {
     setPageTitle("لیست درخواست نرم افزار");
   }, [setPageTitle]);
 
-  const deviceList = useSelector(selectDeviceList);
-  const deviceEditModal = useSelector(selectDeviceEditModal);
-  const currentDevice = useSelector(selectCurrentDevice);
-
-  const handleDeviceList = async () => {
-    const token = localStorage.getItem("token");
-    const getDeviceListRes = await getDeviceList(token);
-    console.log(getDeviceListRes);
-    if (getDeviceListRes.data.allVehicles !== null) {
-      dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
-    } else {
-      errorMessage("خطا");
-    }
-  };
-
-  console.log(deviceList);
-
-  useEffect(() => {
-    handleDeviceList();
-  }, []);
-
   const columns = useMemo(() => [
     {
-      Header: "ردیف",
-      accessor: "idx",
+      Header: "سریال درخواست",
+      accessor: "reqSerial",
       sort: true,
     },
     {
-      Header: "IMEI دستگاه",
-      accessor: "imei",
+      Header: "تاریخ ثبت درخواست",
+      accessor: "reqDate",
       sort: true,
     },
     {
-      Header: "شماره تلفن سیم کارت",
-      accessor: "deviceNumber",
+      Header: "درخواست کننده",
+      accessor: "reqUser",
       sort: true,
     },
     {
-      Header: "نام راننده",
-      accessor: "driverName",
+      Header: "واحد درخواست کننده",
+      accessor: "reqCompany",
       sort: true,
     },
     {
-      Header: "تلفن راننده",
-      accessor: "driverNumber",
+      Header: "وضعیت درخواست",
+      accessor: "reqStatus",
       sort: true,
-    },
-    {
-      Header: "پلاک",
-      accessor: "vehicleNumber",
-      sort: true,
-    },
-    {
-      Header: "دسته",
-      accessor: "vehicleCategory",
-      sort: false,
-    },
-    {
-      Header: "مدل",
-      accessor: "vehicleType",
-      sort: false,
-    },
-    {
-      Header: "شرکت سازنده",
-      accessor: "vehicleCompany",
-      sort: false,
-    },
-    {
-      Header: "کاربری",
-      accessor: "vehicleUsage",
-      sort: false,
-    },
-    {
-      Header: "مسافت طی شده در ماه جاری",
-      accessor: "distance",
-      sort: false,
-    },
-    {
-      Header: "میزان تقریبی سوخت در ماه جاری",
-      accessor: "gasUsage",
-      sort: false,
     },
     {
       Header: "عملیات",
-      accessor: "opration",
+      accessor: "reqOperation",
       sort: false,
     },
   ]);
-
-  console.log(currentDevice);
-
   const link = (request) => {
     return (
       <a
@@ -162,7 +85,7 @@ const DeviceList = ({ setPageTitle }) => {
           // setSeenSerial(request.serial);
         }}
       >
-        {request.deviceIMEI}
+        {/* {xssFilters.inHTMLData(request.serial)} */}
       </a>
     );
   };
@@ -182,16 +105,20 @@ const DeviceList = ({ setPageTitle }) => {
     );
   };
   const operation = (request) => {
-    if (localStorage.getItem("token")) {
+    if (
+      request.lastToPersons !== null &&
+      request.lastToPersons
+        .split(",")
+        .some((person) => person === localStorage.getItem("id"))
+    ) {
       return (
         <div className="d-flex justify-content-between flex-wrap">
           <Button
-            title="ویرایش"
+            title="تایید"
             className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
             size="sm"
             active
             onClick={() => {
-              console.log("hi");
               // dispatch(
               //   handleCurrentReqInfo({
               //     company: "",
@@ -203,20 +130,12 @@ const DeviceList = ({ setPageTitle }) => {
               //   })
               // );
               // setSeenSerial(serialNumber);
-              dispatch(RsetDeviceEditModal(true));
-              dispatch(
-                RsetCurrentDevice(
-                  request.map((item, idx) => {
-                    return idx;
-                  })
-                )
-              );
             }}
           >
-            <FontAwesomeIcon icon={faPen} />
+            <FontAwesomeIcon icon={faCheck} />
           </Button>
           <Button
-            title="تنظیمات"
+            title="ابطال"
             className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-0"
             size="sm"
             active
@@ -234,14 +153,15 @@ const DeviceList = ({ setPageTitle }) => {
               // setSeenSerial(serialNumber);
             }}
           >
-            <FontAwesomeIcon icon={faScrewdriverWrench} />
+            <FontAwesomeIcon icon={faBan} />
           </Button>
           <Button
-            title="مشاهده مکان ها"
+            title="تاریخچه"
             className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
             size="sm"
             active
             onClick={() => {
+              dispatch();
               // handleCurrentReqInfo({
               //   company: "",
               //   reqId: request.requestId,
@@ -256,7 +176,7 @@ const DeviceList = ({ setPageTitle }) => {
               // );
             }}
           >
-            <FontAwesomeIcon icon={faLocationDot} />
+            <FontAwesomeIcon icon={faClockRotateLeft} />
           </Button>
         </div>
       );
@@ -320,20 +240,15 @@ const DeviceList = ({ setPageTitle }) => {
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
-          idx: i,
-          imei: link(requests[i]),
-          deviceNumber: requests[i].simNumber,
-          driverName: requests[i].driverName,
-          driverNumber: requests[i].driverPhoneNumber,
-          vehicleNumber: requests[i].plate,
-          vehicleType: requests[i].model,
-          vehicleCategory: requests[i].model.name,
-          vehicleType: requests[i].model.name,
-          vehicleCompany: requests[i].model.name,
-          vehicleUsage: requests[i].usage,
-          gasUsage: requests[i].fuel,
-          distance: requests[i].maxPMDistance,
-          opration: operation(requests),
+          reqSerial: link(requests[i]),
+          reqDate: moment
+            .utc(requests[i].createdDate, "YYYY/MM/DD")
+            .locale("fa")
+            .format("jYYYY/jMM/jDD"),
+          reqUser: userInfo(requests[i]),
+          reqCompany: requests[i].deptName,
+          reqStatus: requests[i].statusName,
+          reqOperation: operation(requests[i]),
         };
         tableItems.push(tableItem);
       }
@@ -354,20 +269,15 @@ const DeviceList = ({ setPageTitle }) => {
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            imei: link(requests[i]),
-            idx: i,
-            deviceNumber: requests[i].simNumber,
-            driverName: requests[i].driverName,
-            driverNumber: requests[i].driverPhoneNumber,
-            vehicleNumber: requests[i].plate,
-            vehicleCategory: requests[i].model.name,
-            vehicleType: requests[i].model.name,
-            vehicleCompany: requests[i].model.name,
-            vehicleUsage: requests[i].usage,
-            gasUsage: requests[i].fuel,
-            distance: requests[i].maxPMDistance,
-
-            opration: operation(requests),
+            reqSerial: link(requests[i]),
+            reqDate: moment
+              .utc(requests[i].createdDate, "YYYY/MM/DD")
+              .locale("fa")
+              .format("jYYYY/jMM/jDD"),
+            reqUser: userInfo(requests[i]),
+            reqCompany: requests[i].deptName,
+            reqStatus: requests[i].statusName,
+            reqOperation: operation(requests[i]),
           };
           tableItems.push(tableItem);
         }
@@ -470,8 +380,8 @@ const DeviceList = ({ setPageTitle }) => {
                     ></Tab>
                     <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
                   </Tabs> */}
-                  <DeviceTable
-                    requests={deviceList}
+                  {/* <SoftwareReqItem
+                    requests={reqsList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}
@@ -480,8 +390,8 @@ const DeviceList = ({ setPageTitle }) => {
                     loading={load}
                     pageCount={pageCount}
                     // handleNotVisited={handleNotVisited}
-                  />
-                  {deviceEditModal && <DeviceEditeModal />}
+                  /> */}
+                  {/* {userInfoModal && <UserInfoModal />} */}
                 </Fragment>
                 {/* ) : null} */}
               </Fragment>
@@ -496,4 +406,4 @@ const DeviceList = ({ setPageTitle }) => {
   );
 };
 
-export default DeviceList;
+export default CategoryList;

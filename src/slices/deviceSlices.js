@@ -15,6 +15,9 @@ const initialState = {
   driverNumber: "",
   vehicleGas: "",
   vehicleAddType: "",
+  vehicleAdded: [],
+  deviceList: [],
+  currentDevice: "",
 
   //filter
   deviceImeiFilter: "",
@@ -31,7 +34,8 @@ export const handleVehicleTypeOptions = createAsyncThunk(
   "device/handleVehicleTypeOptions",
   async (obj, { dispatch, getState }) => {
     try {
-      const getDeviceTypeRes = await getDeviceType();
+      const token = localStorage.getItem("token");
+      const getDeviceTypeRes = await getDeviceType(token);
       console.log(getDeviceTypeRes);
       if (getDeviceTypeRes.data.code === 200) {
         const itemsFromApi = getDeviceTypeRes.data.foundedItem;
@@ -92,6 +96,15 @@ const deviceSlices = createSlice({
     RsetVehicleAddType: (state, action) => {
       return { ...state, vehicleAddType: action.payload };
     },
+    RsetVehicleAdded: (state, action) => {
+      return { ...state, vehicleAdded: action.payload };
+    },
+    RsetDeviceList: (state, action) => {
+      return { ...state, deviceList: action.payload };
+    },
+    RsetCurrentDevice: (state, action) => {
+      return { ...state, currentDevice: action.payload };
+    },
 
     //filter
     RsetDeviceImeiFilter: (state, action) => {
@@ -135,6 +148,9 @@ export const {
   RsetDriverNumber,
   RsetVehicleGas,
   RsetVehicleAddType,
+  RsetVehicleAdded,
+  RsetDeviceList,
+  RsetCurrentDevice,
   //filter
   RsetDeviceImeiFilter,
   RsetDeviceNumberFilter,
@@ -161,6 +177,10 @@ export const selectDriverName = (state) => state.device.driverName;
 export const selectDriverNumber = (state) => state.device.driverNumber;
 export const selectVehicleGas = (state) => state.device.vehicleGas;
 export const selectVehicleAddType = (state) => state.device.vehicleAddType;
+export const selectVehicleAdded = (state) => state.device.vehicleAdded;
+export const selectDeviceList = (state) => state.device.deviceList;
+export const selectCurrentDevice = (state) => state.device.currentDevice;
+//filter
 export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;
 export const selectDeviceNumberFilter = (state) =>
   state.device.deviceNumberFilter;

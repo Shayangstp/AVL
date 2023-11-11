@@ -110,13 +110,22 @@ const NavbarOff = () => {
               </Nav.Link>
               {deviceDrop && (
                 <div className="transitionAll">
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/addDevice")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">افزودن دستگاه</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-2" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/deviceList")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">مشاهده دستگاه ها</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-3" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/addVehicle")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">افزودن مدل دستگاه</span>
                   </Nav.Link>
                 </div>
