@@ -56,6 +56,14 @@ const DeviceTable = ({
     onSort({ sortBy, pageIndex, pageSize, requests });
   }, [onSort, sortBy, fetchData, pageIndex, pageSize, requests]);
 
+  const handleEditButtonClick = (index) => {
+    // Use the index to filter and retrieve the specific item data
+    const selectedItem = requests[index];
+
+    // Do something with the selected item data
+    console.log(selectedItem);
+  };
+
   return (
     <section>
       <Table bordered hover responsive size="sm" {...getTableProps()}>

@@ -42,3 +42,16 @@ export const getDeviceList = (token) => {
     }
   );
 };
+
+export const editDeviceList = (values, token) => {
+  return http.put(
+    `${config.R}/api/v1/device/edit`,
+    values,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

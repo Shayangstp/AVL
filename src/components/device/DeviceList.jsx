@@ -22,7 +22,6 @@ import {
   faLocation,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment-jalaali";
 import { Redirect, Link } from "react-router-dom";
 import DeviceFilter from "./DeviceFilter";
 import { getDeviceList } from "../../services/deviceServices";
@@ -31,6 +30,18 @@ import {
   selectDeviceList,
   RsetCurrentDevice,
   selectCurrentDevice,
+  RsetDeviceImei,
+  RsetVehicleCompany,
+  RsetVehicleNumber,
+  RsetVehicleType,
+  RsetDeviceType,
+  RsetDeviceNumber,
+  RsetDriverName,
+  RsetDriverNumber,
+  RsetVehicleUsing,
+  RsetVehicleGas,
+  RsetEditTimeStamp,
+  RsetVehicleId,
 } from "../../slices/deviceSlices";
 import {
   RsetDeviceEditModal,
@@ -59,15 +70,12 @@ const DeviceList = ({ setPageTitle }) => {
   const handleDeviceList = async () => {
     const token = localStorage.getItem("token");
     const getDeviceListRes = await getDeviceList(token);
-    console.log(getDeviceListRes);
     if (getDeviceListRes.data.allVehicles !== null) {
       dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
     } else {
       errorMessage("خطا");
     }
   };
-
-  console.log(deviceList);
 
   useEffect(() => {
     handleDeviceList();
@@ -141,8 +149,6 @@ const DeviceList = ({ setPageTitle }) => {
     },
   ]);
 
-  console.log(currentDevice);
-
   const link = (request) => {
     return (
       <a
@@ -191,7 +197,7 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              console.log("hi");
+              console.log(request);
               // dispatch(
               //   handleCurrentReqInfo({
               //     company: "",
@@ -204,13 +210,18 @@ const DeviceList = ({ setPageTitle }) => {
               // );
               // setSeenSerial(serialNumber);
               dispatch(RsetDeviceEditModal(true));
-              dispatch(
-                RsetCurrentDevice(
-                  request.map((item, idx) => {
-                    return idx;
-                  })
-                )
-              );
+              dispatch(RsetVehicleNumber(request.plate));
+              dispatch(RsetVehicleCompany(request.model.name));
+              dispatch(RsetVehicleType(request.model.name));
+              dispatch(RsetDriverName(request.vehicleName));
+              dispatch(RsetDriverNumber(request.driverPhoneNumber));
+              dispatch(RsetVehicleUsing(request.usage));
+              dispatch(RsetVehicleGas(request.fuel));
+              dispatch(RsetEditTimeStamp(request.createDate));
+              dispatch(RsetVehicleId(request._id));
+              dispatch(RsetDeviceNumber(request.simNumber));
+              dispatch(RsetDeviceImei(request.deviceIMEI));
+              dispatch(RsetDeviceType(request.trackerModel));
             }}
           >
             <FontAwesomeIcon icon={faPen} />
@@ -333,7 +344,7 @@ const DeviceList = ({ setPageTitle }) => {
           vehicleUsage: requests[i].usage,
           gasUsage: requests[i].fuel,
           distance: requests[i].maxPMDistance,
-          opration: operation(requests),
+          opration: operation(requests[i]),
         };
         tableItems.push(tableItem);
       }
@@ -367,7 +378,7 @@ const DeviceList = ({ setPageTitle }) => {
             gasUsage: requests[i].fuel,
             distance: requests[i].maxPMDistance,
 
-            opration: operation(requests),
+            opration: operation(requests[i]),
           };
           tableItems.push(tableItem);
         }

@@ -18,6 +18,8 @@ const initialState = {
   vehicleAdded: [],
   deviceList: [],
   currentDevice: "",
+  editTimeStamp: null,
+  vehicleId: "",
 
   //filter
   deviceImeiFilter: "",
@@ -36,7 +38,6 @@ export const handleVehicleTypeOptions = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const getDeviceTypeRes = await getDeviceType(token);
-      console.log(getDeviceTypeRes);
       if (getDeviceTypeRes.data.code === 200) {
         const itemsFromApi = getDeviceTypeRes.data.foundedItem;
         const itemsModified = itemsFromApi.map((item, index) => {
@@ -105,6 +106,12 @@ const deviceSlices = createSlice({
     RsetCurrentDevice: (state, action) => {
       return { ...state, currentDevice: action.payload };
     },
+    RsetEditTimeStamp: (state, action) => {
+      return { ...state, editTimeStamp: action.payload };
+    },
+    RsetVehicleId: (state, action) => {
+      return { ...state, vehicleId: action.payload };
+    },
 
     //filter
     RsetDeviceImeiFilter: (state, action) => {
@@ -151,6 +158,8 @@ export const {
   RsetVehicleAdded,
   RsetDeviceList,
   RsetCurrentDevice,
+  RsetEditTimeStamp,
+  RsetVehicleId,
   //filter
   RsetDeviceImeiFilter,
   RsetDeviceNumberFilter,
@@ -180,6 +189,8 @@ export const selectVehicleAddType = (state) => state.device.vehicleAddType;
 export const selectVehicleAdded = (state) => state.device.vehicleAdded;
 export const selectDeviceList = (state) => state.device.deviceList;
 export const selectCurrentDevice = (state) => state.device.currentDevice;
+export const selectEditTimeStamp = (state) => state.device.editTimeStamp;
+export const selectVehicleId = (state) => state.device.vehicleId;
 //filter
 export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;
 export const selectDeviceNumberFilter = (state) =>
