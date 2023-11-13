@@ -10,6 +10,7 @@ import {
   selectDeviceTypeOptions,
 } from "../slices/deviceSlices";
 
+
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);

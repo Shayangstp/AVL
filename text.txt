@@ -6,20 +6,6 @@
 
 
 
- api edit --> put
- api/v1/device/edit
- {
-    "vehicleId":"654231366d44c03d8201fe60",--> _id
-    "simNumber":"",
-    "deviceIMEI":"",
-    "plate":"",
-    "name":"",
-    "driverName":"",
-    "driverPhoneNumber":"",
-    "trackerModel":"",
-    "fuel":"",
-    "model":"گاميون",
-    "usage":"" 
-}
+ 
 
 

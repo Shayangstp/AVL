@@ -44,12 +44,18 @@ import {
   RsetVehicleId,
 } from "../../slices/deviceSlices";
 import {
+  RsetDeviceAdjusmentModal,
   RsetDeviceEditModal,
   selectDeviceEditModal,
+  selectDeviceAdjusmentModal,
+  RsetDeviceLocationsModal,
+  selectDeviceLocationsModal,
 } from "../../slices/modalSlices";
 import { errorMessage } from "../../utils/msg";
 import DeviceTable from "./DeviceTable";
 import DeviceEditeModal from "../common/modals/deviceModals/DeviceEditeModal";
+import DeviceAdjustmentModal from "../common/modals/deviceModals/DeviceAdjustmentModal";
+import DeviceLocationsModal from "../common/modals/deviceModals/DeviceLocationsModal";
 
 const DeviceList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -66,6 +72,8 @@ const DeviceList = ({ setPageTitle }) => {
   const deviceList = useSelector(selectDeviceList);
   const deviceEditModal = useSelector(selectDeviceEditModal);
   const currentDevice = useSelector(selectCurrentDevice);
+  const deviceAdjusmentModal = useSelector(selectDeviceAdjusmentModal);
+  const deviceLocationsModal = useSelector(selectDeviceLocationsModal);
 
   const handleDeviceList = async () => {
     const token = localStorage.getItem("token");
@@ -187,6 +195,7 @@ const DeviceList = ({ setPageTitle }) => {
       </div>
     );
   };
+
   const operation = (request) => {
     if (localStorage.getItem("token")) {
       return (
@@ -232,6 +241,7 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
+              console.log("hi");
               // dispatch(
               //   handleCurrentReqInfo({
               //     company: "",
@@ -243,6 +253,7 @@ const DeviceList = ({ setPageTitle }) => {
               //   })
               // );
               // setSeenSerial(serialNumber);
+              dispatch(RsetDeviceAdjusmentModal(true));
             }}
           >
             <FontAwesomeIcon icon={faScrewdriverWrench} />
@@ -265,6 +276,7 @@ const DeviceList = ({ setPageTitle }) => {
               //   actionCode.reqInfo.serial_number,
               //   actionCode.type
               // );
+              dispatch(RsetDeviceLocationsModal(true));
             }}
           >
             <FontAwesomeIcon icon={faLocationDot} />
@@ -493,6 +505,8 @@ const DeviceList = ({ setPageTitle }) => {
                     // handleNotVisited={handleNotVisited}
                   />
                   {deviceEditModal && <DeviceEditeModal />}
+                  {deviceAdjusmentModal && <DeviceAdjustmentModal />}
+                  {deviceLocationsModal && <DeviceLocationsModal />}
                 </Fragment>
                 {/* ) : null} */}
               </Fragment>

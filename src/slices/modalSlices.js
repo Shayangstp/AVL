@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   changeProfilePicModal: false,
-  //modals
   deviceEditModal: false,
+  deviceAdjusmentModal: false,
+  deviceLocationsModal: false,
 };
 
 const modalsSlices = createSlice({
@@ -13,22 +14,31 @@ const modalsSlices = createSlice({
     RsetChangeProfilePicModal: (state, action) => {
       return { ...state, changeProfilePicModal: action.payload };
     },
-    //modals
     RsetDeviceEditModal: (state, action) => {
       return { ...state, deviceEditModal: action.payload };
+    },
+    RsetDeviceAdjusmentModal: (state, action) => {
+      return { ...state, deviceAdjusmentModal: action.payload };
+    },
+    RsetDeviceLocationsModal: (state, action) => {
+      return { ...state, deviceLocationsModal: action.payload };
     },
   },
 });
 
 export const {
   RsetChangeProfilePicModal,
-  //modals
   RsetDeviceEditModal,
+  RsetDeviceAdjusmentModal,
+  RsetDeviceLocationsModal,
 } = modalsSlices.actions;
 
 export const selectChangeProfilePicModal = (state) =>
   state.modals.changeProfilePicModal;
-//device modals
 export const selectDeviceEditModal = (state) => state.modals.deviceEditModal;
+export const selectDeviceAdjusmentModal = (state) =>
+  state.modals.deviceAdjusmentModal;
+export const selectDeviceLocationsModal = (state) =>
+  state.modals.deviceLocationsModal;
 
 export default modalsSlices.reducer;

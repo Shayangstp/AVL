@@ -20,6 +20,14 @@ const initialState = {
   currentDevice: "",
   editTimeStamp: null,
   vehicleId: "",
+  vehicleSpeed: "",
+  smsReciver: "",
+  smsReciverOptions: [],
+  emailReciver: "",
+  timeToSendSms: "",
+  vehicleCondition: "",
+  vehicleConditionOptions: [],
+  vehicleConditionDescription: "",
 
   //filter
   deviceImeiFilter: "",
@@ -112,6 +120,30 @@ const deviceSlices = createSlice({
     RsetVehicleId: (state, action) => {
       return { ...state, vehicleId: action.payload };
     },
+    RsetVehicleSpeed: (state, action) => {
+      return { ...state, vehicleSpeed: action.payload };
+    },
+    RsetSmsReciver: (state, action) => {
+      return { ...state, smsReciver: action.payload };
+    },
+    RsetSmsReciverOptions: (state, action) => {
+      return { ...state, smsReciverOptions: action.payload };
+    },
+    RsetEmailReciver: (state, action) => {
+      return { ...state, emailReciver: action.payload };
+    },
+    RsetTimeToSendSms: (state, action) => {
+      return { ...state, timeToSendSms: action.payload };
+    },
+    RsetVehicleCondition: (state, action) => {
+      return { ...state, vehicleCondition: action.payload };
+    },
+    RsetVehicleConditionOptions: (state, action) => {
+      return { ...state, vehicleConditionOptions: action.payload };
+    },
+    RsetVehicleConditionDescription: (state, action) => {
+      return { ...state, vehicleConditionDescription: action.payload };
+    },
 
     //filter
     RsetDeviceImeiFilter: (state, action) => {
@@ -160,6 +192,14 @@ export const {
   RsetCurrentDevice,
   RsetEditTimeStamp,
   RsetVehicleId,
+  RsetVehicleSpeed,
+  RsetSmsReciver,
+  RsetSmsReciverOptions,
+  RsetEmailReciver,
+  RsetTimeToSendSms,
+  RsetVehicleCondition,
+  RsetVehicleConditionOptions,
+  RsetVehicleConditionDescription,
   //filter
   RsetDeviceImeiFilter,
   RsetDeviceNumberFilter,
@@ -191,6 +231,18 @@ export const selectDeviceList = (state) => state.device.deviceList;
 export const selectCurrentDevice = (state) => state.device.currentDevice;
 export const selectEditTimeStamp = (state) => state.device.editTimeStamp;
 export const selectVehicleId = (state) => state.device.vehicleId;
+export const selectVehicleSpeed = (state) => state.device.vehicleSpeed;
+export const selectSmsReciver = (state) => state.device.smsReciver;
+export const selectSmsReciverOptions = (state) =>
+  state.device.smsReciverOptions;
+export const selectEmailReciver = (state) => state.device.emailReciver;
+export const selectTimeToSendSms = (state) => state.device.timeToSendSms;
+export const selectVehicleCondition = (state) => state.device.vehicleCondition;
+export const selectVehicleConditionOptions = (state) =>
+  state.device.vehicleConditionOptions;
+export const selectVehicleConditionDescription = (state) =>
+  state.device.vehicleConditionDescription;
+
 //filter
 export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;
 export const selectDeviceNumberFilter = (state) =>
