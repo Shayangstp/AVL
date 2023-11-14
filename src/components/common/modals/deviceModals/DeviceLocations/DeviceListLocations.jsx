@@ -23,41 +23,10 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
-import DeviceFilter from "./DeviceFilter";
-import { getDeviceList } from "../../services/deviceServices";
-import {
-  RsetDeviceList,
-  selectDeviceList,
-  RsetCurrentDevice,
-  selectCurrentDevice,
-  RsetDeviceImei,
-  RsetVehicleCompany,
-  RsetVehicleNumber,
-  RsetVehicleType,
-  RsetDeviceType,
-  RsetDeviceNumber,
-  RsetDriverName,
-  RsetDriverNumber,
-  RsetVehicleUsing,
-  RsetVehicleGas,
-  RsetEditTimeStamp,
-  RsetVehicleId,
-} from "../../slices/deviceSlices";
-import {
-  RsetDeviceAdjusmentModal,
-  RsetDeviceEditModal,
-  selectDeviceEditModal,
-  selectDeviceAdjusmentModal,
-  RsetDeviceLocationsModal,
-  selectDeviceLocationsModal,
-} from "../../slices/modalSlices";
-import { errorMessage } from "../../utils/msg";
-import DeviceTable from "./DeviceTable";
-import DeviceEditeModal from "../common/modals/deviceModals/DeviceEditeModal";
-import DeviceAdjustmentModal from "../common/modals/deviceModals/DeviceAdjustmentModal";
-import DeviceLocationsModal from "../common/modals/deviceModals/DeviceLocationsModal";
 
-const DeviceList = ({ setPageTitle }) => {
+import DeviceTableLocations from "./DeviceTableLocations";
+
+const DeviceListLocations = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -69,26 +38,6 @@ const DeviceList = ({ setPageTitle }) => {
     setPageTitle("لیست درخواست نرم افزار");
   }, [setPageTitle]);
 
-  const deviceList = useSelector(selectDeviceList);
-  const deviceEditModal = useSelector(selectDeviceEditModal);
-  const currentDevice = useSelector(selectCurrentDevice);
-  const deviceAdjusmentModal = useSelector(selectDeviceAdjusmentModal);
-  const deviceLocationsModal = useSelector(selectDeviceLocationsModal);
-
-  const handleDeviceList = async () => {
-    const token = localStorage.getItem("token");
-    const getDeviceListRes = await getDeviceList(token);
-    if (getDeviceListRes.data.allVehicles !== null) {
-      dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
-    } else {
-      errorMessage("خطا");
-    }
-  };
-
-  useEffect(() => {
-    handleDeviceList();
-  }, []);
-
   const columns = useMemo(() => [
     {
       Header: "ردیف",
@@ -96,64 +45,29 @@ const DeviceList = ({ setPageTitle }) => {
       sort: true,
     },
     {
-      Header: "IMEI دستگاه",
-      accessor: "imei",
+      Header: "#",
+      accessor: "checkBox",
       sort: true,
     },
     {
-      Header: "شماره تلفن سیم کارت",
-      accessor: "deviceNumber",
+      Header: "تاریخ",
+      accessor: "date",
       sort: true,
     },
     {
-      Header: "نام راننده",
-      accessor: "driverName",
+      Header: "ساعت",
+      accessor: "hour",
       sort: true,
     },
     {
-      Header: "تلفن راننده",
-      accessor: "driverNumber",
+      Header: "آدرس",
+      accessor: "address",
       sort: true,
     },
     {
-      Header: "پلاک",
-      accessor: "vehicleNumber",
+      Header: "سرعت",
+      accessor: "speed",
       sort: true,
-    },
-    {
-      Header: "دسته",
-      accessor: "vehicleCategory",
-      sort: false,
-    },
-    {
-      Header: "مدل",
-      accessor: "vehicleType",
-      sort: false,
-    },
-    {
-      Header: "شرکت سازنده",
-      accessor: "vehicleCompany",
-      sort: false,
-    },
-    {
-      Header: "کاربری",
-      accessor: "vehicleUsage",
-      sort: false,
-    },
-    {
-      Header: "مسافت طی شده در ماه جاری",
-      accessor: "distance",
-      sort: false,
-    },
-    {
-      Header: "میزان تقریبی سوخت در ماه جاری",
-      accessor: "gasUsage",
-      sort: false,
-    },
-    {
-      Header: "عملیات",
-      accessor: "opration",
-      sort: false,
     },
   ]);
 
@@ -196,8 +110,6 @@ const DeviceList = ({ setPageTitle }) => {
     );
   };
 
-
-
   const operation = (request) => {
     if (localStorage.getItem("token")) {
       return (
@@ -220,20 +132,6 @@ const DeviceList = ({ setPageTitle }) => {
               //   })
               // );
               // setSeenSerial(serialNumber);
-              dispatch(RsetDeviceEditModal(true));
-              dispatch(RsetVehicleNumber(request.plate));
-              dispatch(RsetVehicleCompany(request.model.name));
-              dispatch(RsetVehicleType(request.model.name));
-              dispatch(RsetDriverName(request.vehicleName));
-              dispatch(RsetDriverNumber(request.driverPhoneNumber));
-              dispatch(RsetVehicleUsing(request.usage));
-              dispatch(RsetVehicleGas(request.fuel));
-              dispatch(RsetEditTimeStamp(request.createDate));
-              dispatch(RsetVehicleId(request._id));
-              dispatch(RsetDeviceNumber(request.simNumber));
-              dispatch(RsetDeviceImei(request.deviceIMEI));
-              dispatch(RsetDeviceType(request.trackerModel));
-              dispatch(RsetCurrentDevice(request));
             }}
           >
             <FontAwesomeIcon icon={faPen} />
@@ -256,8 +154,6 @@ const DeviceList = ({ setPageTitle }) => {
               //   })
               // );
               // setSeenSerial(serialNumber);
-              dispatch(RsetDeviceAdjusmentModal(true));
-              dispatch(RsetCurrentDevice(request));
             }}
           >
             <FontAwesomeIcon icon={faScrewdriverWrench} />
@@ -280,7 +176,6 @@ const DeviceList = ({ setPageTitle }) => {
               //   actionCode.reqInfo.serial_number,
               //   actionCode.type
               // );
-              dispatch(RsetDeviceLocationsModal(true));
             }}
           >
             <FontAwesomeIcon icon={faLocationDot} />
@@ -348,18 +243,11 @@ const DeviceList = ({ setPageTitle }) => {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
           idx: i,
-          imei: link(requests[i]),
-          deviceNumber: requests[i].simNumber,
-          driverName: requests[i].driverName,
-          driverNumber: requests[i].driverPhoneNumber,
-          vehicleNumber: requests[i].plate,
-          vehicleType: requests[i].model,
-          vehicleCategory: requests[i].model.name,
-          vehicleType: requests[i].model.name,
-          vehicleCompany: requests[i].model.name,
-          vehicleUsage: requests[i].usage,
-          gasUsage: requests[i].fuel,
-          distance: requests[i].maxPMDistance,
+          checkBox: requests[i],
+          date: requests[i].date,
+          hour: requests[i].hour,
+          address: requests[i].address,
+          speed: requests[i].speed,
           opration: operation(requests[i]),
         };
         tableItems.push(tableItem);
@@ -381,19 +269,12 @@ const DeviceList = ({ setPageTitle }) => {
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            imei: link(requests[i]),
             idx: i,
-            deviceNumber: requests[i].simNumber,
-            driverName: requests[i].driverName,
-            driverNumber: requests[i].driverPhoneNumber,
-            vehicleNumber: requests[i].plate,
-            vehicleCategory: requests[i].model.name,
-            vehicleType: requests[i].model.name,
-            vehicleCompany: requests[i].model.name,
-            vehicleUsage: requests[i].usage,
-            gasUsage: requests[i].fuel,
-            distance: requests[i].maxPMDistance,
-
+            checkBox: requests[i],
+            date: requests[i].date,
+            hour: requests[i].hour,
+            address: requests[i].address,
+            speed: requests[i].speed,
             opration: operation(requests[i]),
           };
           tableItems.push(tableItem);
@@ -426,7 +307,6 @@ const DeviceList = ({ setPageTitle }) => {
       {/* {menuPermission ? */}
       <Fragment>
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
-        <DeviceFilter />
         <section className="position-relative">
           <div
             // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
@@ -497,8 +377,8 @@ const DeviceList = ({ setPageTitle }) => {
                     ></Tab>
                     <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
                   </Tabs> */}
-                  <DeviceTable
-                    requests={deviceList}
+                  <DeviceTableLocations
+                    // requests={deviceList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}
@@ -508,9 +388,6 @@ const DeviceList = ({ setPageTitle }) => {
                     pageCount={pageCount}
                     // handleNotVisited={handleNotVisited}
                   />
-                  {deviceEditModal && <DeviceEditeModal />}
-                  {deviceAdjusmentModal && <DeviceAdjustmentModal />}
-                  {deviceLocationsModal && <DeviceLocationsModal />}
                 </Fragment>
                 {/* ) : null} */}
               </Fragment>
@@ -525,4 +402,4 @@ const DeviceList = ({ setPageTitle }) => {
   );
 };
 
-export default DeviceList;
+export default DeviceListLocations;

@@ -146,7 +146,10 @@ const Sidebar = () => {
                 </Nav.Link>
                 {categoriesDrop && (
                   <div className="transitionAll">
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/categoryList")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">مشاهده</span>
                     </Nav.Link>
                   </div>

@@ -30,12 +30,55 @@ import {
   RsetDeviceType,
   selectDeviceType,
   selectDeviceTypeOptions,
+  selectCurrentDevice,
+  RsetDeviceTypeOptions,
 } from "../../../../slices/deviceSlices";
 import {
   RsetFormErrors,
   selectFormErrors,
 } from "../../../../slices/mainSlices";
 import MapDraw from "../../../map/MapDraw";
+import {
+  getPhoneNumbers,
+  postSpeedLimitation,
+  putGpsEdit,
+  postVehicleCondition,
+} from "../../../../services/deviceServices";
+import { useEffect } from "react";
+import { errorMessage, successMessage } from "../../../../utils/msg";
+
+const gpsValues = [
+  {
+    label: "GT06N",
+    value: 1,
+  },
+  {
+    label: "MVT380",
+    value: 2,
+  },
+  {
+    label: "FM1120",
+    value: 3,
+  },
+  {
+    label: "FMB920",
+    value: 4,
+  },
+  {
+    label: "FM2200",
+    value: 5,
+  },
+];
+const conditionValues = [
+  {
+    label: "تصادفی",
+    value: 1,
+  },
+  {
+    label: "تعمیرگاه",
+    value: 2,
+  },
+];
 
 const DeviceAdjustmentModal = () => {
   const [key, setKey] = useState("speed");
@@ -59,6 +102,7 @@ const DeviceAdjustmentModal = () => {
   const deviceImei = useSelector(selectDeviceImei);
   const deviceType = useSelector(selectDeviceType);
   const deviceTypeOptions = useSelector(selectDeviceTypeOptions);
+  const currentDevice = useSelector(selectCurrentDevice);
 
   //validation common
   const smsReciverIsValid = smsReciver.length !== 0;
@@ -68,6 +112,8 @@ const DeviceAdjustmentModal = () => {
   const vehicleSpeedIsValid = vehicleSpeed !== "";
 
   const speedFormIsValid = vehicleSpeedIsValid && emailSmsIsValid;
+
+  console.log(currentDevice);
 
   const speedValidation = () => {
     var errors = {};
@@ -86,14 +132,54 @@ const DeviceAdjustmentModal = () => {
     return errors;
   };
 
-  const speedVehicleHandler = (e) => {
+  const getPhoneNumbersOptions = async () => {
+    try {
+      const getPhoneNumbersRes = await getPhoneNumbers();
+      console.log(getPhoneNumbersRes);
+      if (getPhoneNumbersRes.data.code === 200) {
+        let phoneNumbers = [];
+        getPhoneNumbersRes.data.Allusers.map((numbers) => {
+          phoneNumbers.push({
+            value: numbers.phoneNumber,
+            label: numbers.firstName + " " + numbers.lastName,
+          });
+        });
+        dispatch(RsetSmsReciverOptions(phoneNumbers));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getPhoneNumbersOptions();
+  }, []);
+
+  const speedVehicleHandler = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (speedFormIsValid) {
-      console.log({
-        vehicleSpeed,
-        smsReciver,
-        emailReciver,
-      });
+      const values = {
+        IMEI: currentDevice.deviceIMEI,
+        emails: emailReciver,
+        maxSpeed: vehicleSpeed,
+        sendEmail: email,
+        sendSMS: sms,
+        settingsType: "speed",
+        smsReciver: smsReciver,
+      };
+      const postSpeedLimitationRes = await postSpeedLimitation(values, token);
+      if (postSpeedLimitationRes.data.code === 200) {
+        successMessage("تغییرات با موفقیت انجام شد");
+        dispatch(RsetVehicleSpeed(""));
+        dispatch(RsetSmsReciver(""));
+        dispatch(RsetEmailReciver(""));
+        dispatch(RsetFormErrors(""));
+        setSms(false);
+        setEmail(false);
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -163,12 +249,34 @@ const DeviceAdjustmentModal = () => {
     return errors;
   };
 
-  const handleVehicleCondition = (e) => {
+  const handleConditionOptions = () => {
+    dispatch(RsetVehicleConditionOptions(conditionValues));
+  };
+
+  useEffect(() => {
+    handleConditionOptions();
+  }, []);
+
+  const handleVehicleCondition = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (vehicleConditionIsValid) {
-      console.log({
-        vehicleCondition,
-      });
+      const values = {
+        status: vehicleCondition.label,
+        imei: currentDevice.deviceIMEI,
+        desc: vehicleConditionDescription,
+      };
+      console.log(values);
+      const postVehicleConditionRes = await postVehicleCondition(values, token);
+      console.log(postVehicleConditionRes);
+      if (postVehicleConditionRes.data.code === 200) {
+        successMessage("تغییرات با موفقیت انجام شد");
+        dispatch(RsetVehicleCondition(""));
+        dispatch(RsetVehicleConditionDescription(""));
+        dispatch(RsetFormErrors(""));
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -204,14 +312,37 @@ const DeviceAdjustmentModal = () => {
     return errors;
   };
 
-  const handleGps = (e) => {
+  useEffect(() => {
+    dispatch(RsetDeviceTypeOptions(gpsValues));
+  }, []);
+
+  const handleGps = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (gpsFormIsValid) {
-      console.log({
-        deviceNumber,
-        deviceImei,
-        deviceType,
-      });
+      const values = {
+        vehicleId: currentDevice._id,
+        simNumber: deviceNumber,
+        deviceIMEI: deviceImei,
+        plate: "",
+        name: "",
+        driverName: "",
+        driverPhoneNumber: "",
+        trackerModel: deviceType.label,
+        fuel: "",
+        model: "گاميون",
+        usage: "",
+      };
+      const putGpsEditRes = await putGpsEdit(values, token);
+      if (putGpsEditRes.data.code === 200) {
+        successMessage("تغییرات با موفقیت انجام شد");
+        dispatch(RsetDeviceNumber(""));
+        dispatch(RsetDeviceImei(""));
+        dispatch(RsetDeviceType(""));
+        dispatch(RsetFormErrors(""));
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -258,16 +389,14 @@ const DeviceAdjustmentModal = () => {
           <Tab eventKey="speed" title="تنضیمات سرعت">
             <Form>
               <Row>
-                <Form.Group>
+                <Form.Group as={Col} md="4">
                   <Form.Label className="required-field">
                     حداکثر سرعت(km/h):
                   </Form.Label>
 
                   <Form.Control
                     className={`${
-                      !vehicleSpeedIsValid
-                        ? `${formErrors.vehicleSpeed} borderRaduis-15`
-                        : ""
+                      !vehicleSpeedIsValid ? `${formErrors.vehicleSpeed}` : ""
                     }`}
                     type="text"
                     name="vehicleSpeed"
@@ -277,13 +406,14 @@ const DeviceAdjustmentModal = () => {
                     }}
                   />
                 </Form.Group>
-                <div className="d-flex mt-3">
+                <Form.Group as={Col} md="8" className="mt-4 d-flex">
                   <Form.Check
                     inline
                     label="اطلاع از طریق پیامک"
                     name="sms"
                     value={sms}
                     checked={sms}
+                    className="mt-2"
                     onChange={() => {
                       setSms(!sms);
                     }}
@@ -293,40 +423,41 @@ const DeviceAdjustmentModal = () => {
                     label="اطلاع از طریق ایمیل"
                     name="email"
                     value={email}
+                    className="mt-2"
                     checked={email}
                     onChange={() => {
                       setEmail(!email);
                     }}
                   />
-                </div>
+                </Form.Group>
+              </Row>
+              <Row>
                 {sms && (
-                  <div>
-                    <Form.Group>
-                      <Form.Group as={Col} md="4" className="mt-3">
-                        <Form.Label className="required-field">
-                          گیرنده های پیامک:
-                        </Form.Label>
-                        <Select
-                          className={`${
-                            !smsReciverIsValid ? formErrors.smsReciver : ""
-                          } borderRadius-15`}
-                          value={smsReciver}
-                          name="driverReciver"
-                          onChange={(e) => {
-                            dispatch(RsetSmsReciver(e));
-                          }}
-                          placeholder="انتخاب از دفترچه تلفن"
-                          options={smsReciverOptions}
-                          isSearchable={true}
-                          multi
-                        />
-                      </Form.Group>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label className="required-field mt-4">
+                  <>
+                    <Form.Group as={Col} md="6" className="mt-5">
+                      <Form.Label className="required-field">
                         گیرنده های پیامک:
                       </Form.Label>
-                      <Form.Control
+                      <Select
+                        className={`${
+                          !smsReciverIsValid ? formErrors.smsReciver : ""
+                        } borderRadius-15`}
+                        value={smsReciverOptions.value}
+                        name="driverReciver"
+                        onChange={(e) => {
+                          dispatch(RsetSmsReciver(e));
+                        }}
+                        placeholder="انتخاب از دفترچه تلفن"
+                        options={smsReciverOptions}
+                        isSearchable={true}
+                        isMulti
+                      />
+                    </Form.Group>
+                    {/* <Form.Group as={Col} md="4" className="mt-5">
+                      <Form.Label className="required-field">
+                        گیرنده های پیامک:
+                      </Form.Label>
+                      <Select
                         readOnly
                         // className={`${
                         //   !emailReciverIsValid
@@ -340,12 +471,12 @@ const DeviceAdjustmentModal = () => {
                         //   dispatch((e.target.value));
                         // }}
                       />
-                    </Form.Group>
-                  </div>
+                    </Form.Group> */}
+                  </>
                 )}
                 {email && (
-                  <Form.Group>
-                    <Form.Label className="required-field mt-4">
+                  <Form.Group as={Col} md="4" className="mt-5">
+                    <Form.Label className="required-field">
                       گیرنده ایمیل:
                     </Form.Label>
                     <Form.Control

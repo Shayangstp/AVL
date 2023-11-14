@@ -9,3 +9,23 @@
  
 
 
+
+
+
+dasteha 
+http://localhost:8008/api/v1/devicegroup
+
+
+
+
+http://localhost:8008/api/v1/device/status --> post
+
+{
+  "status":"تصادفي",
+  "imei":"121234",
+   "desc":"متن تصادفي"
+}
+
+
+
+http://localhost:8008/api/v1/devicegroup

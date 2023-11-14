@@ -3,12 +3,16 @@ import mainSlices from "../slices/mainSlices";
 import authSlices from "../slices/authSlices";
 import modalSlices from "../slices/modalSlices";
 import deviceSlices from "../slices/deviceSlices";
+import categorySlices from "../slices/categorySlices";
+import userManagmentSlices from "../slices/userManagmentSlices";
 
 const rootReducer = {
   main: mainSlices,
   auth: authSlices,
   modals: modalSlices,
   device: deviceSlices,
+  category: categorySlices,
+  userManagment: userManagmentSlices,
 };
 
 export const store = configureStore({

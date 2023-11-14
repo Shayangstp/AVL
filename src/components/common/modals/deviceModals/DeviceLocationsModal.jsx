@@ -5,6 +5,8 @@ import {
   selectDeviceLocationsModal,
 } from "../../../../slices/modalSlices";
 import { useSelector, useDispatch } from "react-redux";
+import DeviceListLocations from "./DeviceLocations/DeviceListLocations";
+import Map from "../../../map/Map";
 
 const DeviceLocationsModal = () => {
   const dispatch = useDispatch();
@@ -26,7 +28,14 @@ const DeviceLocationsModal = () => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        
+        <div className="d-flex">
+          <div>
+            <DeviceListLocations />
+          </div>
+          <div id="map" className="w-100" style={{ height: "300px" }}>
+            <Map width="300px" height="300px" />
+          </div>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button

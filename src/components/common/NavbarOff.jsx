@@ -149,7 +149,10 @@ const NavbarOff = () => {
               </Nav.Link>
               {categoriesDrop && (
                 <div className="transitionAll">
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/categoryList")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">مشاهده</span>
                   </Nav.Link>
                 </div>

@@ -7,6 +7,7 @@ import MainLayout from "../components/layout/MainLayout";
 import AddDevice from "../components/device/AddDevice";
 import AddVehicle from "../components/device/AddVehicle";
 import DeviceList from "../components/device/DeviceList";
+import CategoryList from "../components/category/CategoryList";
 
 const AVL = () => {
   const [pageTitle, setPageTitle] = useState("");
@@ -25,6 +26,10 @@ const AVL = () => {
           <Route
             path="/deviceList"
             element={<DeviceList setPageTitle={setPageTitle} />}
+          />
+          <Route
+            path="/categoryList"
+            element={<CategoryList setPageTitle={setPageTitle} />}
           />
         </Routes>
       </MainLayout>

@@ -55,3 +55,56 @@ export const editDeviceList = (values, token) => {
     }
   );
 };
+
+export const getPhoneNumbers = (token) => {
+  return http.get(
+    `${config.R}/api/v1/user/phoneNumbers/show`,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+
+export const postSpeedLimitation = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/device/alarmsettings`,
+    values,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+export const putGpsEdit = (values, token) => {
+  return http.put(
+    `${config.R}/api/v1/device`,
+    values,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+export const postVehicleCondition = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/device/status`,
+    values,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

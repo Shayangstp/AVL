@@ -18,9 +18,12 @@ import {
   faFilter,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment-jalaali";
 import { Redirect, Link } from "react-router-dom";
-import DeviceFilter from "./DeviceFilter";
+import {
+  handleCategoryList,
+  selectCategorylist,
+} from "../../slices/categorySlices";
+import CategoryTable from "./CategoryTable";
 
 const CategoryList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -29,6 +32,14 @@ const CategoryList = ({ setPageTitle }) => {
   const [pageCount, setPageCount] = useState(0);
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
+
+  const categoryList = useSelector(selectCategorylist);
+
+  console.log(categoryList);
+
+  useEffect(() => {
+    dispatch(handleCategoryList());
+  }, []);
 
   useEffect(() => {
     setPageTitle("لیست درخواست نرم افزار");
@@ -105,12 +116,7 @@ const CategoryList = ({ setPageTitle }) => {
     );
   };
   const operation = (request) => {
-    if (
-      request.lastToPersons !== null &&
-      request.lastToPersons
-        .split(",")
-        .some((person) => person === localStorage.getItem("id"))
-    ) {
+    if (localStorage.getItem("token")) {
       return (
         <div className="d-flex justify-content-between flex-wrap">
           <Button
@@ -161,7 +167,6 @@ const CategoryList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              dispatch();
               // handleCurrentReqInfo({
               //   company: "",
               //   reqId: request.requestId,
@@ -241,10 +246,10 @@ const CategoryList = ({ setPageTitle }) => {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
           reqSerial: link(requests[i]),
-          reqDate: moment
-            .utc(requests[i].createdDate, "YYYY/MM/DD")
-            .locale("fa")
-            .format("jYYYY/jMM/jDD"),
+          // reqDate: moment
+          //   .utc(requests[i].createdDate, "YYYY/MM/DD")
+          //   .locale("fa")
+          //   .format("jYYYY/jMM/jDD"),
           reqUser: userInfo(requests[i]),
           reqCompany: requests[i].deptName,
           reqStatus: requests[i].statusName,
@@ -270,10 +275,10 @@ const CategoryList = ({ setPageTitle }) => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             reqSerial: link(requests[i]),
-            reqDate: moment
-              .utc(requests[i].createdDate, "YYYY/MM/DD")
-              .locale("fa")
-              .format("jYYYY/jMM/jDD"),
+            // reqDate: moment
+            //   .utc(requests[i].createdDate, "YYYY/MM/DD")
+            //   .locale("fa")
+            //   .format("jYYYY/jMM/jDD"),
             reqUser: userInfo(requests[i]),
             reqCompany: requests[i].deptName,
             reqStatus: requests[i].statusName,
@@ -309,7 +314,6 @@ const CategoryList = ({ setPageTitle }) => {
       {/* {menuPermission ? */}
       <Fragment>
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
-        <DeviceFilter />
         <section className="position-relative">
           <div
             // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
@@ -339,20 +343,20 @@ const CategoryList = ({ setPageTitle }) => {
                 size="sm"
                 variant="primary"
                 className="mb-2 font12"
-                onClick={async () => {
+                onClick={() => {
                   // const handleFilterGroup = await dispatch(handleTabs());
                   // if (activeTab !== "") {
-                  const filterValues = {
-                    applicantId: localStorage.getItem("id"),
-                    serial: "",
-                    memberId: "",
-                    mDep: "",
-                    status: "",
-                    fromDate: "null",
-                    toDate: "null",
-                    type: 6,
-                    // group: handleFilterGroup.payload,
-                  };
+                  // const filterValues = {
+                  //   applicantId: localStorage.getItem("id"),
+                  //   serial: "",
+                  //   memberId: "",
+                  //   mDep: "",
+                  //   status: "",
+                  //   fromDate: "null",
+                  //   toDate: "null",
+                  //   type: 6,
+                  //   // group: handleFilterGroup.payload,
+                  // };
                   // dispatch(handleReqsList(filterValues));
                   // }
                 }}
@@ -366,22 +370,8 @@ const CategoryList = ({ setPageTitle }) => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  {/* <Tabs
-                    defaultActiveKey={"myReqs"}
-                    onSelect={(e) => {
-                      dispatch(RsetActiveTab(e));
-                    }}
-                    className="mt-3"
-                  >
-                    <Tab eventKey={"myReqs"} title="درخواست های من"></Tab>
-                    <Tab
-                      eventKey={"inProcessReqs"}
-                      title="درخواست های در حال پردازش"
-                    ></Tab>
-                    <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
-                  </Tabs> */}
-                  {/* <SoftwareReqItem
-                    requests={reqsList}
+                  <CategoryTable
+                    requests={categoryList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}
@@ -390,7 +380,7 @@ const CategoryList = ({ setPageTitle }) => {
                     loading={load}
                     pageCount={pageCount}
                     // handleNotVisited={handleNotVisited}
-                  /> */}
+                  />
                   {/* {userInfoModal && <UserInfoModal />} */}
                 </Fragment>
                 {/* ) : null} */}
@@ -398,7 +388,7 @@ const CategoryList = ({ setPageTitle }) => {
             </div>
           </div>
         </section>
-        {/* : 
+        {/* :
         <Redirect to="/" />
       } */}
       </Fragment>
