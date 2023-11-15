@@ -5,6 +5,10 @@ const initialState = {
   deviceEditModal: false,
   deviceAdjusmentModal: false,
   deviceLocationsModal: false,
+  //user
+  userManagmentEditModal: false,
+  userManagmentRoleModal: false,
+  userManagmentChangePasswordModal: false,
 };
 
 const modalsSlices = createSlice({
@@ -23,6 +27,16 @@ const modalsSlices = createSlice({
     RsetDeviceLocationsModal: (state, action) => {
       return { ...state, deviceLocationsModal: action.payload };
     },
+    //user
+    RsetUserManagmentEditModal: (state, action) => {
+      return { ...state, userManagmentEditModal: action.payload };
+    },
+    RsetUserManagmentRoleModal: (state, action) => {
+      return { ...state, userManagmentRoleModal: action.payload };
+    },
+    RsetUserManagmentChangePasswordModal: (state, action) => {
+      return { ...state, userManagmentChangePasswordModal: action.payload };
+    },
   },
 });
 
@@ -31,6 +45,10 @@ export const {
   RsetDeviceEditModal,
   RsetDeviceAdjusmentModal,
   RsetDeviceLocationsModal,
+  //user
+  RsetUserManagmentEditModal,
+  RsetUserManagmentRoleModal,
+  RsetUserManagmentChangePasswordModal,
 } = modalsSlices.actions;
 
 export const selectChangeProfilePicModal = (state) =>
@@ -40,5 +58,12 @@ export const selectDeviceAdjusmentModal = (state) =>
   state.modals.deviceAdjusmentModal;
 export const selectDeviceLocationsModal = (state) =>
   state.modals.deviceLocationsModal;
+//user
+export const selectUserManagmentEditModal = (state) =>
+  state.modals.userManagmentEditModal;
+export const selectUserManagmentRoleModal = (state) =>
+  state.modals.userManagmentRoleModal;
+export const selectUserManagmentChangePasswordModal = (state) =>
+  state.modals.userManagmentChangePasswordModal;
 
 export default modalsSlices.reducer;

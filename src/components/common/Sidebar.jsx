@@ -214,7 +214,10 @@ const Sidebar = () => {
                     >
                       <span className="ms-4 lightGray font9">افزودن کاربر</span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/userList")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">
                         مشاهده کاربرها
                       </span>

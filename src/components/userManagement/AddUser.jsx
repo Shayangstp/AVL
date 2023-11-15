@@ -14,7 +14,7 @@ import {
   RsetPhoneNumber,
   selectPhoneNumber,
   RsetGmail,
-  selectGamil,
+  selectGmail,
   RsetPassword,
   selectPassword,
   RsetPasswordConfirmation,
@@ -29,24 +29,96 @@ const AddUser = () => {
   const firstName = useSelector(selectFirstName);
   const lastName = useSelector(selectLastName);
   const phoneNumber = useSelector(selectPhoneNumber);
-  const gmail = useSelector(selectGamil);
+  const gmail = useSelector(selectGmail);
   const password = useSelector(selectPassword);
   const passwordConfirmation = useSelector(selectPasswordConfirmation);
   const gender = useSelector(selectGender);
+  const formErrors = useSelector(selectFormErrors);
 
+  const userNameIsValid = userName !== "";
+  const firstNameIsValid = firstName !== "";
+  const lastNameIsValid = lastName !== "";
+  const phoneNumberIsValid = phoneNumber !== "";
+  const gmailIsValid = gmail !== "";
+  const passwordIsValid = password !== "";
+  const passwordConfirmationIsValid =
+    passwordConfirmation === password && passwordConfirmation !== "";
+  const genderIsValid = gender !== false;
 
-  const 
+  const addUserFormIsValid =
+    userNameIsValid &&
+    firstNameIsValid &&
+    lastNameIsValid &&
+    phoneNumberIsValid &&
+    gmailIsValid &&
+    passwordIsValid &&
+    passwordConfirmationIsValid &&
+    genderIsValid;
 
   const validation = () => {
     var errors = {};
     const borderValidation = "border border-danger";
 
-    // if (!deviceNumberIsValid) {
-    //   errors.deviceNumber = borderValidation;
-    // }
+    if (!userNameIsValid) {
+      errors.userName = borderValidation;
+    }
+    if (!firstNameIsValid) {
+      errors.firstName = borderValidation;
+    }
+    if (!lastNameIsValid) {
+      errors.lastName = borderValidation;
+    }
+    if (!phoneNumberIsValid) {
+      errors.phoneNumber = borderValidation;
+    }
+    if (!gmailIsValid) {
+      errors.gmail = borderValidation;
+    }
+    if (!passwordIsValid) {
+      errors.password = borderValidation;
+    }
+    if (!passwordConfirmationIsValid) {
+      errors.passwordConfirmation = borderValidation;
+    }
+    if (!genderIsValid) {
+      errors.gender = "لطفا جنسیت را انتخاب کنید!";
+    }
 
     return errors;
   };
+
+  const handleAddUser = (e) => {
+    e.preventDefault();
+    if (addUserFormIsValid) {
+      console.log({
+        userName,
+        firstName,
+        lastName,
+        phoneNumber,
+        gmail,
+        password,
+        passwordConfirmation,
+        gender,
+      });
+    } else {
+      dispatch(
+        RsetFormErrors(
+          validation({
+            userName,
+            firstName,
+            lastName,
+            phoneNumber,
+            gmail,
+            password,
+            passwordConfirmation,
+            gender,
+          })
+        )
+      );
+    }
+  };
+
+  console.log(firstName);
 
   return (
     <Container fluid className="mt-4 mb-5">
@@ -75,19 +147,19 @@ const AddUser = () => {
               id="male"
               value={gender}
             />
+            {!genderIsValid && (
+              <p className="text-danger font12">{formErrors.gender}</p>
+            )}
           </div>
         </Row>
         <Row className="mt-3">
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field"> نام کاربری: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
+              className={`${!userNameIsValid ? formErrors.userName : ""}`}
               value={userName}
               type="text"
               name="userName"
-              // value={vehicleNumber}
               onChange={(e) => {
                 dispatch(RsetUserName(e.target.value));
               }}
@@ -96,12 +168,10 @@ const AddUser = () => {
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field">نام: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
-              type="text"
-              name="firstName"
+              className={`${!firstNameIsValid ? formErrors.firstName : ""}`}
               value={firstName}
+              type="text"
+              name="userName"
               onChange={(e) => {
                 dispatch(RsetFirstName(e.target.value));
               }}
@@ -110,9 +180,7 @@ const AddUser = () => {
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field">نام خانوادگی: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
+              className={`${!lastNameIsValid ? formErrors.lastName : ""}`}
               type="text"
               name="lastName"
               value={lastName}
@@ -126,7 +194,9 @@ const AddUser = () => {
               شماره تلفن همراه:{" "}
             </Form.Label>
             <NumericFormat
-              className={`form-control`}
+              className={`form-control ${
+                !phoneNumberIsValid ? formErrors.phoneNumber : ""
+              }`}
               type="text"
               name="phoneNumber"
               value={phoneNumber}
@@ -140,9 +210,7 @@ const AddUser = () => {
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field">پست الکترنیکی: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
+              className={`${!gmailIsValid ? formErrors.gmail : ""}`}
               type="text"
               name="gmail"
               value={gmail}
@@ -154,9 +222,7 @@ const AddUser = () => {
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field">رمز عبور: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
+              className={`${!passwordIsValid ? formErrors.password : ""}`}
               type="text"
               name="password"
               value={password}
@@ -168,9 +234,11 @@ const AddUser = () => {
           <Form.Group as={Col} md="3">
             <Form.Label className="required-field">تکرار رمز عبور: </Form.Label>
             <Form.Control
-              // className={`${
-              //   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              // }`}
+              className={`${
+                !passwordConfirmationIsValid
+                  ? formErrors.passwordConfirmation
+                  : ""
+              }`}
               type="text"
               name="passwordConfirmation"
               value={passwordConfirmation}
@@ -185,9 +253,9 @@ const AddUser = () => {
             <Button
               variant="success"
               className="mb-3 me-5 px-4"
-              // onClick={(e) => {
-              //   handleDeviceAdd(e);
-              // }}
+              onClick={(e) => {
+                handleAddUser(e);
+              }}
             >
               ثبت درخواست
             </Button>
@@ -195,9 +263,17 @@ const AddUser = () => {
               variant="secondary"
               type="reset"
               className="mb-3 px-5 py-2"
-              // onClick={() => {
-              //   handleResetAddDeviceForm();
-              // }}
+              onClick={() => {
+                dispatch(RsetUserName(""));
+                dispatch(RsetFirstName(""));
+                dispatch(RsetLastName(""));
+                dispatch(RsetPhoneNumber(""));
+                dispatch(RsetGmail(""));
+                dispatch(RsetPassword(""));
+                dispatch(RsetPasswordConfirmation(""));
+                dispatch(RsetFormErrors(""));
+                dispatch(RsetGender(false));
+              }}
             >
               انصراف
             </Button>

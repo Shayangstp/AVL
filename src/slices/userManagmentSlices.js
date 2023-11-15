@@ -1,16 +1,36 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
+import { getUsersList } from "../services/userServices";
+import { RsetUser } from "./mainSlices";
 
 const initialState = {
   userName: "",
-  firstname: "",
+  firstName: "",
   lastName: "",
   phoneNumber: "",
   gmail: "",
   password: "",
   passwordConfirmation: "",
   gender: "female",
+  userLists: [],
+  currentUser: "",
 };
+
+export const handleUserLists = createAsyncThunk(
+  "userManagment/handleUserLists",
+  async (obj, { dispatch, getState }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const getUsersListRes = await getUsersList(token);
+      console.log(getUsersListRes);
+      if (getUsersListRes.status === 200) {
+        dispatch(RsetUserLists(getUsersListRes.data.allUser));
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
 
 const userManagmentSlices = createSlice({
   name: "userManagment",
@@ -40,6 +60,12 @@ const userManagmentSlices = createSlice({
     RsetGender: (state, { payload }) => {
       return { ...state, gender: payload };
     },
+    RsetUserLists: (state, { payload }) => {
+      return { ...state, userLists: payload };
+    },
+    RsetCurrentUser: (state, { payload }) => {
+      return { ...state, currentUser: payload };
+    },
   },
 });
 
@@ -52,16 +78,20 @@ export const {
   RsetPassword,
   RsetPasswordConfirmation,
   RsetGender,
+  RsetUserLists,
+  RsetCurrentUser,
 } = userManagmentSlices.actions;
 
 export const selectUserName = (state) => state.userManagment.userName;
 export const selectFirstName = (state) => state.userManagment.firstName;
 export const selectLastName = (state) => state.userManagment.lastName;
 export const selectPhoneNumber = (state) => state.userManagment.phoneNumber;
-export const selectGamil = (state) => state.userManagment.gmail;
+export const selectGmail = (state) => state.userManagment.gmail;
 export const selectPassword = (state) => state.userManagment.password;
 export const selectPasswordConfirmation = (state) =>
   state.userManagment.passwordConfirmation;
 export const selectGender = (state) => state.userManagment.gender;
+export const selectUserLists = (state) => state.userManagment.userLists;
+export const selectCurrentUser = (state) => state.userManagment.currentUser;
 
 export default userManagmentSlices.reducer;
