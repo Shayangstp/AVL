@@ -102,6 +102,7 @@ export const handleForgetPassword = createAsyncThunk(
 export const handleLogout = createAsyncThunk(
   "auth/handleLogout",
   async (obj, { dispatch, getState }) => {
+    const { avatar } = getState().main;
     try {
       dispatch(RsetLoggedIn(false));
       localStorage.removeItem("token");

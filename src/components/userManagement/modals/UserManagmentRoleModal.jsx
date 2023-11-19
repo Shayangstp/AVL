@@ -4,7 +4,7 @@ import {
   RsetUserManagmentRoleModal,
   selectUserManagmentRoleModal,
 } from "../../../slices/modalSlices";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 
 const UserManagmentRoleModal = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,13 @@ const UserManagmentRoleModal = () => {
       <Modal.Header className="bg-secondary text-white">
         <Modal.Title id="contained-modal-title-vcenter">سطح دسترسی</Modal.Title>
       </Modal.Header>
-      <Modal.Body></Modal.Body>
+      <Modal.Body>
+        <Form>
+          <Row>
+            <Form.Group as={Col}></Form.Group>
+          </Row>
+        </Form>
+      </Modal.Body>
       <Modal.Footer className="bg-secondary">
         <Button
           variant="danger"

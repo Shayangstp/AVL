@@ -14,6 +14,13 @@ import "leaflet-draw/dist/leaflet.draw.css";
 
 const MapDraw = ({ height, width }) => {
   const featureGroupRef = useRef();
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+  },);
 
   const handleCreated = (e) => {
     const { layerType, layer } = e;
@@ -35,6 +42,7 @@ const MapDraw = ({ height, width }) => {
     <MapContainer
       center={[35.7219, 51.3347]}
       zoom={13}
+      ref={mapRef}
       style={{ height: height, width: width }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

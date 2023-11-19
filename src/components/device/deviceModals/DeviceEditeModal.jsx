@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   RsetDeviceEditModal,
   selectDeviceEditModal,
-} from "../../../../slices/modalSlices";
+} from "../../../slices/modalSlices";
 import { NumericFormat } from "react-number-format";
 import { Modal, Form, Col, Row, Button } from "react-bootstrap";
 import {
@@ -31,9 +31,9 @@ import {
   selectDeviceNumber,
   selectDeviceImei,
   selectDeviceType,
-} from "../../../../slices/deviceSlices";
-import { editDeviceList } from "../../../../services/deviceServices";
-import { errorMessage, successMessage } from "../../../../utils/msg";
+} from "../../../slices/deviceSlices";
+import { editDeviceList } from "../../../services/deviceServices";
+import { errorMessage, successMessage } from "../../../utils/msg";
 
 const DeviceEditeModal = () => {
   const dispatch = useDispatch();

@@ -108,3 +108,26 @@ export const postVehicleCondition = (values, token) => {
     }
   );
 };
+export const getDeviceLocList = (deviceId, token) => {
+  return http.get(
+    `${config.R}/api/v1/gpsdata/${deviceId}/0/10`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+export const postGpsLimit = (token, values) => {
+  return http.post(
+    `${config.R}/api/v1/device/addpolygon`,
+    values,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

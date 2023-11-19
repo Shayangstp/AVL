@@ -53,9 +53,10 @@ import {
 } from "../../slices/modalSlices";
 import { errorMessage } from "../../utils/msg";
 import DeviceTable from "./DeviceTable";
-import DeviceEditeModal from "../common/modals/deviceModals/DeviceEditeModal";
-import DeviceAdjustmentModal from "../common/modals/deviceModals/DeviceAdjustmentModal";
-import DeviceLocationsModal from "../common/modals/deviceModals/DeviceLocationsModal";
+import DeviceEditeModal from "./deviceModals/DeviceEditeModal";
+import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
+import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
+import { handleDeviceLocList } from "../../slices/deviceSlices";
 
 const DeviceList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -196,8 +197,6 @@ const DeviceList = ({ setPageTitle }) => {
     );
   };
 
-
-
   const operation = (request) => {
     if (localStorage.getItem("token")) {
       return (
@@ -281,6 +280,7 @@ const DeviceList = ({ setPageTitle }) => {
               //   actionCode.type
               // );
               dispatch(RsetDeviceLocationsModal(true));
+              dispatch(RsetCurrentDevice(request));
             }}
           >
             <FontAwesomeIcon icon={faLocationDot} />

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getDeviceType } from "../services/deviceServices";
+import { getDeviceLocList } from "../services/deviceServices";
 
 const initialState = {
   deviceNumber: "",
@@ -28,6 +29,8 @@ const initialState = {
   vehicleCondition: "",
   vehicleConditionOptions: [],
   vehicleConditionDescription: "",
+  deviceLocList: [],
+  deviceCordinate: [],
 
   //filter
   deviceImeiFilter: "",
@@ -55,6 +58,25 @@ export const handleVehicleTypeOptions = createAsyncThunk(
           };
         });
         dispatch(RsetVehicleTypeOptions(itemsModified));
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleDeviceLocList = createAsyncThunk(
+  "device/handleDeviceLocList",
+  async (obj, { dispatch, getState }) => {
+    const { currentDevice } = getState().device;
+    try {
+      const token = localStorage.getItem("token");
+      const getDeviceLocListRes = await getDeviceLocList(
+        currentDevice._id,
+        token
+      );
+      if (getDeviceLocListRes.data.code === 200) {
+        dispatch(RsetDeviceLocList(getDeviceLocListRes.data.foundedItem));
       }
     } catch (ex) {
       console.log(ex);
@@ -144,6 +166,12 @@ const deviceSlices = createSlice({
     RsetVehicleConditionDescription: (state, action) => {
       return { ...state, vehicleConditionDescription: action.payload };
     },
+    RsetDeviceLocList: (state, action) => {
+      return { ...state, deviceLocList: action.payload };
+    },
+    RsetDeviceCordinate: (state, action) => {
+      return { ...state, deviceCordinate: action.payload };
+    },
 
     //filter
     RsetDeviceImeiFilter: (state, action) => {
@@ -200,6 +228,8 @@ export const {
   RsetVehicleCondition,
   RsetVehicleConditionOptions,
   RsetVehicleConditionDescription,
+  RsetDeviceLocList,
+  RsetDeviceCordinate,
   //filter
   RsetDeviceImeiFilter,
   RsetDeviceNumberFilter,
@@ -242,6 +272,8 @@ export const selectVehicleConditionOptions = (state) =>
   state.device.vehicleConditionOptions;
 export const selectVehicleConditionDescription = (state) =>
   state.device.vehicleConditionDescription;
+export const selectDeviceLocList = (state) => state.device.deviceLocList;
+export const selectDeviceCordinate = (state) => state.device.deviceCordinate;
 
 //filter
 export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;

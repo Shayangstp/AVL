@@ -7,7 +7,7 @@ import React, {
   Fragment,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
@@ -23,6 +23,13 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
+import moment from "moment-jalaali";
+import {
+  RsetDeviceCordinate,
+  handleDeviceLocList,
+  selectDeviceLocList,
+  selectDeviceCordinate,
+} from "../../../../slices/deviceSlices";
 
 import DeviceTableLocations from "./DeviceTableLocations";
 
@@ -33,10 +40,15 @@ const DeviceListLocations = ({ setPageTitle }) => {
   const [pageCount, setPageCount] = useState(0);
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
-
+  const deviceLocList = useSelector(selectDeviceLocList);
+  const deviceCordinate = useSelector(selectDeviceCordinate);
   useEffect(() => {
-    setPageTitle("لیست درخواست نرم افزار");
-  }, [setPageTitle]);
+    if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
+  }, [deviceLocList]);
+
+  // useEffect(() => {
+  //   setPageTitle("لیست درخواست نرم افزار");
+  // }, [setPageTitle]);
 
   const columns = useMemo(() => [
     {
@@ -95,18 +107,23 @@ const DeviceListLocations = ({ setPageTitle }) => {
     );
   };
 
-  const userInfo = (request) => {
+  const handleCordinates = (request) => {
+    console.log(request.lng);
+    const cordinateArr = [];
+    cordinateArr.push(request.lat);
+    cordinateArr.push(request.lng);
+
+    dispatch(RsetDeviceCordinate(cordinateArr));
+  };
+
+  const handleCheckBox = (request) => {
     return (
-      <div
-        className="text-dark cursorPointer"
-        title="مشاهده اطلاعات کاربر "
-        onClick={() => {
-          // dispatch(handleUserInformation(request.userId));
-          // dispatch(selectUserImage({ userId: request.userId, status: 1 }));
-        }}
-      >
-        {/* {xssFilters.inHTMLData(request.fullName)} */}
-      </div>
+      <Form.Check
+        type="radio"
+        id="cordinate"
+        name="cordinate"
+        onClick={() => handleCordinates(request)}
+      />
     );
   };
 
@@ -237,18 +254,29 @@ const DeviceListLocations = ({ setPageTitle }) => {
     }
   };
 
+  const handleCheckBoxAuto = () => {
+
+  }
+
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
-          idx: i,
-          checkBox: requests[i],
-          date: requests[i].date,
-          hour: requests[i].hour,
+          idx: i + 1,
+          checkBox: true
+            ? handleCheckBox(requests[i])
+            : handleCheckBoxAuto(requests[i]),
+          date: moment
+            .utc(requests[i].date, "YYYY/MM/DD")
+            .locale("fa")
+            .format("jYYYY/jMM/jDD"),
+          hour: moment
+            .utc(requests[i].date, "jYYYY-jMM-jDDTHH:mm:ss.SSZ")
+            .format("YYYY-MM-DD HH:mm:ss z"),
           address: requests[i].address,
           speed: requests[i].speed,
-          opration: operation(requests[i]),
+          // opration: operation(requests[i]),
         };
         tableItems.push(tableItem);
       }
@@ -269,13 +297,18 @@ const DeviceListLocations = ({ setPageTitle }) => {
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            idx: i,
-            checkBox: requests[i],
-            date: requests[i].date,
-            hour: requests[i].hour,
+            idx: i + 1,
+            checkBox: true
+              ? handleCheckBox(requests[i])
+              : handleCheckBoxAuto(requests[i]),
+            date: moment
+              .utc(requests[i].date, "YYYY/MM/DD")
+              .locale("fa")
+              .format("jYYYY/jMM/jDD"),
+            hour: moment.utc(requests[i].date, "HH:mm:ss").format("HH:mm:ss"),
             address: requests[i].address,
             speed: requests[i].speed,
-            opration: operation(requests[i]),
+            // opration: operation(requests[i]),
           };
           tableItems.push(tableItem);
         }
@@ -303,14 +336,14 @@ const DeviceListLocations = ({ setPageTitle }) => {
   );
 
   return (
-    <Container fluid className="py-4">
+    <Container fluid className="">
       {/* {menuPermission ? */}
       <Fragment>
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
         <section className="position-relative">
           <div
             // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
-            className="mt-5"
+            className=""
           >
             <div className="d-flex align-items-center justify-content-between">
               <div>
@@ -320,43 +353,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
                     افزودن درخواست جدید
                   </Button> */}
                 </Link>
-                <Button
-                  size="sm"
-                  variant="warning"
-                  className="mb-2 ms-2 font12"
-                  onClick={() => {
-                    // dispatch(RsetShowFilter(!showFilter));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFilter} className="me-2" />
-                  فیلتر
-                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="primary"
-                className="mb-2 font12"
-                onClick={async () => {
-                  // const handleFilterGroup = await dispatch(handleTabs());
-                  // if (activeTab !== "") {
-                  const filterValues = {
-                    applicantId: localStorage.getItem("id"),
-                    serial: "",
-                    memberId: "",
-                    mDep: "",
-                    status: "",
-                    fromDate: "null",
-                    toDate: "null",
-                    type: 6,
-                    // group: handleFilterGroup.payload,
-                  };
-                  // dispatch(handleReqsList(filterValues));
-                  // }
-                }}
-              >
-                <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                به روزرسانی
-              </Button>
             </div>
             <div className="position-relative">
               {/* {loading ? <Loading /> : null} */}
@@ -377,17 +374,19 @@ const DeviceListLocations = ({ setPageTitle }) => {
                     ></Tab>
                     <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
                   </Tabs> */}
-                  <DeviceTableLocations
-                    // requests={deviceList}
-                    // notVisited={notVisited}
-                    columns={columns}
-                    data={data}
-                    onSort={handleSort}
-                    fetchData={fetchData}
-                    loading={load}
-                    pageCount={pageCount}
-                    // handleNotVisited={handleNotVisited}
-                  />
+                  {deviceLocList.length !== 0 ? (
+                    <DeviceTableLocations
+                      requests={deviceLocList}
+                      // notVisited={notVisited}
+                      columns={columns}
+                      data={data}
+                      onSort={handleSort}
+                      fetchData={fetchData}
+                      loading={load}
+                      pageCount={pageCount}
+                      // handleNotVisited={handleNotVisited}
+                    />
+                  ) : null}
                 </Fragment>
                 {/* ) : null} */}
               </Fragment>

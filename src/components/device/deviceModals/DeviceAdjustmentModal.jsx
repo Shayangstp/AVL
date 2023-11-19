@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   RsetDeviceAdjusmentModal,
   selectDeviceAdjusmentModal,
-} from "../../../../slices/modalSlices";
+} from "../../../slices/modalSlices";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal, Form, Col, Row, Button, Tab, Tabs } from "react-bootstrap";
 import Select from "react-select";
@@ -32,20 +32,18 @@ import {
   selectDeviceTypeOptions,
   selectCurrentDevice,
   RsetDeviceTypeOptions,
-} from "../../../../slices/deviceSlices";
-import {
-  RsetFormErrors,
-  selectFormErrors,
-} from "../../../../slices/mainSlices";
-import MapDraw from "../../../map/MapDraw";
+} from "../../../slices/deviceSlices";
+import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
+import MapDraw from "../../map/MapDraw";
 import {
   getPhoneNumbers,
   postSpeedLimitation,
   putGpsEdit,
   postVehicleCondition,
-} from "../../../../services/deviceServices";
+  postGpsLimit,
+} from "../../../services/deviceServices";
 import { useEffect } from "react";
-import { errorMessage, successMessage } from "../../../../utils/msg";
+import { errorMessage, successMessage } from "../../../utils/msg";
 
 const gpsValues = [
   {
@@ -213,14 +211,34 @@ const DeviceAdjustmentModal = () => {
 
     return errors;
   };
-  const geoHandler = (e) => {
+  const geoHandler = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (geoFormIsValid) {
       console.log({
         timeToSendSms,
         smsReciver,
         emailReciver,
       });
+      const smsReciversItems = smsReciver.map((item) => {
+        return item.value;
+      });
+      const values = {
+        id: currentDevice._id,
+        sendSMS: sms,
+        smsNumbers: "",
+        smsReceivers: sms
+          ? smsReciver.length !== 0
+            ? smsReciversItems
+            : ""
+          : "",
+        sendEmail: email,
+        emails: email ? emailReciver : "",
+        smsInterval: timeToSendSms,
+      };
+      console.log(values);
+      const postGpsLimitRes = await postGpsLimit(token, values);
+      console.log(postGpsLimitRes);
     } else {
       dispatch(
         RsetFormErrors(
@@ -320,6 +338,7 @@ const DeviceAdjustmentModal = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (gpsFormIsValid) {
+      //back wants like this
       const values = {
         vehicleId: currentDevice._id,
         simNumber: deviceNumber,
@@ -330,7 +349,7 @@ const DeviceAdjustmentModal = () => {
         driverPhoneNumber: "",
         trackerModel: deviceType.label,
         fuel: "",
-        model: "گاميون",
+        model: "",
         usage: "",
       };
       const putGpsEditRes = await putGpsEdit(values, token);
@@ -590,15 +609,14 @@ const DeviceAdjustmentModal = () => {
                           placeholder="انتخاب از دفترچه تلفن"
                           options={smsReciverOptions}
                           isSearchable={true}
-                          multi
+                          isMulti
                         />
                       </Form.Group>
-                      <Form.Group as={Col} md="4" className="mt-3">
+                      {/* <Form.Group as={Col} md="4" className="mt-3">
                         <Form.Label className="required-field">
                           گیرنده های پیامک:
                         </Form.Label>
-                        <Form.Control
-                          readOnly
+                        <Select
                           // className={`${
                           //   !emailReciverIsValid
                           //     ? `${formErrors.emailReciver} borderRaduis-15`
@@ -606,12 +624,12 @@ const DeviceAdjustmentModal = () => {
                           // }`}
                           type="text"
                           name="smsReciver"
-                          value={smsReciver}
+                          value={smsReciver.lable}
                           // onChange={(e) => {
                           //   dispatch((e.target.value));
                           // }}
                         />
-                      </Form.Group>
+                      </Form.Group> */}
                     </>
                   )}
                   {email && (

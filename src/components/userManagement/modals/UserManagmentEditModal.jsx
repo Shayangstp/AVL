@@ -148,7 +148,7 @@ const UserManagmentEditModal = () => {
                 value={gender}
                 checked={gender === "female"}
                 onChange={(e) => {
-                  
+                  dispatch(RsetGender("female"));
                 }}
               />
               <Form.Check
@@ -159,6 +159,9 @@ const UserManagmentEditModal = () => {
                 id="male"
                 value={gender}
                 checked={gender === "male"}
+                onChange={(e) => {
+                  dispatch(RsetGender("male"));
+                }}
               />
               {!genderIsValid && (
                 <p className="text-danger font12">{formErrors.gender}</p>
@@ -236,7 +239,11 @@ const UserManagmentEditModal = () => {
             </Form.Group>
           </Row>
           <Row className="mt-3">
-            <Col md="5" xl="4" className="mx-auto d-flex mt-5">
+            <Col
+              md="5"
+              xl="4"
+              className="mx-auto d-flex mt-5 w-100 justify-content-center"
+            >
               <Button
                 variant="success"
                 className="mb-3 me-5 px-4"

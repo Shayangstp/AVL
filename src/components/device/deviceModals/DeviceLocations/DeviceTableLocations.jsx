@@ -72,7 +72,7 @@ const DeviceTableLocations = ({
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
-                  className="col-1 bg-secondary text-white fw-normal"
+                  className="col-0 bg-secondary text-white fw-normal font10"
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   title="" /*title={`مرتب سازی براساس ${column.render("Header")}`} */
                 >
@@ -100,9 +100,13 @@ const DeviceTableLocations = ({
             //     }
             // }
             return (
-              <tr {...row.getRowProps()} key={i}>
+              <tr className="font10" {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, index) => {
-                  return <td key={index}>{cell.render("Cell")}</td>;
+                  return (
+                    <td className="font10" key={index}>
+                      {cell.render("Cell")}
+                    </td>
+                  );
                 })}
               </tr>
             );
@@ -111,7 +115,7 @@ const DeviceTableLocations = ({
             {loading ? (
               <td colSpan="10000">Loading...</td>
             ) : (
-              <td colSpan="10000">
+              <td colSpan="10000" className="font10">
                 نمایش {page.length} از ~{controlledPageCount * pageSize} نتیجه
               </td>
             )}
@@ -119,11 +123,11 @@ const DeviceTableLocations = ({
         </tbody>
       </Table>
       <Row>
-        <Col lg="9" xl="8" className="mx-auto">
-          <div className="row pagination justify-content-center align-items-center">
-            <div className="col-12 col-md-2">
+        <Col lg="12" xl="12" className="mx-auto">
+          <div className="row pagination justify-content-center align-items-center ">
+            <div className="col-12 col-md-2 ">
               <select
-                className="form-control py-1 px-2"
+                className="form-control py-1 px-2 font10"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -136,7 +140,7 @@ const DeviceTableLocations = ({
                 ))}
               </select>
             </div>
-            <div className="col-12 col-md-4 d-flex align-items-center justify-content-around">
+            <div className="col-12 col-md-4 d-flex align-items-center justify-content-around font10">
               برو به صفحه:{" "}
               <input
                 type="number"
@@ -145,18 +149,18 @@ const DeviceTableLocations = ({
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   gotoPage(page);
                 }}
-                className="form-control w-50 py-1 px-2"
+                className="form-control w-50 py-1 px-2 font10"
               />{" "}
             </div>
-            <div className="col-12 col-md-2">
+            <div className="col-12 col-md-2 font10">
               صفحه{" "}
-              <strong>
+              <strong className="font10">
                 {pageIndex + 1} از {pageOptions.length}
               </strong>{" "}
             </div>
             <div className="col-12 col-md-4">
               <Button
-                variant="outline-secondary"
+                variant="outline-secondary font10"
                 className="fw-bold py-0"
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
@@ -164,7 +168,7 @@ const DeviceTableLocations = ({
                 <FontAwesomeIcon icon={faAngleDoubleRight} />
               </Button>{" "}
               <Button
-                variant="outline-secondary"
+                variant="outline-secondary font10"
                 className="fw-bold py-0"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
@@ -172,7 +176,7 @@ const DeviceTableLocations = ({
                 <FontAwesomeIcon icon={faAngleRight} />
               </Button>{" "}
               <Button
-                variant="outline-secondary"
+                variant="outline-secondary font10"
                 className="fw-bold py-0"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
@@ -180,7 +184,7 @@ const DeviceTableLocations = ({
                 <FontAwesomeIcon icon={faAngleLeft} />
               </Button>{" "}
               <Button
-                variant="outline-secondary"
+                variant="outline-secondary font10"
                 className="fw-bold py-0"
                 onClick={() => gotoPage(controlledPageCount - 1)}
                 disabled={!canNextPage}
