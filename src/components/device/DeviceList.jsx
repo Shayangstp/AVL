@@ -23,6 +23,7 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
+import moment from "moment-jalaali";
 import DeviceFilter from "./DeviceFilter";
 import { getDeviceList } from "../../services/deviceServices";
 import {
@@ -207,18 +208,14 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              console.log(request);
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "accept",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
+              //handle date bc came from api wrong way
+              const apiDate = request.createDate;
+              const dateParts = apiDate.split(" ");
+              const day = parseInt(dateParts[2], 10);
+              const month = moment().month(dateParts[1]).format("jMM");
+              const year = parseInt(dateParts[3], 10);
+              const persianDate = `${year}/${month}/${day}`;
+              //
               dispatch(RsetDeviceEditModal(true));
               dispatch(RsetVehicleNumber(request.plate));
               dispatch(RsetVehicleCompany(request.model.name));
@@ -227,7 +224,14 @@ const DeviceList = ({ setPageTitle }) => {
               dispatch(RsetDriverNumber(request.driverPhoneNumber));
               dispatch(RsetVehicleUsing(request.usage));
               dispatch(RsetVehicleGas(request.fuel));
-              dispatch(RsetEditTimeStamp(request.createDate));
+              dispatch(
+                RsetEditTimeStamp(
+                  moment
+                    .utc(persianDate, "YYYY/MM/DD")
+                    .locale("fa")
+                    .format("jYYYY/jMM/jDD")
+                )
+              );
               dispatch(RsetVehicleId(request._id));
               dispatch(RsetDeviceNumber(request.simNumber));
               dispatch(RsetDeviceImei(request.deviceIMEI));
@@ -243,18 +247,6 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              console.log("hi");
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "cancel",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
               dispatch(RsetDeviceAdjusmentModal(true));
               dispatch(RsetCurrentDevice(request));
             }}

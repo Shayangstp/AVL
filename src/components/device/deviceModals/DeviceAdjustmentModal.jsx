@@ -32,6 +32,7 @@ import {
   selectDeviceTypeOptions,
   selectCurrentDevice,
   RsetDeviceTypeOptions,
+  selectDeviceCordinate,
 } from "../../../slices/deviceSlices";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import MapDraw from "../../map/MapDraw";
@@ -41,9 +42,11 @@ import {
   putGpsEdit,
   postVehicleCondition,
   postGpsLimit,
+  deleteGeoLimit,
 } from "../../../services/deviceServices";
 import { useEffect } from "react";
 import { errorMessage, successMessage } from "../../../utils/msg";
+import { useNavigate } from "react-router";
 
 const gpsValues = [
   {
@@ -84,6 +87,8 @@ const DeviceAdjustmentModal = () => {
   const [email, setEmail] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const formErrors = useSelector(selectFormErrors);
   const deviceAdjusmentModal = useSelector(selectDeviceAdjusmentModal);
   const vehicleSpeed = useSelector(selectVehicleSpeed);
@@ -101,6 +106,7 @@ const DeviceAdjustmentModal = () => {
   const deviceType = useSelector(selectDeviceType);
   const deviceTypeOptions = useSelector(selectDeviceTypeOptions);
   const currentDevice = useSelector(selectCurrentDevice);
+  const deviceCordinate = useSelector(selectDeviceCordinate);
 
   //validation common
   const smsReciverIsValid = smsReciver.length !== 0;
@@ -108,10 +114,8 @@ const DeviceAdjustmentModal = () => {
   const emailSmsIsValid = smsReciverIsValid || emailReciverIsValid;
   //speed
   const vehicleSpeedIsValid = vehicleSpeed !== "";
-
+  const smsEmailIsValid = sms === true || email === true;
   const speedFormIsValid = vehicleSpeedIsValid && emailSmsIsValid;
-
-  console.log(currentDevice);
 
   const speedValidation = () => {
     var errors = {};
@@ -126,6 +130,9 @@ const DeviceAdjustmentModal = () => {
     if (!emailReciverIsValid) {
       errors.emailReciver = borderValidation;
     }
+    if (!smsEmailIsValid) {
+      errors.smsEmail = "انتخاب یکی از موارد اطلاع رسانی اجباری است!";
+    }
 
     return errors;
   };
@@ -133,7 +140,7 @@ const DeviceAdjustmentModal = () => {
   const getPhoneNumbersOptions = async () => {
     try {
       const getPhoneNumbersRes = await getPhoneNumbers();
-      console.log(getPhoneNumbersRes);
+
       if (getPhoneNumbersRes.data.code === 200) {
         let phoneNumbers = [];
         getPhoneNumbersRes.data.Allusers.map((numbers) => {
@@ -235,10 +242,23 @@ const DeviceAdjustmentModal = () => {
         sendEmail: email,
         emails: email ? emailReciver : "",
         smsInterval: timeToSendSms,
+        coordinates: deviceCordinate,
       };
       console.log(values);
       const postGpsLimitRes = await postGpsLimit(token, values);
       console.log(postGpsLimitRes);
+      if (postGpsLimitRes.status === 200) {
+        successMessage("محدودیت با موفقیت اعمال شد");
+        setSms(false);
+        setEmail(false);
+        dispatch(RsetSmsReciver(""));
+        dispatch(RsetEmailReciver(""));
+        dispatch(RsetTimeToSendSms(""));
+        dispatch(RsetDeviceAdjusmentModal(false));
+        navigate(0);
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -250,6 +270,20 @@ const DeviceAdjustmentModal = () => {
         )
       );
     }
+  };
+
+  const geoDeleteHandler = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const deviceId = currentDevice._id;
+    const deleteGeoLimitRes = await deleteGeoLimit(deviceId, token);
+    if (deleteGeoLimitRes.status === 200) {
+      successMessage("محدودیت با موفقیت برداشته شد");
+      navigate(0);
+    } else {
+      errorMessage("خطا");
+    }
+    console.log(deleteGeoLimitRes);
   };
 
   //vehicle Condition
@@ -355,10 +389,6 @@ const DeviceAdjustmentModal = () => {
       const putGpsEditRes = await putGpsEdit(values, token);
       if (putGpsEditRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
-        dispatch(RsetDeviceNumber(""));
-        dispatch(RsetDeviceImei(""));
-        dispatch(RsetDeviceType(""));
-        dispatch(RsetFormErrors(""));
       } else {
         errorMessage("خطا");
       }
@@ -401,6 +431,8 @@ const DeviceAdjustmentModal = () => {
             setEmail(false);
             dispatch(RsetSmsReciver(""));
             dispatch(RsetEmailReciver(""));
+            dispatch(RsetVehicleCondition(""));
+            dispatch(RsetVehicleConditionDescription(""));
           }}
           className="mb-3"
           fill
@@ -425,7 +457,7 @@ const DeviceAdjustmentModal = () => {
                     }}
                   />
                 </Form.Group>
-                <Form.Group as={Col} md="8" className="mt-4 d-flex">
+                <Form.Group as={Col} md="8" className="mt-4 d-flex flex-column">
                   <Form.Check
                     inline
                     label="اطلاع از طریق پیامک"
@@ -448,6 +480,13 @@ const DeviceAdjustmentModal = () => {
                       setEmail(!email);
                     }}
                   />
+                  <div>
+                    {!smsEmailIsValid ? (
+                      <p className="text-danger font10">
+                        {formErrors.smsEmail}
+                      </p>
+                    ) : null}
+                  </div>
                 </Form.Group>
               </Row>
               <Row>
@@ -663,6 +702,16 @@ const DeviceAdjustmentModal = () => {
                       }}
                     >
                       ثبت
+                    </Button>
+                    <Button
+                      variant="danger"
+                      className="mb-3 me-5 px-4 font12"
+                      onClick={(e) => {
+                        geoDeleteHandler(e);
+                        dispatch(RsetDeviceAdjusmentModal(false));
+                      }}
+                    >
+                      حذف
                     </Button>
                     <Button
                       variant="secondary"

@@ -159,7 +159,6 @@ const DeviceListLocations = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              console.log("hi");
               // dispatch(
               //   handleCurrentReqInfo({
               //     company: "",
@@ -254,9 +253,9 @@ const DeviceListLocations = ({ setPageTitle }) => {
     }
   };
 
-  const handleCheckBoxAuto = () => {
-
-  }
+  const handleCheckBoxAuto = (requests) => {
+    let checkBoxIndex = 0;
+  };
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
@@ -360,20 +359,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  {/* <Tabs
-                    defaultActiveKey={"myReqs"}
-                    onSelect={(e) => {
-                      dispatch(RsetActiveTab(e));
-                    }}
-                    className="mt-3"
-                  >
-                    <Tab eventKey={"myReqs"} title="درخواست های من"></Tab>
-                    <Tab
-                      eventKey={"inProcessReqs"}
-                      title="درخواست های در حال پردازش"
-                    ></Tab>
-                    <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
-                  </Tabs> */}
+                  <button>play</button>
                   {deviceLocList.length !== 0 ? (
                     <DeviceTableLocations
                       requests={deviceLocList}

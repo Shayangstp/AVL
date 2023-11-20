@@ -22,6 +22,7 @@ import {
   RsetGender,
   selectGender,
 } from "../../slices/userManagmentSlices";
+import { postAddUser } from "../../services/userServices";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -87,7 +88,7 @@ const AddUser = () => {
     return errors;
   };
 
-  const handleAddUser = (e) => {
+  const handleAddUser = async (e) => {
     e.preventDefault();
     if (addUserFormIsValid) {
       console.log({
@@ -97,9 +98,20 @@ const AddUser = () => {
         phoneNumber,
         gmail,
         password,
-        passwordConfirmation,
         gender,
       });
+      const token = localStorage.getItem("token");
+      const values = {
+        username: userName,
+        firstname: firstName,
+        lastname: lastName,
+        mobileNumber: phoneNumber,
+        email: gmail,
+        password: password,
+        gender: gender,
+      };
+      const postAddUserRes = await postAddUser(values, token);
+      console.log(postAddUserRes);
     } else {
       dispatch(
         RsetFormErrors(
@@ -118,7 +130,7 @@ const AddUser = () => {
     }
   };
 
-  console.log(firstName);
+  console.log(gender);
 
   return (
     <Container fluid className="mt-4 mb-5">
@@ -136,7 +148,7 @@ const AddUser = () => {
               label="زن"
               name="gender"
               type="radio"
-              id="female"
+              id="Female"
               value={gender}
             />
             <Form.Check
@@ -144,7 +156,7 @@ const AddUser = () => {
               label="مرد"
               name="gender"
               type="radio"
-              id="male"
+              id="Male"
               value={gender}
             />
             {!genderIsValid && (
@@ -272,7 +284,7 @@ const AddUser = () => {
                 dispatch(RsetPassword(""));
                 dispatch(RsetPasswordConfirmation(""));
                 dispatch(RsetFormErrors(""));
-                dispatch(RsetGender(false));
+                dispatch(RsetGender("female"));
               }}
             >
               انصراف

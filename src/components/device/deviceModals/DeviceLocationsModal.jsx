@@ -23,8 +23,6 @@ const DeviceLocationsModal = () => {
     dispatch(handleDeviceLocList());
   }, []);
 
-  console.log(deviceCordinate);
-
   return (
     <Modal
       size="xl"

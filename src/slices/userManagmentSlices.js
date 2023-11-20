@@ -11,7 +11,7 @@ const initialState = {
   gmail: "",
   password: "",
   passwordConfirmation: "",
-  gender: "female",
+  gender: "Female",
   userLists: [],
   currentUser: "",
 };

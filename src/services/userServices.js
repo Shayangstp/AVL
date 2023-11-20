@@ -13,3 +13,15 @@ export const getUsersList = (token) => {
     }
   );
 };
+export const postAddUser = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/user/signup`,
+    values,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

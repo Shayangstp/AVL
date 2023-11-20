@@ -31,6 +31,7 @@ const initialState = {
   vehicleConditionDescription: "",
   deviceLocList: [],
   deviceCordinate: [],
+  deviceApiCordinate: [],
 
   //filter
   deviceImeiFilter: "",
@@ -172,6 +173,9 @@ const deviceSlices = createSlice({
     RsetDeviceCordinate: (state, action) => {
       return { ...state, deviceCordinate: action.payload };
     },
+    RsetDeviceApiCordinate: (state, action) => {
+      return { ...state, deviceApiCordinate: action.payload };
+    },
 
     //filter
     RsetDeviceImeiFilter: (state, action) => {
@@ -230,6 +234,7 @@ export const {
   RsetVehicleConditionDescription,
   RsetDeviceLocList,
   RsetDeviceCordinate,
+  RsetDeviceApiCordinate,
   //filter
   RsetDeviceImeiFilter,
   RsetDeviceNumberFilter,
@@ -274,6 +279,8 @@ export const selectVehicleConditionDescription = (state) =>
   state.device.vehicleConditionDescription;
 export const selectDeviceLocList = (state) => state.device.deviceLocList;
 export const selectDeviceCordinate = (state) => state.device.deviceCordinate;
+export const selectDeviceApiCordinate = (state) =>
+  state.device.deviceApiCordinate;
 
 //filter
 export const selectDeviceImeiFilter = (state) => state.device.deviceImeiFilter;

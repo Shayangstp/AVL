@@ -131,3 +131,14 @@ export const postGpsLimit = (token, values) => {
     }
   );
 };
+export const deleteGeoLimit = (deviceId, token) => {
+  return http.delete(
+    `${config.R}/api/v1/device/polygon/${deviceId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
