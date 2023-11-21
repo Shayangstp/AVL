@@ -114,7 +114,7 @@ const DeviceAdjustmentModal = () => {
   const emailSmsIsValid = smsReciverIsValid || emailReciverIsValid;
   //speed
   const vehicleSpeedIsValid = vehicleSpeed !== "";
-  const smsEmailIsValid = sms === true || email === true;
+  const smsEmailIsValidSpeed = sms === true || email === true;
   const speedFormIsValid = vehicleSpeedIsValid && emailSmsIsValid;
 
   const speedValidation = () => {
@@ -130,8 +130,8 @@ const DeviceAdjustmentModal = () => {
     if (!emailReciverIsValid) {
       errors.emailReciver = borderValidation;
     }
-    if (!smsEmailIsValid) {
-      errors.smsEmail = "انتخاب یکی از موارد اطلاع رسانی اجباری است!";
+    if (!smsEmailIsValidSpeed) {
+      errors.smsEmailSpeed = "انتخاب یکی از موارد اطلاع رسانی اجباری است!";
     }
 
     return errors;
@@ -200,7 +200,9 @@ const DeviceAdjustmentModal = () => {
 
   //geo
   const timeToSendSmsIsValid = timeToSendSms !== "";
-  const geoFormIsValid = timeToSendSmsIsValid && emailSmsIsValid;
+  const smsEmailIsValidGeo = sms === true || email === true;
+  const geoFormIsValid =
+    timeToSendSmsIsValid && emailSmsIsValid && smsEmailIsValidGeo;
 
   const geoValidation = () => {
     var errors = {};
@@ -215,6 +217,9 @@ const DeviceAdjustmentModal = () => {
     if (!emailReciverIsValid) {
       errors.emailReciver = borderValidation;
     }
+    if (!smsEmailIsValidGeo) {
+      errors.smsEmailGeo = "انتخاب یکی از موارد اطلاع رسانی اجباری است!";
+    }
 
     return errors;
   };
@@ -222,11 +227,6 @@ const DeviceAdjustmentModal = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (geoFormIsValid) {
-      console.log({
-        timeToSendSms,
-        smsReciver,
-        emailReciver,
-      });
       const smsReciversItems = smsReciver.map((item) => {
         return item.value;
       });
@@ -244,9 +244,7 @@ const DeviceAdjustmentModal = () => {
         smsInterval: timeToSendSms,
         coordinates: deviceCordinate,
       };
-      console.log(values);
       const postGpsLimitRes = await postGpsLimit(token, values);
-      console.log(postGpsLimitRes);
       if (postGpsLimitRes.status === 200) {
         successMessage("محدودیت با موفقیت اعمال شد");
         setSms(false);
@@ -283,12 +281,10 @@ const DeviceAdjustmentModal = () => {
     } else {
       errorMessage("خطا");
     }
-    console.log(deleteGeoLimitRes);
   };
 
   //vehicle Condition
-  const vehicleConditionIsValid =
-    vehicleCondition.length !== 0 && vehicleCondition !== "";
+  const vehicleConditionIsValid = vehicleCondition !== "";
 
   const vehicleConditionValidation = () => {
     var errors = {};
@@ -318,9 +314,7 @@ const DeviceAdjustmentModal = () => {
         imei: currentDevice.deviceIMEI,
         desc: vehicleConditionDescription,
       };
-      console.log(values);
       const postVehicleConditionRes = await postVehicleCondition(values, token);
-      console.log(postVehicleConditionRes);
       if (postVehicleConditionRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
         dispatch(RsetVehicleCondition(""));
@@ -481,9 +475,9 @@ const DeviceAdjustmentModal = () => {
                     }}
                   />
                   <div>
-                    {!smsEmailIsValid ? (
+                    {!smsEmailIsValidSpeed ? (
                       <p className="text-danger font10">
-                        {formErrors.smsEmail}
+                        {formErrors.smsEmailSpeed}
                       </p>
                     ) : null}
                   </div>
@@ -557,7 +551,6 @@ const DeviceAdjustmentModal = () => {
                     variant="success"
                     className="mb-3 me-5 px-4"
                     onClick={(e) => {
-                      console.log("hi");
                       speedVehicleHandler(e);
                     }}
                   >
@@ -605,7 +598,7 @@ const DeviceAdjustmentModal = () => {
                     />
                   </Form.Group>
                   <Form.Group as={Col} md="4" className="mt-3">
-                    <div className="d-flex mt-3">
+                    <div className="d-flex mt-3 flex-column">
                       <Form.Check
                         inline
                         label="اطلاع از طریق پیامک"
@@ -626,6 +619,13 @@ const DeviceAdjustmentModal = () => {
                           setEmail(!email);
                         }}
                       />
+                    </div>
+                    <div>
+                      {!smsEmailIsValidGeo ? (
+                        <p className="text-danger font10">
+                          {formErrors.smsEmailGeo}
+                        </p>
+                      ) : null}
                     </div>
                   </Form.Group>
                 </Row>
@@ -742,7 +742,7 @@ const DeviceAdjustmentModal = () => {
                 <Form.Group>
                   <Form.Label>وضعیت فعلی دستگاه</Form.Label>
                   <Select
-                    className={`mt-3${
+                    className={`mt-3 ${
                       !vehicleConditionIsValid
                         ? formErrors.vehicleCondition
                         : ""

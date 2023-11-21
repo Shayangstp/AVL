@@ -22,7 +22,6 @@ export const handleUserLists = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const getUsersListRes = await getUsersList(token);
-      console.log(getUsersListRes);
       if (getUsersListRes.status === 200) {
         dispatch(RsetUserLists(getUsersListRes.data.allUser));
       }

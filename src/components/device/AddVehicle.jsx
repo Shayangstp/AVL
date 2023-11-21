@@ -36,12 +36,10 @@ const AddVehicle = () => {
   const handleAddVehicleType = async (e) => {
     e.preventDefault();
     if (vehicleAddTypeIsValid) {
-      console.log(vehicleAddType);
       const value = {
         vehicleType: vehicleAddType,
       };
       const postAddVehicleRes = await postAddVehicle(value);
-      console.log(postAddVehicleRes);
       if (postAddVehicleRes.data.code === 200) {
         successMessage("مدل دستگاه با موفقیت اضافه شد");
         navigate(0);
@@ -55,7 +53,7 @@ const AddVehicle = () => {
 
   const getVehicleModles = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
+  
     const getDeviceTypeRes = await getDeviceType(token);
     console.log(getDeviceTypeRes);
     dispatch(RsetVehicleAdded(getDeviceTypeRes.data.foundedItem));

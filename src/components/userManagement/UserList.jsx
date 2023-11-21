@@ -26,6 +26,7 @@ import {
   handleUserLists,
   selectUserLists,
   selectCurrentUser,
+  RsetUserLists,
 } from "../../slices/userManagmentSlices";
 import {
   RsetUserManagmentEditModal,
@@ -40,9 +41,13 @@ import UserManagmentChangePasswordModal from "./modals/UserManagmentChangePasswo
 import UserManagmentRoleModal from "./modals/UserManagmentRoleModal";
 
 import UserTable from "./UserTable";
+import { getUserLocked, getUserUnLocked } from "../../services/userServices";
+import { useNavigate } from "react-router-dom";
 
 const UserList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [checkboxes, setCheckboxes] = useState([]);
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
   const [pageCount, setPageCount] = useState(0);
@@ -113,8 +118,6 @@ const UserList = ({ setPageTitle }) => {
     },
   ]);
 
-  console.log(currentUser);
-
   const link = (request) => {
     return (
       <a
@@ -153,19 +156,36 @@ const UserList = ({ setPageTitle }) => {
       </div>
     );
   };
-  const activeDeactive = (request) => {
+
+  const activeDeactive = (request, requests) => {
+    const token = localStorage.getItem("token");
     return (
-      <Form className="text-center">
-        <Form.Check
-          type="switch"
-          id="custom-switch"
-          onChange={() => {
-            console.log("hi");
-          }}
-        />
-      </Form>
+      <Form.Check
+        type="switch"
+        checked={request.islockedout}
+        onChange={async (e) => {
+          const reqs = [...requests];
+          const index = reqs.findIndex((item) => item._id === request._id);
+          const item = { ...reqs[index] };
+          item.islockedout = e.target.checked;
+          const allReqs = [...reqs];
+          allReqs[index] = item;
+          dispatch(RsetUserLists(allReqs));
+          if (e.target.checked === true) {
+            const getUserLockedRes = await getUserLocked(request._id, token);
+            // navigate(0);
+          } else {
+            const getUserUnLockedRes = await getUserUnLocked(
+              request._id,
+              token
+            );
+            // navigate(0);
+          }
+        }}
+      />
     );
   };
+
   const operation = (request) => {
     if (localStorage.getItem("token") !== undefined) {
       return (
@@ -200,6 +220,7 @@ const UserList = ({ setPageTitle }) => {
             active
             onClick={() => {
               dispatch(RsetUserManagmentChangePasswordModal(true));
+              dispatch(RsetCurrentUser(request));
             }}
           >
             <FontAwesomeIcon icon={faLock} />
@@ -275,7 +296,7 @@ const UserList = ({ setPageTitle }) => {
           email: requests[i].email,
           gender: requests[i].gender,
           roles: roles[i].rolename,
-          activeDeActive: activeDeactive(requests[i]),
+          activeDeActive: activeDeactive(requests[i], requests),
           oprations: operation(requests[i]),
         };
         tableItems.push(tableItem);
@@ -286,8 +307,10 @@ const UserList = ({ setPageTitle }) => {
     if (fetchId === fetchIdRef.current) {
       const startRow = pageSize * pageIndex;
       const endRow = startRow + pageSize;
+
       setData(tableItems.slice(startRow, endRow));
       setPageCount(Math.ceil(tableItems.length / pageSize));
+
       setload(false);
     }
   }, []);
@@ -307,8 +330,7 @@ const UserList = ({ setPageTitle }) => {
             email: requests[i].email,
             gender: requests[i].gender,
             roles: roles[i].rolename,
-            activeDeActive: activeDeactive(requests[i]),
-
+            activeDeActive: activeDeactive(requests[i], requests),
             oprations: operation(requests[i]),
           };
           tableItems.push(tableItem);
@@ -330,6 +352,7 @@ const UserList = ({ setPageTitle }) => {
         const startRow = pageSize * pageIndex;
         const endRow = startRow + pageSize;
         setData(sorted.slice(startRow, endRow));
+
         setload(false);
       }
     },

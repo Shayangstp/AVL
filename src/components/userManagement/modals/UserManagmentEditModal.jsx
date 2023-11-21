@@ -23,6 +23,7 @@ import {
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import { NumericFormat } from "react-number-format";
 import { useEffect } from "react";
+import { putEditUser } from "../../../services/userServices";
 
 const UserManagmentEditModal = () => {
   const dispatch = useDispatch();
@@ -77,8 +78,9 @@ const UserManagmentEditModal = () => {
     return errors;
   };
 
-  const handleUpdateUser = (e) => {
+  const handleUpdateUser = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (updateUserFormIsValid) {
       console.log({
         userName,
@@ -88,6 +90,19 @@ const UserManagmentEditModal = () => {
         gmail,
         gender,
       });
+
+      const values = {
+        userId: currentUser._id,
+        username: userName,
+        firstname: firstName,
+        lastname: lastName,
+        gender: gender,
+        email: gmail,
+        mobileNumber: phoneNumber,
+      };
+
+      const putEditUserRes = await putEditUser(values, token);
+      console.log(putEditUserRes);
     } else {
       dispatch(
         RsetFormErrors(
@@ -146,10 +161,9 @@ const UserManagmentEditModal = () => {
                 type="radio"
                 id="female"
                 value={gender}
-                checked={gender === "female"}
-                onChange={(e) => {
-                  dispatch(RsetGender("female"));
-                }}
+                // onChange={(e) => {
+                //   dispatch(RsetGender("female"));
+                // }}
               />
               <Form.Check
                 inline
@@ -158,10 +172,9 @@ const UserManagmentEditModal = () => {
                 type="radio"
                 id="male"
                 value={gender}
-                checked={gender === "male"}
-                onChange={(e) => {
-                  dispatch(RsetGender("male"));
-                }}
+                // onChange={(e) => {
+                //   dispatch(RsetGender("male"));
+                // }}
               />
               {!genderIsValid && (
                 <p className="text-danger font12">{formErrors.gender}</p>

@@ -184,25 +184,12 @@ const AddDevice = () => {
         fuel: vehicleGas,
       };
       const postAddDeviceRes = await postAddDevice(values);
-      console.log(postAddDeviceRes);
       if (postAddDeviceRes.data.code === 201) {
         successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
         handleResetAddDeviceForm();
       } else {
         errorMessage("خطا!");
       }
-      console.log({
-        simNumber: deviceNumber,
-        deviceIMEI: deviceImei,
-        trackerModel: deviceType.label,
-        plate: vehicleNumber,
-        model: vehicleType.label,
-        creator: vehicleCompany,
-        usage: vehicleUsing,
-        name: driverName,
-        driverPhoneNumber: driverNumber,
-        fuel: vehicleGas,
-      });
     } else {
       dispatch(
         RsetFormErrors(

@@ -4,52 +4,34 @@
 
  // "R": "http://192.168.5.254:8008",
 
+user roles 
+[
+  "user_view",
+  "user_add",
+  "user_edit",
+  "user_role",
+  "user_block",
+  "user_password",
+  "device_view",
+  "device_add",
+  "device_edit",
+  "group_view",
+  "group_add",
+  "group_edit",
+  "group_device",
+  "group_user",
+  "report_view",
+  "speed_view",
+  "speed_edit",
+  "polygon_edit",
+  "polygon_view",
+  "status_view",
+  "status_edit",
+  "gps_view",
+  "gps_edit"
+]
 
 
-http://localhost:3000/api/v1/device/addpolygon
-{
-"id":"654f25b4215a277e58ed502a",
-"coordinates":[
-  [
-    5772041.274268539,
-    4216718.139187317
-  ],
-  [
-    5603045.987456458,
-    4272308.6579039795
-  ],
-  [
-    5607493.219166589,
-    4308998.458696988
-  ],
-  [
-    5720897.926357074,
-    4317892.92211725
-  ],
-  [
-    5758699.538446495,
-    4311222.033860404
-  ],
-  [
-    5813178.31350944,
-    4264525.951612957
-  ],
-  [
-    5799836.5776873985,
-    4230059.834582787
-  ],
-  [
-    5772041.274268539,
-    4216718.139187317
-  ]
-],
-"sendSMS":"true",
-"smsNumbers":"",
-"smsReceivers":[
-  "09370713134",
-  "09381378120"
-],
-"sendEmail":"true",
-"emails":"arashramyyyy@gmail.com",
-"smsInterval":"8"
-}
+lock and unlock
+userId  ---> params 
+

@@ -26,7 +26,16 @@ const UserManagmentRoleModal = () => {
       <Modal.Body>
         <Form>
           <Row>
-            <Form.Group as={Col}></Form.Group>
+            <Form.Group as={Col}>
+              <Form.Check
+                type="checkbox"
+                id="view"
+                lable="مشاهده"
+                onChange={() => {
+                  
+                }}
+              />
+            </Form.Group>
           </Row>
         </Form>
       </Modal.Body>
