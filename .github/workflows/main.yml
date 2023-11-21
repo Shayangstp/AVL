@@ -19,9 +19,11 @@ jobs:
         with:
           host: 192.168.21
           username: avl-test
-          key: 0550250298
+          password: Avl@test
+          # key: 0550250298
           port: 22
           script: |
+          cd /home/avl-test/avl-server-ramy
             git pull origin main
             git status
             nodemon app.js
@@ -37,15 +39,3 @@ jobs:
 
 
 
-
-
-    # - name: 192.168.21
-    # - uses: actions/checkout@v3
-    # - name: Use Node.js 14
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: 14
-    #     cache: 'npm'
-
-    # - run: npm install
-    # - run: npm test

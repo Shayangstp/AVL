@@ -342,7 +342,7 @@ const getVehiclesofGroup = async (req, res) => {
     var vehicles = vehiclesofGroup.devices;
     var result = new Array();
 
-    for (var i = 0; i < vehicles.length; i++) {00
+    for (var i = 0; i < vehicles.length; i++) {
       var tmpVehicle = {};
       var remainingDate = -1;
       tmpVehicle.deviceInfo = vehicles[i];
