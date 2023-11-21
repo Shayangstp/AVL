@@ -588,6 +588,7 @@ async function getDevices(req, res) {
       // })
       // .populate({ path: 'groups', select: 'name' })
       .populate("vehicleStatus")
+      .populate('permissibleZone')
       .populate({
         path: "model",
         model: VehicleTypeModel,
@@ -1064,17 +1065,6 @@ const deletePolygon = async (req, res) => {
       })
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = {
   resetDevice,
