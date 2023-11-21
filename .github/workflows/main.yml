@@ -12,12 +12,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 14
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
-        cache: 'npm'
+  - name: checkout repo
+        uses: actions/checkout@v2
+      - name: ssh and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.21
+          username: avl-test
+          key: 0550250298
+          port: 22
+          script: |
+            git pull origin main
+            git status
+            nodemon app.js
 
-    - run: npm install
-    - run: npm test
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # - name: 192.168.21
+    # - uses: actions/checkout@v3
+    # - name: Use Node.js 14
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: 14
+    #     cache: 'npm'
+
+    # - run: npm install
+    # - run: npm test
