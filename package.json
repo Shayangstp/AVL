@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "test":"jest"
+    "test": "jest"
   },
   "jest": {
     "testEnvironment": "node",
@@ -40,6 +40,7 @@
     "nodemailer": "^6.9.7",
     "pad": "^3.2.0",
     "request": "^2.88.2",
+    "rollbar": "^2.26.2",
     "shelljs": "^0.8.5",
     "simple-ssh": "^1.1.1",
     "validatorjs": "^3.22.1"

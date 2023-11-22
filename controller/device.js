@@ -4,6 +4,11 @@ const VehicleStatusModel = require("../model/GpsLocation/VehicleStatusModel");
 const VehicleTypeModel = require("../model/GpsLocation/VehicleTypeModel");
 const PhoneBookModel = require("../model/User/phoneBookModel");
 const { FMXXXXController } = require("./FMXXXXController");
+const { db } = require('../DB/DbConnection');
+
+const path = require('path');
+const moment = require('moment');
+
 const { NotifyUtility } = require("./NotifyUtility");
 const morgan = require('morgan');
 
@@ -854,7 +859,60 @@ async function setAlarmSettings(req, res) {
     });
   }
 }
+const connectDatabase = require("../DB/DbConnection");
 
+async function tests2(req, res) {
+  
+try{
+
+  const backupOptions = {
+    removeOldBackups: true,
+    latestMonthlyBackupsToKeep: 2,
+    latestWeeklyBackupsToKeep: 4,
+    backupDir: path.resolve(__dirname, '..', '..', 'db-backups'),
+};
+
+  console.log("tyhis")
+    const today = new Date();
+    const { backupDir } = backupOptions;
+    const backupName = moment(today).format('YYYY-MM-DD');
+    const backupPath = path.resolve(backupDir, backupName);
+    const databases = connectDatabase.db.base.connections.map(
+        connection => connection.name
+    );
+    const commands = databases
+        .map(
+            database =>
+                `mongodump --host ${connectDatabase.db.host} --port ${connectDatabase.db.port} --db ${database} --out ${backupPath}`
+        )
+        .concat([
+            `tar cfj ${backupPath}.tar.bz2 -C ${backupPath} ../${backupName}`,
+            `rm -r ${backupPath}`,
+        ]).then((r)=>{
+          r.join(' && ');
+        })
+    try {
+
+      console.log(commands.connectDatabase,"1")
+
+
+        await commands.join(' && ');
+        // await exec(commands.join(' && ')).then((rs)=>{
+        //   console.log("this runned")
+        // })
+        console.log("Database backup file generated successfully.")
+        // logger.info('Database backup file generated successfully.', {
+        //     date: today,
+        // });
+    } catch (error) {
+      console.log(error)
+    
+}
+}catch(error){
+  console.log(error)
+}
+
+}
 async function tests(req, res) {
   try {
   const data = {
@@ -1064,7 +1122,79 @@ const deletePolygon = async (req, res) => {
         message:"Permission Zone Delete Successfully"
       })
   }
+}   
+
+
+const filterDevices = async (req, res) => {
+
+const {deviceIMEI,simNumber,driverName,driverPhoneNumber,plate} =req.body
+
+  console.log(req.user, "c`est user ");
+
+  const allVehicles = await VehicleModel.find()
+  .setAuthorizationUser(req.user)
+
+    .where({})
+
+    .select({
+      _id: 1,
+      deviceIMEI: 1,
+      driverName: 1,
+      driverPhoneNumber: 1,
+      gpsDataCount: 1,
+      lastLocation: 1,
+      plate: 1,
+      simNumber: 1,
+      trackerModel: 1,
+      vehicleName: 1,
+      speedAlarm: 1,
+      maxSpeed: 1,
+      maxPMDistance: 1,
+      createDate: 1,
+      permissibleZone: 1,
+      vehicleStatus: 1,
+      zoneAlarm: 1,
+      fuel: 1,
+      currentMonthDistance: 1,
+      usage: 1,
+      model: 1,
+    })
+    .populate("lastLocation")
+    // .populate({
+    //     path: 'speedAlarm.smsReceivers',
+    //     model: PhoneBookModel,
+    //     select: { 'firstName': 1, 'lastName': 1, 'phoneNumber': 1 }
+    // })
+    // .populate({
+    //     path: 'zoneAlarm.smsReceivers',
+    //     model: PhoneBookModel,
+    //     select: { 'firstName': 1, 'lastName': 1, 'phoneNumber': 1 }
+    // })
+    // .populate({ path: 'groups', select: 'name' })
+    .populate("vehicleStatus")
+    .populate('permissibleZone')
+    .populate({
+      path: "model",
+      model: VehicleTypeModel,
+      select: { name: 1, _id: 0 },
+    })
+    .sort({ _id: -1 })
+    .lean()
+    .clone();
+
+  return res.json({
+    allVehicles,
+  });
+
+
+
+
 }
+
+
+
+
+
 
 module.exports = {
   resetDevice,
@@ -1084,5 +1214,7 @@ module.exports = {
   setAlarmSettings,
   tests,
   setPolygon,
-  deletePolygon
+  deletePolygon,
+  filterDevices,
+  tests2
 };

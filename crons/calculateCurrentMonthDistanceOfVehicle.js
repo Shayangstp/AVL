@@ -9,6 +9,7 @@ const moment = require("moment-jalaali");
 const {
   fixLastLocation,
 } = require("../node_scripts/populateVehicleGPSDataRelatedValues");
+// const { DeviceCronJobs, ServerCronJobs } = require('../crons');
 
 class DeviceMonthlyDistanceCron {
   static async setDeviceDistance() {
@@ -58,8 +59,9 @@ class DeviceMonthlyDistanceCron {
   }
 
   static run() {
-    const EVERY_DAY_AT_1_AM = "0 2 * * *"; // 2 AM every day
+    const EVERY_DAY_AT_1_AM = "50 1 * * *"; // 2 AM every day
     cron.schedule(EVERY_DAY_AT_1_AM, () => {
+      console.log("this run")
       DeviceMonthlyDistanceCron.setDeviceDistance().catch((e) =>
         logger.error(e)
       );

@@ -1,14 +1,16 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const connectDatabase = () => {
-  mongoose
-    .connect(process.env.DB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((data) => {
-      console.log(`mongod connected with server: ${data.connection.host}`);
-    });
-};
 
-module.exports = connectDatabase;
+mongoose.Promise = global.Promise;
+
+mongoose.connect(process.env.DB_URL);
+
+
+const db = mongoose.connection;
+// db.on('error', () =>   console.log(error)
+// db.once('open', () =>{
+//     // logger.debug('Connection is established to AVL Database.')
+//     console.log(error)}
+// );
+
+module.exports = { db };

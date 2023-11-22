@@ -4,25 +4,29 @@ const bodyParser = require("body-parser");
 const controller =require("./controller/userController")
 const cors = require('cors')
 const morgan = require('morgan');
-
+const { logger } = require('./utils/customLogs');
+logger.info("dddd");
 const app = express();
 const chalk = require ('chalk');
 var path = require("path");
 const { headerAuth } = require("./utils/authHeader");
 var http = require("http");
 const { GT06Controller } = require("./controller/GT06Controller");
-var cron = require('node-cron');
+const { FMXXXXController } = require("./controller/FMXXXXController");
+// const { DeviceCronJobs, ServerCronJobs } = require('./crons');
+
 var shell = require('shelljs');
 
 // shell.echo('hello world');
 shell.exec('node --version');
+console.log(process.env.PORT)
 
 // cron.schedule('*/3 * * * * *', () => {
 //   console.log(new Date());
 // });
 // connect db
-const connectDatabase = require("./DB/DbConnection");
-connectDatabase();
+require('./DB/DbConnection');
+
 
 app.use(morgan(chalk` {hex('
 #fff200
@@ -46,7 +50,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 const UserRouter = require("./router/user");
+
 const DeviceRouter = require("./router/device");
+console.log("ss")
+
 const DeviceGroupRouter = require("./router/deviceGroupe");
 const GPSLocation = require("./router/gpslocation");
 
@@ -56,12 +63,18 @@ const GPSLocation = require("./router/gpslocation");
 //   next();
 // });
 
+// ServerCronJobs.run();
+
+
 
 app.use("/api/v1/user", UserRouter);
+
 app.use("/api/v1/gpsdata", GPSLocation);
 
 app.use("/api/v1/device", DeviceRouter);
+
 app.use("/api/v1/devicegroup", DeviceGroupRouter);
+
 
 
 app.use(function (req, res, next) {
@@ -78,12 +91,17 @@ const server = app.listen(process.env.PORT, () => {
     console.log(
       `Server is running on http://localhost:${process.env.PORT}`
     );
+    console.log(
+      `Server is running on http://localhost:${process.env.PORT}`
+    );
   });
-  
+  // DeviceCronJobs().startScheduleEngine();
+
   // unhandled promise rejection
 process.on("unhandledRejection", (err) => {
     console.log(`Shutting down the server for ${err.message}`);
     console.log(`shutting down the server for unhandle promise rejection`);
+
   
     server.close(() => {
       process.exit(1);

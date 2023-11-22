@@ -24,7 +24,7 @@ router.get("/last",headerAuth, deviceController.getLastLocationOfAllDevice);
 
 router.get("/",headerAuth, deviceController.getDevices);
 
-router.get("/tests",headerAuth, deviceController.tests);
+router.get("/tests", deviceController.tests2);
 
 // ADD DEVICE =>
 router.post("/add",headerAuth, deviceController.addDevice);
