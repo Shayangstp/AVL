@@ -1,3 +1,5 @@
+//fake data been make
+
 import React, {
   useRef,
   useState,
@@ -29,6 +31,7 @@ import {
   handleDeviceLocList,
   selectDeviceLocList,
   selectDeviceCordinate,
+  selectCurrentDevice,
 } from "../../../../slices/deviceSlices";
 
 import DeviceTableLocations from "./DeviceTableLocations";
@@ -42,9 +45,48 @@ const DeviceListLocations = ({ setPageTitle }) => {
   const sortIdRef = useRef(0);
   const deviceLocList = useSelector(selectDeviceLocList);
   const deviceCordinate = useSelector(selectDeviceCordinate);
-  useEffect(() => {
-    if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
-  }, [deviceLocList]);
+  const currentDevice = useSelector(selectCurrentDevice);
+  // useEffect(() => {
+  //   if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
+  // }, [deviceLocList]);
+
+  //fake data
+
+  const dataList = [
+    {
+      date: "date",
+      hour: "hour",
+      address: "address",
+      speed: "speed",
+      lat: 35.7219,
+      lng: 51.3347,
+    },
+    {
+      date: "date",
+      hour: "hour",
+      address: "address",
+      speed: "speed",
+      lat: 35.7219,
+      lng: 51.3347,
+    },
+
+    {
+      date: "date",
+      hour: "hour",
+      address: "address",
+      speed: "speed",
+      lat: 51,
+      lng: 32,
+    },
+    {
+      date: "date",
+      hour: "hour",
+      address: "address",
+      speed: "speed",
+      lat: 51,
+      lng: 32,
+    },
+  ];
 
   // useEffect(() => {
   //   setPageTitle("لیست درخواست نرم افزار");
@@ -107,13 +149,14 @@ const DeviceListLocations = ({ setPageTitle }) => {
     );
   };
 
+  //the location showed from api
   const handleCordinates = (request) => {
     console.log(request.lng);
     const cordinateArr = [];
     cordinateArr.push(request.lat);
     cordinateArr.push(request.lng);
 
-    dispatch(RsetDeviceCordinate(cordinateArr));
+    dispatch(RsetDeviceCordinate(cordinateArr)); 
   };
 
   const handleCheckBox = (request) => {
@@ -126,6 +169,8 @@ const DeviceListLocations = ({ setPageTitle }) => {
       />
     );
   };
+
+
 
   const operation = (request) => {
     if (localStorage.getItem("token")) {
@@ -360,9 +405,12 @@ const DeviceListLocations = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <button>play</button>
-                  {deviceLocList.length !== 0 ? (
+                  {/* this should be fix  */}
+                  {/* {deviceLocList.length !== 0 ? ( */}
+                  {dataList.length !== 0 ? (
                     <DeviceTableLocations
-                      requests={deviceLocList}
+                      // requests={deviceLocList}
+                      requests={dataList}
                       // notVisited={notVisited}
                       columns={columns}
                       data={data}

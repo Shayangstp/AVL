@@ -21,7 +21,7 @@ user roles
   "group_device",
   "group_user",
   "report_view",
-  "speed_view",
+  "report_view",
   "speed_edit",
   "polygon_edit",
   "polygon_view",

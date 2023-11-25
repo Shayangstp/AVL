@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   RsetUserManagmentEditModal,
@@ -128,6 +128,16 @@ const UserManagmentEditModal = () => {
     dispatch(RsetGender(currentUser.gender));
   }, []);
 
+  console.log(currentUser);
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    setUserData(currentUser);
+  }, []);
+
+  console.log(gender);
+
   return (
     <Modal
       size="lg"
@@ -160,10 +170,12 @@ const UserManagmentEditModal = () => {
                 name="gender"
                 type="radio"
                 id="female"
-                value={gender}
-                // onChange={(e) => {
-                //   dispatch(RsetGender("female"));
-                // }}
+                checked={userData.gender === "female"}
+                onChange={(e) => {
+                  const newGender = e.target.checked ? "female" : "";
+                  setUserData({ ...userData, gender: newGender });
+                  dispatch(RsetGender("female"));
+                }}
               />
               <Form.Check
                 inline
@@ -171,10 +183,12 @@ const UserManagmentEditModal = () => {
                 name="gender"
                 type="radio"
                 id="male"
-                value={gender}
-                // onChange={(e) => {
-                //   dispatch(RsetGender("male"));
-                // }}
+                checked={userData.gender === "male"}
+                onChange={(e) => {
+                  const newGender = e.target.checked ? "male" : "";
+                  setUserData({ ...userData, gender: newGender });
+                  dispatch(RsetGender("male"));
+                }}
               />
               {!genderIsValid && (
                 <p className="text-danger font12">{formErrors.gender}</p>

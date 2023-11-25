@@ -5,6 +5,7 @@ import modalSlices from "../slices/modalSlices";
 import deviceSlices from "../slices/deviceSlices";
 import categorySlices from "../slices/categorySlices";
 import userManagmentSlices from "../slices/userManagmentSlices";
+import filterSlices from "../slices/filterSlices";
 
 const rootReducer = {
   main: mainSlices,
@@ -13,6 +14,7 @@ const rootReducer = {
   device: deviceSlices,
   category: categorySlices,
   userManagment: userManagmentSlices,
+  filter: filterSlices,
 };
 
 export const store = configureStore({

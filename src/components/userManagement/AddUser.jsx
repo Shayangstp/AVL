@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
@@ -21,8 +20,9 @@ import {
   selectPasswordConfirmation,
   RsetGender,
   selectGender,
+  handleAddUser,
+  handleResetAddUser,
 } from "../../slices/userManagmentSlices";
-import { postAddUser } from "../../services/userServices";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -44,7 +44,11 @@ const AddUser = () => {
   const passwordIsValid = password !== "";
   const passwordConfirmationIsValid =
     passwordConfirmation === password && passwordConfirmation !== "";
-  const genderIsValid = gender !== false;
+  const genderIsValid = gender !== "";
+
+  useEffect(() => {
+    dispatch(handleResetAddUser());
+  }, []);
 
   const addUserFormIsValid =
     userNameIsValid &&
@@ -88,30 +92,9 @@ const AddUser = () => {
     return errors;
   };
 
-  const handleAddUser = async (e) => {
-    e.preventDefault();
+  const handleAdduserFormSubmit = (e) => {
     if (addUserFormIsValid) {
-      console.log({
-        userName,
-        firstName,
-        lastName,
-        phoneNumber,
-        gmail,
-        password,
-        gender,
-      });
-      const token = localStorage.getItem("token");
-      const values = {
-        username: userName,
-        firstname: firstName,
-        lastname: lastName,
-        mobileNumber: phoneNumber,
-        email: gmail,
-        password: password,
-        gender: gender,
-      };
-      const postAddUserRes = await postAddUser(values, token);
-      console.log(postAddUserRes);
+      dispatch(handleAddUser(e));
     } else {
       dispatch(
         RsetFormErrors(
@@ -130,15 +113,10 @@ const AddUser = () => {
     }
   };
 
-  console.log(gender);
-
   return (
     <Container fluid className="mt-4 mb-5">
-      {/* <section className="lightGray2-bg p-3 shadow borderRadius-15 border border-white border-2"> */}
-      {/* <div className="shadow p-4 mb-5 borderRadius-15 lightGray-bg  border border-white font16"> */}
       <div className="mb-5 mt-5">افزودن کاربر</div>
       <Form>
-        {/* GPS info */}
         <div className="mb-4"> - ﺛﺒﺖ ﻧﺎﻡ</div>
         <Row>
           <div>
@@ -150,6 +128,9 @@ const AddUser = () => {
               type="radio"
               id="Female"
               value={gender}
+              onChange={(e) => {
+                dispatch(RsetGender("female"));
+              }}
             />
             <Form.Check
               inline
@@ -158,6 +139,9 @@ const AddUser = () => {
               type="radio"
               id="Male"
               value={gender}
+              onChange={(e) => {
+                dispatch(RsetGender("male"));
+              }}
             />
             {!genderIsValid && (
               <p className="text-danger font12">{formErrors.gender}</p>
@@ -266,7 +250,7 @@ const AddUser = () => {
               variant="success"
               className="mb-3 me-5 px-4"
               onClick={(e) => {
-                handleAddUser(e);
+                handleAdduserFormSubmit(e);
               }}
             >
               ثبت درخواست
@@ -276,15 +260,7 @@ const AddUser = () => {
               type="reset"
               className="mb-3 px-5 py-2"
               onClick={() => {
-                dispatch(RsetUserName(""));
-                dispatch(RsetFirstName(""));
-                dispatch(RsetLastName(""));
-                dispatch(RsetPhoneNumber(""));
-                dispatch(RsetGmail(""));
-                dispatch(RsetPassword(""));
-                dispatch(RsetPasswordConfirmation(""));
-                dispatch(RsetFormErrors(""));
-                dispatch(RsetGender("female"));
+                handleResetAddUser();
               }}
             >
               انصراف

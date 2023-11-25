@@ -177,15 +177,21 @@ const NavbarOff = () => {
               {reportsDrop && (
                 <div className="transitionAll">
                   <Nav.Link
-                    href="#dropdown-item-1"
+                    onClick={() => navigate("/viewPath")}
                     className="sidebar-link text-white"
                   >
                     <span className="ms-4 lightGray">مشاهده مسیر</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/viewLastLocation")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">مشاهده آخرین موقعیت</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/getReport")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">گزارش گیری</span>
                   </Nav.Link>
                 </div>

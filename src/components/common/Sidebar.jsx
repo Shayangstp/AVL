@@ -174,17 +174,23 @@ const Sidebar = () => {
                 {reportsDrop && (
                   <div className="transitionAll">
                     <Nav.Link
-                      href="#dropdown-item-1"
+                      onClick={() => navigate("/viewPath")}
                       className="sidebar-link text-white"
                     >
                       <span className="ms-4 lightGray font9">مشاهده مسیر</span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/viewLastLocation")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">
                         مشاهده آخرین موقعیت
                       </span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/getReport")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">گزارش گیری</span>
                     </Nav.Link>
                   </div>
@@ -222,12 +228,18 @@ const Sidebar = () => {
                         مشاهده کاربرها
                       </span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/viewPhoneNumbers")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">
                         مشاهده شماره تلفن ها
                       </span>
                     </Nav.Link>
-                    <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                    <Nav.Link
+                      onClick={() => navigate("/addPhoneNumber")}
+                      className="sidebar-link"
+                    >
                       <span className="ms-4 lightGray font9">
                         افزودن شماره تلفن
                       </span>

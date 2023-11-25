@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
 import { getUsersList } from "../services/userServices";
 import { RsetUser } from "./mainSlices";
+import { postAddUser } from "../services/userServices";
+import { RsetFormErrors } from "./mainSlices";
 
 const initialState = {
   userName: "",
@@ -11,9 +13,10 @@ const initialState = {
   gmail: "",
   password: "",
   passwordConfirmation: "",
-  gender: "Female",
+  gender: "",
   userLists: [],
   currentUser: "",
+  userRoles: [],
 };
 
 export const handleUserLists = createAsyncThunk(
@@ -28,6 +31,105 @@ export const handleUserLists = createAsyncThunk(
     } catch (ex) {
       console.log(ex);
     }
+  }
+);
+
+export const handleAddUser = createAsyncThunk(
+  "userManagment/handleAddUser",
+  async (e, { dispatch, getState }) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    const {
+      userName,
+      firstName,
+      lastName,
+      phoneNumber,
+      gmail,
+      password,
+      gender,
+    } = getState().userManagment;
+
+    const values = {
+      username: userName,
+      firstname: firstName,
+      lastname: lastName,
+      mobileNumber: phoneNumber,
+      email: gmail,
+      password: password,
+      gender: gender,
+    };
+    console.log(values);
+    try {
+      const postAddUserRes = await postAddUser(values, token);
+      console.log(postAddUserRes);
+      if (postAddUserRes.status === 200) {
+        successMessage("کاربر با موفقیت اضافه شد");
+        handleResetAddUser();
+      } else {
+        errorMessage("خطا");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleResetAddUser = createAsyncThunk(
+  "userManagment/handleResetAddUser",
+  async (obj, { dispatch, getState }) => {
+    dispatch(RsetUserName(""));
+    dispatch(RsetFirstName(""));
+    dispatch(RsetLastName(""));
+    dispatch(RsetPhoneNumber(""));
+    dispatch(RsetGmail(""));
+    dispatch(RsetPassword(""));
+    dispatch(RsetPasswordConfirmation(""));
+    dispatch(RsetFormErrors(""));
+    dispatch(RsetGender(""));
+  }
+);
+
+export const handleAddPhoneNumber = createAsyncThunk(
+  "userManagment/handleAddPhoneNumber",
+  async (e, { dispatch, getState }) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    const { firstName, lastName, phoneNumber, gmail } =
+      getState().userManagment;
+
+    const values = {
+      firstname: firstName,
+      lastname: lastName,
+      mobileNumber: phoneNumber,
+      email: gmail,
+    };
+    console.log(values);
+    try {
+      //changeApi
+      // const postAddUserRes = await postAddUser(values, token);
+      // console.log(postAddUserRes);
+      // if (postAddUserRes.status === 200) {
+      //   successMessage("کاربر با موفقیت اضافه شد");
+      //   handleResetAddPhoneNumber();
+      // } else {
+      //   errorMessage("خطا");
+      // }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleResetAddPhoneNumber = createAsyncThunk(
+  "userManagment/handleResetAddPhoneNumber",
+  async (obj, { dispatch, getState }) => {
+    dispatch(RsetFirstName(""));
+    dispatch(RsetLastName(""));
+    dispatch(RsetPhoneNumber(""));
+    dispatch(RsetGmail(""));
+    dispatch(RsetFormErrors(""));
   }
 );
 
@@ -65,6 +167,9 @@ const userManagmentSlices = createSlice({
     RsetCurrentUser: (state, { payload }) => {
       return { ...state, currentUser: payload };
     },
+    RsetUserRoles: (state, { payload }) => {
+      return { ...state, userRoles: payload };
+    },
   },
 });
 
@@ -79,6 +184,7 @@ export const {
   RsetGender,
   RsetUserLists,
   RsetCurrentUser,
+  RsetUserRoles,
 } = userManagmentSlices.actions;
 
 export const selectUserName = (state) => state.userManagment.userName;
@@ -92,5 +198,6 @@ export const selectPasswordConfirmation = (state) =>
 export const selectGender = (state) => state.userManagment.gender;
 export const selectUserLists = (state) => state.userManagment.userLists;
 export const selectCurrentUser = (state) => state.userManagment.currentUser;
+export const selectUserRoles = (state) => state.userManagment.userRoles;
 
 export default userManagmentSlices.reducer;

@@ -11,8 +11,6 @@ import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
-  faCheck,
-  faBan,
   faClockRotateLeft,
   faEye,
   faFilter,
@@ -43,6 +41,20 @@ import UserManagmentRoleModal from "./modals/UserManagmentRoleModal";
 import UserTable from "./UserTable";
 import { getUserLocked, getUserUnLocked } from "../../services/userServices";
 import { useNavigate } from "react-router-dom";
+import { successMessage } from "../../utils/msg";
+
+const dataList = [
+  {
+    username: "shayanXX",
+    firstname: "shayan",
+    lastname: "goli",
+    mobileNumber: "09353835262",
+    email: "g.shayan5529@gmail.com",
+    gender: "male",
+    roles: ["admin", "user"],
+    islockedout: false,
+  },
+];
 
 const UserList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -118,45 +130,7 @@ const UserList = ({ setPageTitle }) => {
     },
   ]);
 
-  const link = (request) => {
-    return (
-      <a
-        className="text-dark text-decoration-none cursorPointer serialHover"
-        title={"مشاهده درخواست " + request.serial}
-        onClick={() => {
-          // dispatch(
-          //   handleCurrentReqInfo({
-          //     company: "",
-          //     reqId: request.requestId,
-          //     reqType: request.typeId,
-          //     reqSeen: request.seen,
-          //     oprationType: "view",
-          //     dep: "",
-          //   })
-          // );
-          // setSeenSerial(request.serial);
-        }}
-      >
-        {/* {xssFilters.inHTMLData(request.serial)} */}
-      </a>
-    );
-  };
-
-  const userInfo = (request) => {
-    return (
-      <div
-        className="text-dark cursorPointer"
-        title="مشاهده اطلاعات کاربر "
-        onClick={() => {
-          // dispatch(handleUserInformation(request.userId));
-          // dispatch(selectUserImage({ userId: request.userId, status: 1 }));
-        }}
-      >
-        {/* {xssFilters.inHTMLData(request.fullName)} */}
-      </div>
-    );
-  };
-
+  //handle active or deactive
   const activeDeactive = (request, requests) => {
     const token = localStorage.getItem("token");
     return (
@@ -168,18 +142,22 @@ const UserList = ({ setPageTitle }) => {
           const index = reqs.findIndex((item) => item._id === request._id);
           const item = { ...reqs[index] };
           item.islockedout = e.target.checked;
-          const allReqs = [...reqs];
+          let allReqs = [...reqs];
           allReqs[index] = item;
           dispatch(RsetUserLists(allReqs));
           if (e.target.checked === true) {
             const getUserLockedRes = await getUserLocked(request._id, token);
-            // navigate(0);
+            if (getUserLockedRes.status === 200) {
+              successMessage("کاربر با موفقیت غیر فعال شد");
+            }
           } else {
             const getUserUnLockedRes = await getUserUnLocked(
               request._id,
               token
             );
-            // navigate(0);
+            if (getUserUnLockedRes.status === 200) {
+              successMessage("کاربر با موفقیت فعال شد");
+            }
           }
         }}
       />
@@ -228,57 +206,6 @@ const UserList = ({ setPageTitle }) => {
         </div>
       );
     } else {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="مشاهده"
-            className="btn btn-warning d-flex me-2 align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "view",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-              // dispatch(RsetViewReqModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </Button>
-          <Button
-            title="تاریخچه"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "history",
-              //     dep: "",
-              //   })
-              // );
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-              // dispatch(RsetReqHistoryModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faClockRotateLeft} />
-          </Button>
-        </div>
-      );
     }
   };
 
@@ -361,7 +288,6 @@ const UserList = ({ setPageTitle }) => {
 
   return (
     <Container fluid className="py-4">
-      {/* {menuPermission ? */}
       <Fragment>
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
         <section className="position-relative">
@@ -421,7 +347,8 @@ const UserList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <UserTable
-                    requests={userLists}
+                    // requests={userLists}
+                    requests={dataList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}

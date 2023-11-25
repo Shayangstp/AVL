@@ -1,3 +1,6 @@
+//fake data been made
+//the handle data been disabled
+
 import React, {
   useRef,
   useState,
@@ -87,9 +90,27 @@ const DeviceList = ({ setPageTitle }) => {
     }
   };
 
-  useEffect(() => {
-    handleDeviceList();
-  }, []);
+  //data fetching
+
+  // useEffect(() => {
+  //   handleDeviceList();
+  // }, []);
+
+  const dataList = [
+    {
+      deviceIMEI: "imei",
+      simNumber: "simNumber",
+      driverName: "driverName",
+      driverPhoneNumber: "driverPhoneNumber",
+      plate: "plate",
+      model: {
+        name: "modle",
+      },
+      usage: "usage",
+      fuel: 5000,
+      maxPMDistance: "5000",
+    },
+  ];
 
   const columns = useMemo(() => [
     {
@@ -199,7 +220,8 @@ const DeviceList = ({ setPageTitle }) => {
   };
 
   const operation = (request) => {
-    if (localStorage.getItem("token")) {
+    //data fetching fake must be ok 
+    if (!localStorage.getItem("token")) {
       return (
         <div className="d-flex justify-content-between flex-wrap">
           <Button
@@ -490,7 +512,8 @@ const DeviceList = ({ setPageTitle }) => {
                     <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
                   </Tabs> */}
                   <DeviceTable
-                    requests={deviceList}
+                    // requests={deviceList}
+                    requests={dataList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}
