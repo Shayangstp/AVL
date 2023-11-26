@@ -9,6 +9,11 @@ const initialState = {
   userManagmentEditModal: false,
   userManagmentRoleModal: false,
   userManagmentChangePasswordModal: false,
+  //category
+  categoryEditModal: false,
+  categoryAddVehicleModal: false,
+  categoryManageVehicleModal: false,
+  categoryCommonUserModal: false,
 };
 
 const modalsSlices = createSlice({
@@ -37,6 +42,19 @@ const modalsSlices = createSlice({
     RsetUserManagmentChangePasswordModal: (state, action) => {
       return { ...state, userManagmentChangePasswordModal: action.payload };
     },
+    //category
+    RsetCategoryEditModal: (state, action) => {
+      return { ...state, categoryEditModal: action.payload };
+    },
+    RsetCategoryAddVehicleModal: (state, action) => {
+      return { ...state, categoryAddVehicleModal: action.payload };
+    },
+    RsetCategoryManageVehicleModal: (state, action) => {
+      return { ...state, categoryManageVehicleModal: action.payload };
+    },
+    RsetCategoryCommonUserModal: (state, action) => {
+      return { ...state, categoryCommonUserModal: action.payload };
+    },
   },
 });
 
@@ -49,6 +67,11 @@ export const {
   RsetUserManagmentEditModal,
   RsetUserManagmentRoleModal,
   RsetUserManagmentChangePasswordModal,
+  //category
+  RsetCategoryEditModal,
+  RsetCategoryAddVehicleModal,
+  RsetCategoryManageVehicleModal,
+  RsetCategoryCommonUserModal,
 } = modalsSlices.actions;
 
 export const selectChangeProfilePicModal = (state) =>
@@ -65,5 +88,14 @@ export const selectUserManagmentRoleModal = (state) =>
   state.modals.userManagmentRoleModal;
 export const selectUserManagmentChangePasswordModal = (state) =>
   state.modals.userManagmentChangePasswordModal;
+//category
+export const selectCategoryEditModal = (state) =>
+  state.modals.categoryEditModal;
+export const selectCategoryAddVehicleModal = (state) =>
+  state.modals.categoryAddVehicleModal;
+export const selectCategoryManageVehicleModal = (state) =>
+  state.modals.categoryManageVehicleModal;
+export const selectCategoryCommonUserModal = (state) =>
+  state.modals.categoryCommonUserModal;
 
 export default modalsSlices.reducer;

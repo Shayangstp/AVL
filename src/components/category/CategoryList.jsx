@@ -11,19 +11,63 @@ import { Container, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
-  faCheck,
   faBan,
   faClockRotateLeft,
-  faEye,
   faFilter,
+  faPen,
   faPlus,
+  faCar,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
 import {
   handleCategoryList,
   selectCategorylist,
+  RsetCategoryCurrentRequest,
 } from "../../slices/categorySlices";
 import CategoryTable from "./CategoryTable";
+import {
+  RsetCategoryEditModal,
+  selectCategoryEditModal,
+  RsetCategoryAddVehicleModal,
+  selectCategoryAddVehicleModal,
+  RsetCategoryCommonUserModal,
+  selectCategoryCommonUserModal,
+  RsetCategoryManageVehicleModal,
+  selectCategoryManageVehicleModal,
+} from "../../slices/modalSlices";
+import CategoryEditModal from "./modals/CategoryEditModal";
+import CategoryAddVehicleModal from "./modals/CategoryAddVehicleModal";
+import CategoryCommonUserModal from "./modals/CategoryCommonUserModal";
+import CategoryManageVehicleModal from "./modals/CategoryManageVehicleModal";
+
+const dataList = [
+  {
+    groupName: "کاوه سلیس",
+    description: "ساوه",
+    vehicleNumber: "129",
+    color: "زرد",
+  },
+  {
+    groupName: "کاوه سودا",
+    description: "مراغه",
+    vehicleNumber: "105",
+    color: "قرمز",
+  },
+
+  {
+    groupName: "فلوت کاویان",
+    description: "مشهد",
+    vehicleNumber: "34",
+    color: "آبی روشن",
+  },
+  {
+    groupName: "متانول کاوه",
+    description: "دیر",
+    vehicleNumber: "5",
+    color: "آبی تیره",
+  },
+];
 
 const CategoryList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -34,8 +78,12 @@ const CategoryList = ({ setPageTitle }) => {
   const sortIdRef = useRef(0);
 
   const categoryList = useSelector(selectCategorylist);
-
-  console.log(categoryList);
+  const categoryEditModal = useSelector(selectCategoryEditModal);
+  const categoryAddVehicleModal = useSelector(selectCategoryAddVehicleModal);
+  const categoryCommonUsermodal = useSelector(selectCategoryCommonUserModal);
+  const categoryManageVehicleModal = useSelector(
+    selectCategoryManageVehicleModal
+  );
 
   useEffect(() => {
     dispatch(handleCategoryList());
@@ -47,34 +95,29 @@ const CategoryList = ({ setPageTitle }) => {
 
   const columns = useMemo(() => [
     {
-      Header: "سریال درخواست",
-      accessor: "reqSerial",
+      Header: "شماره",
+      accessor: "idx",
       sort: true,
     },
     {
-      Header: "تاریخ ثبت درخواست",
-      accessor: "reqDate",
+      Header: "نام گروه",
+      accessor: "groupName",
       sort: true,
     },
     {
-      Header: "درخواست کننده",
-      accessor: "reqUser",
+      Header: "توضیحات",
+      accessor: "description",
       sort: true,
     },
     {
-      Header: "واحد درخواست کننده",
-      accessor: "reqCompany",
-      sort: true,
-    },
-    {
-      Header: "وضعیت درخواست",
-      accessor: "reqStatus",
+      Header: "تعداد وسیله نقلیه",
+      accessor: "vehicleNumber",
       sort: true,
     },
     {
       Header: "عملیات",
-      accessor: "reqOperation",
-      sort: false,
+      accessor: "oprations",
+      sort: true,
     },
   ]);
   const link = (request) => {
@@ -116,128 +159,59 @@ const CategoryList = ({ setPageTitle }) => {
     );
   };
   const operation = (request) => {
-    if (localStorage.getItem("token")) {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="تایید"
-            className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "accept",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-            }}
-          >
-            <FontAwesomeIcon icon={faCheck} />
-          </Button>
-          <Button
-            title="ابطال"
-            className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "cancel",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-            }}
-          >
-            <FontAwesomeIcon icon={faBan} />
-          </Button>
-          <Button
-            title="تاریخچه"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // handleCurrentReqInfo({
-              //   company: "",
-              //   reqId: request.requestId,
-              //   reqType: request.typeId,
-              //   reqSeen: request.seen,
-              //   oprationType: "history",
-              //   dep: "",
-              // })
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-            }}
-          >
-            <FontAwesomeIcon icon={faClockRotateLeft} />
-          </Button>
-        </div>
-      );
-    } else {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="مشاهده"
-            className="btn btn-warning d-flex me-2 align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "view",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-              // dispatch(RsetViewReqModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </Button>
-          <Button
-            title="تاریخچه"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "history",
-              //     dep: "",
-              //   })
-              // );
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-              // dispatch(RsetReqHistoryModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faClockRotateLeft} />
-          </Button>
-        </div>
-      );
-    }
+    // if (localStorage.getItem("token")) {
+    return (
+      <div className="d-flex justify-content-between flex-wrap">
+        <Button
+          title="ویرایش"
+          className="btn btn-primary d-flex align-items-center me-2 mb-2 mb-md-0"
+          size="sm"
+          active
+          onClick={() => {
+            console.log("hi");
+            dispatch(RsetCategoryEditModal(true));
+            dispatch(RsetCategoryCurrentRequest(request));
+          }}
+        >
+          <FontAwesomeIcon icon={faPen} />
+        </Button>
+        <Button
+          title="افزودن وسیله نقلیه"
+          className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
+          size="sm"
+          active
+          onClick={() => {
+            dispatch(RsetCategoryAddVehicleModal(true));
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </Button>
+        <Button
+          title="مدیریت وسیله نقلیه"
+          className="btn btn-danger d-flex align-items-center mb-2 mb-md-0"
+          size="sm"
+          active
+          onClick={() => {
+            dispatch(RsetCategoryManageVehicleModal(true));
+          }}
+        >
+          <FontAwesomeIcon icon={faCar} />
+        </Button>
+        <Button
+          title="کاربر های مشابه"
+          className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
+          size="sm"
+          active
+          onClick={() => {
+            dispatch(RsetCategoryCommonUserModal(true));
+          }}
+        >
+          <FontAwesomeIcon icon={faUser} />
+        </Button>
+      </div>
+    );
+    // } else {
+    // }
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
@@ -245,15 +219,11 @@ const CategoryList = ({ setPageTitle }) => {
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
-          reqSerial: link(requests[i]),
-          // reqDate: moment
-          //   .utc(requests[i].createdDate, "YYYY/MM/DD")
-          //   .locale("fa")
-          //   .format("jYYYY/jMM/jDD"),
-          reqUser: userInfo(requests[i]),
-          reqCompany: requests[i].deptName,
-          reqStatus: requests[i].statusName,
-          reqOperation: operation(requests[i]),
+          idx: i + 1,
+          groupName: requests[i].groupName,
+          description: requests[i].description,
+          vehicleNumber: requests[i].vehicleNumber,
+          oprations: operation(requests[i]),
         };
         tableItems.push(tableItem);
       }
@@ -274,15 +244,11 @@ const CategoryList = ({ setPageTitle }) => {
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            reqSerial: link(requests[i]),
-            // reqDate: moment
-            //   .utc(requests[i].createdDate, "YYYY/MM/DD")
-            //   .locale("fa")
-            //   .format("jYYYY/jMM/jDD"),
-            reqUser: userInfo(requests[i]),
-            reqCompany: requests[i].deptName,
-            reqStatus: requests[i].statusName,
-            reqOperation: operation(requests[i]),
+            idx: i + 1,
+            groupName: requests[i].groupName,
+            description: requests[i].description,
+            vehicleNumber: requests[i].vehicleNumber,
+            oprations: operation(requests[i]),
           };
           tableItems.push(tableItem);
         }
@@ -371,7 +337,8 @@ const CategoryList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <CategoryTable
-                    requests={categoryList}
+                    // requests={categoryList}
+                    requests={dataList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}
@@ -391,6 +358,10 @@ const CategoryList = ({ setPageTitle }) => {
         {/* :
         <Redirect to="/" />
       } */}
+        {categoryEditModal && <CategoryEditModal />}
+        {categoryAddVehicleModal && <CategoryAddVehicleModal />}
+        {categoryCommonUsermodal && <CategoryCommonUserModal />}
+        {categoryManageVehicleModal && <CategoryManageVehicleModal />}
       </Fragment>
     </Container>
   );
