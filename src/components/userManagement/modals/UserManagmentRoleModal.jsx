@@ -5,23 +5,23 @@ import {
   selectUserManagmentRoleModal,
 } from "../../../slices/modalSlices";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
-// import {
-//   handleUserRoles,
-//   RsetUserRoles,
-//   selectUserRoles,
-// } from "../../../slices/userManagmentSlices";
+import { selectCurrentUser } from "../../../slices/userManagmentSlices";
+import { useEffect } from "react";
 
 const UserManagmentRoleModal = () => {
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
   const [checkedItems, setCheckedItems] = useState([]);
 
+  useEffect(() => {
+    setCheckedItems(currentUser.roles.length !== 0 && [...currentUser.roles]);
+  }, []);
+
   const userManagmentRoleModal = useSelector(selectUserManagmentRoleModal);
-  // const userRoles = useSelector(selectUserRoles);
 
   const handleCheckboxChange = (e) => {
     const checkboxValue = e.target.value;
     const isChecked = e.target.checked;
-
     // make this into the redux
     if (isChecked) {
       // dispatch(RsetUserRoles((prev) => [...prev, checkboxValue]));
@@ -72,6 +72,7 @@ const UserManagmentRoleModal = () => {
                   id="view"
                   label="مشاهده"
                   value="device_view"
+                  checked={checkedItems.includes("device_view")}
                   onChange={(e) => {
                     handleCheckboxChange(e);
                   }}
@@ -82,6 +83,7 @@ const UserManagmentRoleModal = () => {
                   id="view"
                   label="افزودن"
                   value="device_add"
+                  checked={checkedItems.includes("device_add")}
                   onChange={(e) => {
                     handleCheckboxChange(e);
                   }}
@@ -92,6 +94,7 @@ const UserManagmentRoleModal = () => {
                   id="view"
                   label="ویرایش"
                   value="device_edit"
+                  checked={checkedItems.includes("device_edit")}
                   onChange={(e) => {
                     handleCheckboxChange(e);
                   }}
@@ -108,6 +111,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="user_view"
+                checked={checkedItems.includes("user_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -118,6 +122,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="افزودن"
                 value="user_add"
+                checked={checkedItems.includes("user_add")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -128,6 +133,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="user_edit"
+                checked={checkedItems.includes("user_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -138,6 +144,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش نقش"
                 value="user_role"
+                checked={checkedItems.includes("user_role")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -148,6 +155,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مسدود سازی"
                 value="user_block"
+                checked={checkedItems.includes("user_block")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -158,6 +166,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="تغییر رمز"
                 value="user_password"
+                checked={checkedItems.includes("user_password")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -173,6 +182,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="group_view"
+                checked={checkedItems.includes("group_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -183,6 +193,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="افزودن"
                 value="group_add"
+                checked={checkedItems.includes("group_add")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -193,6 +204,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="group_edit"
+                checked={checkedItems.includes("group_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -203,6 +215,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش دستگاه"
                 value="group_device"
+                checked={checkedItems.includes("group_device")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -213,6 +226,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش کاربر"
                 value="group_user"
+                checked={checkedItems.includes("group_user")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -228,6 +242,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="report_view"
+                checked={checkedItems.includes("report_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -243,6 +258,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="speed_view"
+                checked={checkedItems.includes("speed_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -253,6 +269,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="speed_edit"
+                checked={checkedItems.includes("speed_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -268,6 +285,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="polygon_view"
+                checked={checkedItems.includes("polygon_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -278,6 +296,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="polygon_edit"
+                checked={checkedItems.includes("polygon_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -293,6 +312,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="status_view"
+                checked={checkedItems.includes("status_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -303,6 +323,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="status_edit"
+                checked={checkedItems.includes("status_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -318,6 +339,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="مشاهده"
                 value="gps_view"
+                checked={checkedItems.includes("gps_view")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}
@@ -328,6 +350,7 @@ const UserManagmentRoleModal = () => {
                 id="view"
                 label="ویرایش"
                 value="gps_edit"
+                checked={checkedItems.includes("gps_edit")}
                 onChange={(e) => {
                   handleCheckboxChange(e);
                 }}

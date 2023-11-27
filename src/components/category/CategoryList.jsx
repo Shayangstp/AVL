@@ -35,37 +35,52 @@ import {
   selectCategoryCommonUserModal,
   RsetCategoryManageVehicleModal,
   selectCategoryManageVehicleModal,
+  RsetCategoryAddModal,
+  selectCategoryAddModal,
 } from "../../slices/modalSlices";
 import CategoryEditModal from "./modals/CategoryEditModal";
 import CategoryAddVehicleModal from "./modals/CategoryAddVehicleModal";
 import CategoryCommonUserModal from "./modals/CategoryCommonUserModal";
 import CategoryManageVehicleModal from "./modals/CategoryManageVehicleModal";
+import CategoryAddModal from "./modals/CategoryAddModal";
 
 const dataList = [
   {
     groupName: "کاوه سلیس",
     description: "ساوه",
     vehicleNumber: "129",
-    color: "زرد",
+    color: {
+      label: "زرد",
+      value: "#f5e642",
+    },
   },
   {
     groupName: "کاوه سودا",
     description: "مراغه",
     vehicleNumber: "105",
-    color: "قرمز",
+    color: {
+      label: "قرمز",
+      value: "#ff0f0f",
+    },
   },
 
   {
     groupName: "فلوت کاویان",
     description: "مشهد",
     vehicleNumber: "34",
-    color: "آبی روشن",
+    color: {
+      label: "آبی روشن",
+      value: "#38deff",
+    },
   },
   {
     groupName: "متانول کاوه",
     description: "دیر",
     vehicleNumber: "5",
-    color: "آبی تیره",
+    color: {
+      label: "آبی روشن",
+      value: "#1d4ff2",
+    },
   },
 ];
 
@@ -84,6 +99,7 @@ const CategoryList = ({ setPageTitle }) => {
   const categoryManageVehicleModal = useSelector(
     selectCategoryManageVehicleModal
   );
+  const categoryAddModal = useSelector(selectCategoryAddModal);
 
   useEffect(() => {
     dispatch(handleCategoryList());
@@ -214,12 +230,32 @@ const CategoryList = ({ setPageTitle }) => {
     // }
   };
 
+  const handleBackgroundColor = (i, color) => {
+    return (
+      <div className="d-flex justify-content-center rounded-circle">
+        <div
+          className="rounded-circle d-flex align-items-center justify-content-center"
+          style={{
+            background: `${color && color}`,
+            width: "30px",
+            height: "30px",
+          }}
+        >
+          {i + 1}
+        </div>
+      </div>
+    );
+  };
+
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
     if (requests.length !== 0) {
+      let colors = requests.map((request) => {
+        return request.color.value;
+      });
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
-          idx: i + 1,
+          idx: handleBackgroundColor(i, colors[i]),
           groupName: requests[i].groupName,
           description: requests[i].description,
           vehicleNumber: requests[i].vehicleNumber,
@@ -241,10 +277,13 @@ const CategoryList = ({ setPageTitle }) => {
   const handleSort = useCallback(
     ({ sortBy, pageIndex, pageSize, requests }) => {
       var tableItems = [];
+      let colors = requests.map((request) => {
+        return request.color.value;
+      });
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            idx: i + 1,
+            idx: handleBackgroundColor(i, colors[i]),
             groupName: requests[i].groupName,
             description: requests[i].description,
             vehicleNumber: requests[i].vehicleNumber,
@@ -286,49 +325,15 @@ const CategoryList = ({ setPageTitle }) => {
             className="mt-5"
           >
             <div className="d-flex align-items-center justify-content-between">
-              <div>
-                <Link to="/SoftwareReqRegistration">
-                  {/* <Button size="sm" variant="success" className="mb-2 font12">
-                    <FontAwesomeIcon icon={faPlus} className="me-2" />
-                    افزودن درخواست جدید
-                  </Button> */}
-                </Link>
-                <Button
-                  size="sm"
-                  variant="warning"
-                  className="mb-2 ms-2 font12"
-                  onClick={() => {
-                    // dispatch(RsetShowFilter(!showFilter));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFilter} className="me-2" />
-                  فیلتر
-                </Button>
-              </div>
               <Button
                 size="sm"
-                variant="primary"
-                className="mb-2 font12"
+                variant="success"
+                className="mb-2 px-4"
                 onClick={() => {
-                  // const handleFilterGroup = await dispatch(handleTabs());
-                  // if (activeTab !== "") {
-                  // const filterValues = {
-                  //   applicantId: localStorage.getItem("id"),
-                  //   serial: "",
-                  //   memberId: "",
-                  //   mDep: "",
-                  //   status: "",
-                  //   fromDate: "null",
-                  //   toDate: "null",
-                  //   type: 6,
-                  //   // group: handleFilterGroup.payload,
-                  // };
-                  // dispatch(handleReqsList(filterValues));
-                  // }
+                  dispatch(RsetCategoryAddModal(true));
                 }}
               >
-                <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                به روزرسانی
+                + افزودن
               </Button>
             </div>
             <div className="position-relative">
@@ -362,6 +367,7 @@ const CategoryList = ({ setPageTitle }) => {
         {categoryAddVehicleModal && <CategoryAddVehicleModal />}
         {categoryCommonUsermodal && <CategoryCommonUserModal />}
         {categoryManageVehicleModal && <CategoryManageVehicleModal />}
+        {categoryAddModal && <CategoryAddModal />}
       </Fragment>
     </Container>
   );

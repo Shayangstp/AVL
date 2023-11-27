@@ -1,15 +1,13 @@
 import React from "react";
 import { Container } from "react-bootstrap";
+import DashboardMap from "./map/DashboardMap";
 
 const Home = () => {
   return (
-    <div className="bg-primary h-100">
-      <div className="border">
-        <div className="bg-dark text-white border"> this is test</div>
-      </div>
-      <div className="border border-danger mt-4 ">
-        <div className="bg-dark text-white"> this is test</div>
-      </div>
+    <div fluid className="bg-primary h-100">
+      {/* <div className="h-100 p-5"> */}
+      <DashboardMap />
+      {/* </div> */}
     </div>
   );
 };

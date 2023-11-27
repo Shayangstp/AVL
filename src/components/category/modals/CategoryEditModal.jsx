@@ -116,7 +116,10 @@ const CategoryEditModal = () => {
     dispatch(RsetCategoryGroupDescription(categoryCurrentRequest.description));
     dispatch(
       RsetCategoryGroupColor([
-        { label: categoryCurrentRequest.color, value: 1 },
+        {
+          label: categoryCurrentRequest.color.label,
+          value: categoryCurrentRequest.color.value,
+        },
       ])
     );
   }, []);

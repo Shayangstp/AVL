@@ -13,6 +13,7 @@ const initialState = {
   categoryUserVehicleOptions: [],
   categoryCommonUser: "",
   categoryCommonUserOptions: [],
+  categoryName: "",
 };
 
 export const handleCategoryList = createAsyncThunk(
@@ -67,6 +68,9 @@ const categorySlices = createSlice({
     RsetCategoryCommonUserOptions: (state, { payload }) => {
       return { ...state, categoryCommonUserOptions: payload };
     },
+    RsetCategoryName: (state, { payload }) => {
+      return { ...state, categoryName: payload };
+    },
   },
 });
 
@@ -81,6 +85,7 @@ export const {
   RsetCategoryUserVehicleOptions,
   RsetCategoryCommonUser,
   RsetCategoryCommonUserOptions,
+  RsetCategoryName,
 } = categorySlices.actions;
 
 export const selectCategorylist = (state) => state.category.categoryList;
@@ -102,6 +107,6 @@ export const selectCategoryCommonUser = (state) =>
   state.category.categoryCommonUser;
 export const selectCategoryCommonUserOptions = (state) =>
   state.category.categoryCommonUserOptions;
+export const selectCategoryName = (state) => state.category.categoryName;
 
-  
 export default categorySlices.reducer;

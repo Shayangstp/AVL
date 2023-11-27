@@ -221,13 +221,22 @@ const NavbarOff = () => {
                   >
                     <span className="ms-4 lightGray">افزودن کاربر</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/userList")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">مشاهده کاربرها</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/viewPhoneNumbers")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">مشاهده شماره تلفن ها</span>
                   </Nav.Link>
-                  <Nav.Link href="#dropdown-item-1" className="sidebar-link">
+                  <Nav.Link
+                    onClick={() => navigate("/addPhoneNumber")}
+                    className="sidebar-link"
+                  >
                     <span className="ms-4 lightGray">افزودن شماره تلفن</span>
                   </Nav.Link>
                 </div>

@@ -14,14 +14,20 @@ import ViewLastLocation from "../components/getReport/ViewLastLocation";
 import GetReport from "../components/getReport/GetReport";
 import AddPhoneNumbers from "../components/userManagement/AddPhoneNumbers";
 import PhoneNumberList from "../components/userManagement/PhoneNumberList";
+import Test from "../components/test/Test";
+import { Navigate } from "react-router-dom";
 
 const AVL = () => {
   const [pageTitle, setPageTitle] = useState("");
+  const isLoggedIn = localStorage.getItem("token") !== null;
 
   return (
     <Fragment>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
+        />
       </Routes>
       <MainLayout>
         <Routes>
@@ -50,6 +56,8 @@ const AVL = () => {
             path="/userList"
             element={<UserList setPageTitle={setPageTitle} />}
           />
+          {/* test */}
+          <Route path="/test" element={<Test />} />
         </Routes>
       </MainLayout>
     </Fragment>

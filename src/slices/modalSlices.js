@@ -14,6 +14,7 @@ const initialState = {
   categoryAddVehicleModal: false,
   categoryManageVehicleModal: false,
   categoryCommonUserModal: false,
+  categoryAddModal: false,
 };
 
 const modalsSlices = createSlice({
@@ -55,6 +56,9 @@ const modalsSlices = createSlice({
     RsetCategoryCommonUserModal: (state, action) => {
       return { ...state, categoryCommonUserModal: action.payload };
     },
+    RsetCategoryAddModal: (state, action) => {
+      return { ...state, categoryAddModal: action.payload };
+    },
   },
 });
 
@@ -72,6 +76,7 @@ export const {
   RsetCategoryAddVehicleModal,
   RsetCategoryManageVehicleModal,
   RsetCategoryCommonUserModal,
+  RsetCategoryAddModal,
 } = modalsSlices.actions;
 
 export const selectChangeProfilePicModal = (state) =>
@@ -97,5 +102,6 @@ export const selectCategoryManageVehicleModal = (state) =>
   state.modals.categoryManageVehicleModal;
 export const selectCategoryCommonUserModal = (state) =>
   state.modals.categoryCommonUserModal;
+export const selectCategoryAddModal = (state) => state.modals.categoryAddModal;
 
 export default modalsSlices.reducer;

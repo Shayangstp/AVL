@@ -24,11 +24,6 @@ const Map = ({ height, width }) => {
       style={{ height: height, width: width }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {/* {markers
-        ? markers.map((marker, index) => (
-            <Marker key={index} position={marker} />
-          ))
-        : null} */}
       <Marker
         position={
           deviceCordinate.length !== 0 ? deviceCordinate : [35.7219, 51.3347]

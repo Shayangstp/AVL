@@ -51,7 +51,7 @@ const dataList = [
     mobileNumber: "09353835262",
     email: "g.shayan5529@gmail.com",
     gender: "male",
-    roles: ["admin", "user"],
+    roles: ["device_view", "device_add"],
     islockedout: false,
   },
 ];
@@ -175,6 +175,7 @@ const UserList = ({ setPageTitle }) => {
             active
             onClick={() => {
               dispatch(RsetUserManagmentRoleModal(true));
+              dispatch(RsetCurrentUser(request));
             }}
           >
             <FontAwesomeIcon icon={faStamp} />
