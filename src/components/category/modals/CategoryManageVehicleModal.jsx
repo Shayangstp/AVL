@@ -6,12 +6,18 @@ import {
 } from "../../../slices/modalSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
+import { useEffect } from "react";
+import { handleCategoryManageVehicleList } from "../../../slices/categorySlices";
 
 const CategoryManageVehicleModal = () => {
   const dispatch = useDispatch();
   const categoryManageVehicleModal = useSelector(
     selectCategoryManageVehicleModal
   );
+
+  useEffect(() => {
+    dispatch(handleCategoryManageVehicleList());
+  }, []);
 
   return (
     <Modal
@@ -26,7 +32,7 @@ const CategoryManageVehicleModal = () => {
     >
       <Modal.Header className="bg-info text-white ">
         <Modal.Title id="contained-modal-title-vcenter">
-          کاربرهای مشترک
+          مدیریت وسیله نقلیه
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

@@ -33,7 +33,6 @@ import {
   selectDeviceCordinate,
   selectCurrentDevice,
 } from "../../../../slices/deviceSlices";
-
 import DeviceTableLocations from "./DeviceTableLocations";
 
 const DeviceListLocations = ({ setPageTitle }) => {
@@ -41,14 +40,19 @@ const DeviceListLocations = ({ setPageTitle }) => {
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
   const [pageCount, setPageCount] = useState(0);
+  //handleCheckboxPlay
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [checkboxes, setCheckboxes] = useState([]);
+
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
   const deviceLocList = useSelector(selectDeviceLocList);
   const deviceCordinate = useSelector(selectDeviceCordinate);
   const currentDevice = useSelector(selectCurrentDevice);
-  // useEffect(() => {
-  //   if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
-  // }, [deviceLocList]);
+  useEffect(() => {
+    if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
+  }, [deviceLocList]);
 
   //fake data
 
@@ -125,30 +129,6 @@ const DeviceListLocations = ({ setPageTitle }) => {
     },
   ]);
 
-  const link = (request) => {
-    return (
-      <a
-        className="text-dark text-decoration-none cursorPointer serialHover"
-        title={"مشاهده درخواست " + request.serial}
-        onClick={() => {
-          // dispatch(
-          //   handleCurrentReqInfo({
-          //     company: "",
-          //     reqId: request.requestId,
-          //     reqType: request.typeId,
-          //     reqSeen: request.seen,
-          //     oprationType: "view",
-          //     dep: "",
-          //   })
-          // );
-          // setSeenSerial(request.serial);
-        }}
-      >
-        {request.deviceIMEI}
-      </a>
-    );
-  };
-
   //the location showed from api
   const handleCordinates = (request) => {
     console.log(request.lng);
@@ -156,161 +136,69 @@ const DeviceListLocations = ({ setPageTitle }) => {
     cordinateArr.push(request.lat);
     cordinateArr.push(request.lng);
 
-    dispatch(RsetDeviceCordinate(cordinateArr)); 
+    dispatch(RsetDeviceCordinate(cordinateArr));
   };
 
-  const handleCheckBox = (request) => {
+
+
+  const handleCheckBox = (requests, i) => {
     return (
       <Form.Check
-        type="radio"
-        id="cordinate"
-        name="cordinate"
-        onClick={() => handleCordinates(request)}
+        key={i}
+        type="checkbox"
+        id={i}
+        value={i}
+        checked={i === currentIndex}
+        onChange={() => {
+          console.log(i === currentIndex);
+          console.log(i, currentIndex);
+          // handleCheckboxChange(i);
+          setCurrentIndex(i);
+        }}
+        className="me-3"
       />
     );
   };
 
+  const handlePlayClick = () => {
+    setIsPlaying(true);
+    setCurrentIndex(currentIndex);
+  };
 
+  useEffect(() => {
+    if (isPlaying) {
+      const timeoutId = setTimeout(() => {
+        if (currentIndex < checkboxes - 1) {
+          setCurrentIndex((prevIndex) => prevIndex + 1);
+        } else {
+          setIsPlaying(false);
+        }
+      }, 1000);
 
-  const operation = (request) => {
-    if (localStorage.getItem("token")) {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="ویرایش"
-            className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              console.log(request);
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "accept",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-            }}
-          >
-            <FontAwesomeIcon icon={faPen} />
-          </Button>
-          <Button
-            title="تنظیمات"
-            className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "cancel",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-            }}
-          >
-            <FontAwesomeIcon icon={faScrewdriverWrench} />
-          </Button>
-          <Button
-            title="مشاهده مکان ها"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // handleCurrentReqInfo({
-              //   company: "",
-              //   reqId: request.requestId,
-              //   reqType: request.typeId,
-              //   reqSeen: request.seen,
-              //   oprationType: "history",
-              //   dep: "",
-              // })
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-            }}
-          >
-            <FontAwesomeIcon icon={faLocationDot} />
-          </Button>
-        </div>
-      );
-    } else {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="مشاهده"
-            className="btn btn-warning d-flex me-2 align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "view",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-              // dispatch(RsetViewReqModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </Button>
-          <Button
-            title="تاریخچه"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "history",
-              //     dep: "",
-              //   })
-              // );
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-              // dispatch(RsetReqHistoryModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faClockRotateLeft} />
-          </Button>
-        </div>
-      );
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentIndex, isPlaying]);
+
+  const getCheckBoxData = (index) => {
+    if (index >= 0 && index < checkboxes.length) {
+      // const label = checkboxes[index].label;
+      setCurrentIndex(index);
+      // console.log(label);
     }
   };
 
-  const handleCheckBoxAuto = (requests) => {
-    let checkBoxIndex = 0;
-  };
+  useEffect(() => {
+    getCheckBoxData(currentIndex);
+  }, [currentIndex]);
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
+    setCheckboxes(requests.length);
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
           idx: i + 1,
-          checkBox: true
-            ? handleCheckBox(requests[i])
-            : handleCheckBoxAuto(requests[i]),
+          checkBox: handleCheckBox(requests, i),
           date: moment
             .utc(requests[i].date, "YYYY/MM/DD")
             .locale("fa")
@@ -342,9 +230,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            checkBox: true
-              ? handleCheckBox(requests[i])
-              : handleCheckBoxAuto(requests[i]),
+            checkBox: handleCheckBox(requests, i),
             date: moment
               .utc(requests[i].date, "YYYY/MM/DD")
               .locale("fa")
@@ -404,13 +290,56 @@ const DeviceListLocations = ({ setPageTitle }) => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <button>play</button>
+                  <Form.Group>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        if (currentIndex !== 0) {
+                          setCurrentIndex((prev) => prev - 1);
+                        } else {
+                          setCurrentIndex(checkboxes.length - 1);
+                        }
+                      }}
+                    >
+                      backward
+                    </Button>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      onClick={handlePlayClick}
+                      disabled={isPlaying}
+                    >
+                      Play
+                    </Button>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      onClick={() => {
+                        setIsPlaying(false);
+                        setCurrentIndex(0);
+                      }}
+                    >
+                      Pause
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        if (currentIndex <= checkboxes.length - 2) {
+                          setCurrentIndex((prev) => prev + 1);
+                        } else {
+                          setCurrentIndex(0);
+                        }
+                      }}
+                    >
+                      forward
+                    </Button>
+                  </Form.Group>
                   {/* this should be fix  */}
                   {/* {deviceLocList.length !== 0 ? ( */}
                   {dataList.length !== 0 ? (
                     <DeviceTableLocations
-                      // requests={deviceLocList}
-                      requests={dataList}
+                      requests={deviceLocList}
+                      // requests={dataList}
                       // notVisited={notVisited}
                       columns={columns}
                       data={data}

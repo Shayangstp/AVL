@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { Button, Modal, Form, Row, Col } from "react-bootstrap";
+import { Button, Modal, Form, Row, Col, Container } from "react-bootstrap";
 
 const Test = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

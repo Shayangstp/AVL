@@ -18,64 +18,37 @@ import {
   selectCategoryGroupColor,
 } from "../../../slices/categorySlices";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
+import { putCategoryEdit } from "../../../services/categoryServices";
+import { errorMessage, successMessage } from "../../../utils/msg";
+import { useNavigate } from "react-router";
 
 const colorOptions = [
   {
     label: "قرمز",
-    value: 1,
+    value: "red",
   },
   {
     label: "زرد",
-    value: 2,
+    value: "yellow",
   },
   {
-    label: "آبی روشن",
-    value: 3,
+    label: "آبی ",
+    value: "blue",
   },
+
   {
-    label: "آبی تیره",
-    value: 4,
-  },
-  {
-    label: "سبزه روشن",
-    value: 5,
-  },
-  {
-    label: "سبزه تیره",
-    value: 6,
+    label: "سبزه",
+    value: "green",
   },
   {
     label: "نارنجی",
-    value: 7,
-  },
-  {
-    label: "قهوه ای",
-    value: 8,
-  },
-  {
-    label: "صورتی",
-    value: 9,
-  },
-  {
-    label: "بنفش",
-    value: 10,
-  },
-  {
-    label: "سبزآبی",
-    value: 11,
-  },
-  {
-    label: "سرخابی",
-    value: 12,
-  },
-  {
-    label: "یاسی",
-    value: 13,
+    value: "orange",
   },
 ];
 
 const CategoryEditModal = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const categoryEditModal = useSelector(selectCategoryEditModal);
   const categoryGroupName = useSelector(selectCategoryGroupName);
   const categoryGroupDescription = useSelector(selectCategoryGroupDescription);
@@ -112,28 +85,91 @@ const CategoryEditModal = () => {
 
   useEffect(() => {
     dispatch(RsetCategoryGroupColorOptions(colorOptions));
-    dispatch(RsetCategoryGroupName(categoryCurrentRequest.groupName));
-    dispatch(RsetCategoryGroupDescription(categoryCurrentRequest.description));
-    dispatch(
-      RsetCategoryGroupColor([
-        {
-          label: categoryCurrentRequest.color.label,
-          value: categoryCurrentRequest.color.value,
-        },
-      ])
-    );
+    dispatch(RsetCategoryGroupName(categoryCurrentRequest.name));
+    dispatch(RsetCategoryGroupDescription(categoryCurrentRequest.desc));
+
+    switch (categoryCurrentRequest.color) {
+      case "orange":
+        dispatch(
+          RsetCategoryGroupColor([
+            {
+              label: "نارنجی",
+              value: "orange",
+            },
+          ])
+        );
+        break;
+      case "blue":
+        dispatch(
+          RsetCategoryGroupColor([
+            {
+              label: "آبی",
+              value: 2,
+            },
+          ])
+        );
+        break;
+      case "yellow":
+        dispatch(
+          RsetCategoryGroupColor([
+            {
+              label: "زرد",
+              value: "yellow",
+            },
+          ])
+        );
+        break;
+      case "green":
+        dispatch(
+          RsetCategoryGroupColor([
+            {
+              label: "سبز",
+              value: "green",
+            },
+          ])
+        );
+        break;
+      case "red":
+        dispatch(
+          RsetCategoryGroupColor([
+            {
+              label: "قرمز",
+              value: "red",
+            },
+          ])
+        );
+        break;
+
+      default:
+        console.log("color is not defined");
+        break;
+    }
   }, []);
 
-  console.log(categoryCurrentRequest.groupName);
-
-  const categoryEditFormSubmit = (e) => {
+  const categoryEditFormSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     if (categoryFormIsValid) {
       console.log({
         categoryGroupName,
         categoryGroupDescription,
         categoryGroupColor,
       });
+      const values = {
+        groupId: categoryCurrentRequest._id,
+        name: categoryGroupName,
+        desc: categoryGroupDescription,
+        color: categoryGroupColor.value,
+      };
+      const putCategoryEditRes = await putCategoryEdit(values, token);
+      console.log(putCategoryEditRes);
+      if (putCategoryEditRes.data.code === 200) {
+        successMessage("تغییرات با موفقیت انجام شد");
+        dispatch(RsetCategoryEditModal(false));
+        navigate(0);
+      } else {
+        errorMessage("خظا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -196,7 +232,7 @@ const CategoryEditModal = () => {
               />
             </Form.Group>
             <Form.Group as={Col} md="4">
-              <Form.Label className="required-field">رنگ:</Form.Label>
+              <Form.Label>رنگ:</Form.Label>
               <Select
                 // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
                 value={categoryGroupColor}

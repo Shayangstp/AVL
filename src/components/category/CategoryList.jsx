@@ -136,44 +136,7 @@ const CategoryList = ({ setPageTitle }) => {
       sort: true,
     },
   ]);
-  const link = (request) => {
-    return (
-      <a
-        className="text-dark text-decoration-none cursorPointer serialHover"
-        title={"مشاهده درخواست " + request.serial}
-        onClick={() => {
-          // dispatch(
-          //   handleCurrentReqInfo({
-          //     company: "",
-          //     reqId: request.requestId,
-          //     reqType: request.typeId,
-          //     reqSeen: request.seen,
-          //     oprationType: "view",
-          //     dep: "",
-          //   })
-          // );
-          // setSeenSerial(request.serial);
-        }}
-      >
-        {/* {xssFilters.inHTMLData(request.serial)} */}
-      </a>
-    );
-  };
 
-  const userInfo = (request) => {
-    return (
-      <div
-        className="text-dark cursorPointer"
-        title="مشاهده اطلاعات کاربر "
-        onClick={() => {
-          // dispatch(handleUserInformation(request.userId));
-          // dispatch(selectUserImage({ userId: request.userId, status: 1 }));
-        }}
-      >
-        {/* {xssFilters.inHTMLData(request.fullName)} */}
-      </div>
-    );
-  };
   const operation = (request) => {
     // if (localStorage.getItem("token")) {
     return (
@@ -184,7 +147,6 @@ const CategoryList = ({ setPageTitle }) => {
           size="sm"
           active
           onClick={() => {
-            console.log("hi");
             dispatch(RsetCategoryEditModal(true));
             dispatch(RsetCategoryCurrentRequest(request));
           }}
@@ -198,6 +160,7 @@ const CategoryList = ({ setPageTitle }) => {
           active
           onClick={() => {
             dispatch(RsetCategoryAddVehicleModal(true));
+            dispatch(RsetCategoryCurrentRequest(request));
           }}
         >
           <FontAwesomeIcon icon={faPlus} />
@@ -250,15 +213,12 @@ const CategoryList = ({ setPageTitle }) => {
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
     if (requests.length !== 0) {
-      let colors = requests.map((request) => {
-        return request.color.value;
-      });
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
-          idx: handleBackgroundColor(i, colors[i]),
-          groupName: requests[i].groupName,
-          description: requests[i].description,
-          vehicleNumber: requests[i].vehicleNumber,
+          idx: handleBackgroundColor(i, requests[i].color),
+          groupName: requests[i].name,
+          description: requests[i].desc,
+          vehicleNumber: requests[i].devices.length,
           oprations: operation(requests[i]),
         };
         tableItems.push(tableItem);
@@ -283,10 +243,10 @@ const CategoryList = ({ setPageTitle }) => {
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
-            idx: handleBackgroundColor(i, colors[i]),
-            groupName: requests[i].groupName,
-            description: requests[i].description,
-            vehicleNumber: requests[i].vehicleNumber,
+            idx: handleBackgroundColor(i, requests[i].color),
+            groupName: requests[i].name,
+            description: requests[i].desc,
+            vehicleNumber: requests[i].devices.length,
             oprations: operation(requests[i]),
           };
           tableItems.push(tableItem);
@@ -342,8 +302,8 @@ const CategoryList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <CategoryTable
-                    // requests={categoryList}
-                    requests={dataList}
+                    requests={categoryList}
+                    // requests={dataList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}

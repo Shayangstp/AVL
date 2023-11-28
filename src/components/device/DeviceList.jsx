@@ -92,25 +92,25 @@ const DeviceList = ({ setPageTitle }) => {
 
   //data fetching
 
-  // useEffect(() => {
-  //   handleDeviceList();
-  // }, []);
+  useEffect(() => {
+    handleDeviceList();
+  }, []);
 
-  const dataList = [
-    {
-      deviceIMEI: "imei",
-      simNumber: "simNumber",
-      driverName: "driverName",
-      driverPhoneNumber: "driverPhoneNumber",
-      plate: "plate",
-      model: {
-        name: "modle",
-      },
-      usage: "usage",
-      fuel: 5000,
-      maxPMDistance: "5000",
-    },
-  ];
+  // const dataList = [
+  //   {
+  //     deviceIMEI: "imei",
+  //     simNumber: "simNumber",
+  //     driverName: "driverName",
+  //     driverPhoneNumber: "driverPhoneNumber",
+  //     plate: "plate",
+  //     model: {
+  //       name: "modle",
+  //     },
+  //     usage: "usage",
+  //     fuel: 5000,
+  //     maxPMDistance: "5000",
+  //   },
+  // ];
 
   const columns = useMemo(() => [
     {
@@ -220,8 +220,7 @@ const DeviceList = ({ setPageTitle }) => {
   };
 
   const operation = (request) => {
-    //data fetching fake must be ok 
-    if (!localStorage.getItem("token")) {
+    if (localStorage.getItem("token")) {
       return (
         <div className="d-flex justify-content-between flex-wrap">
           <Button
@@ -230,6 +229,7 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
+              console.log(request);
               //handle date bc came from api wrong way
               const apiDate = request.createDate;
               const dateParts = apiDate.split(" ");
@@ -237,12 +237,12 @@ const DeviceList = ({ setPageTitle }) => {
               const month = moment().month(dateParts[1]).format("jMM");
               const year = parseInt(dateParts[3], 10);
               const persianDate = `${year}/${month}/${day}`;
-              //
+
               dispatch(RsetDeviceEditModal(true));
               dispatch(RsetVehicleNumber(request.plate));
               dispatch(RsetVehicleCompany(request.model.name));
               dispatch(RsetVehicleType(request.model.name));
-              dispatch(RsetDriverName(request.vehicleName));
+              dispatch(RsetDriverName(request.driverName));
               dispatch(RsetDriverNumber(request.driverPhoneNumber));
               dispatch(RsetVehicleUsing(request.usage));
               dispatch(RsetVehicleGas(request.fuel));
@@ -281,75 +281,11 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              // handleCurrentReqInfo({
-              //   company: "",
-              //   reqId: request.requestId,
-              //   reqType: request.typeId,
-              //   reqSeen: request.seen,
-              //   oprationType: "history",
-              //   dep: "",
-              // })
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
               dispatch(RsetDeviceLocationsModal(true));
               dispatch(RsetCurrentDevice(request));
             }}
           >
             <FontAwesomeIcon icon={faLocationDot} />
-          </Button>
-        </div>
-      );
-    } else {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
-          <Button
-            title="مشاهده"
-            className="btn btn-warning d-flex me-2 align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "view",
-              //     dep: "",
-              //   })
-              // );
-              // setSeenSerial(serialNumber);
-              // dispatch(RsetViewReqModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </Button>
-          <Button
-            title="تاریخچه"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
-            size="sm"
-            active
-            onClick={() => {
-              // dispatch(
-              //   handleCurrentReqInfo({
-              //     company: "",
-              //     reqId: request.requestId,
-              //     reqType: request.typeId,
-              //     reqSeen: request.seen,
-              //     oprationType: "history",
-              //     dep: "",
-              //   })
-              // );
-              // handleGetCurrentReqComments(
-              //   actionCode.reqInfo.serial_number,
-              //   actionCode.type
-              // );
-              // dispatch(RsetReqHistoryModal(true));
-            }}
-          >
-            <FontAwesomeIcon icon={faClockRotateLeft} />
           </Button>
         </div>
       );
@@ -512,8 +448,8 @@ const DeviceList = ({ setPageTitle }) => {
                     <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
                   </Tabs> */}
                   <DeviceTable
-                    // requests={deviceList}
-                    requests={dataList}
+                    requests={deviceList}
+                    // requests={dataList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}

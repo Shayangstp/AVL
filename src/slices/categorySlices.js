@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
-import { getCategoryList } from "../services/categoryServices";
+import {
+  getCategoryList,
+  getVehicleManageList,
+} from "../services/categoryServices";
 
 const initialState = {
   categoryList: [],
@@ -14,6 +17,7 @@ const initialState = {
   categoryCommonUser: "",
   categoryCommonUserOptions: [],
   categoryName: "",
+  categoryManageVehicleList: [],
 };
 
 export const handleCategoryList = createAsyncThunk(
@@ -22,9 +26,29 @@ export const handleCategoryList = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const getCategoryListRes = await getCategoryList(token);
-      console.log(getCategoryListRes);
       if (getCategoryListRes.data.code === 200) {
         dispatch(RsetCategoryList(getCategoryListRes.data.populateUser));
+      } else {
+        console.log("error");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleCategoryManageVehicleList = createAsyncThunk(
+  "category/handleCategoryManageVehicleList",
+  async (obj, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
+      const getVehicleManageListRes = await getVehicleManageList(token);
+      if (getVehicleManageListRes.data.code === 200) {
+        dispatch(
+          RsetCategoryManageVehicleList(
+            getVehicleManageListRes.data.populateUser
+          )
+        );
       } else {
         console.log("error");
       }
@@ -71,6 +95,9 @@ const categorySlices = createSlice({
     RsetCategoryName: (state, { payload }) => {
       return { ...state, categoryName: payload };
     },
+    RsetCategoryManageVehicleList: (state, { payload }) => {
+      return { ...state, categoryManageVehicleList: payload };
+    },
   },
 });
 
@@ -86,6 +113,7 @@ export const {
   RsetCategoryCommonUser,
   RsetCategoryCommonUserOptions,
   RsetCategoryName,
+  RsetCategoryManageVehicleList,
 } = categorySlices.actions;
 
 export const selectCategorylist = (state) => state.category.categoryList;
@@ -108,5 +136,7 @@ export const selectCategoryCommonUser = (state) =>
 export const selectCategoryCommonUserOptions = (state) =>
   state.category.categoryCommonUserOptions;
 export const selectCategoryName = (state) => state.category.categoryName;
+export const selectCategoryManageVehicleList = (state) =>
+  state.category.categoryManageVehicleList;
 
 export default categorySlices.reducer;

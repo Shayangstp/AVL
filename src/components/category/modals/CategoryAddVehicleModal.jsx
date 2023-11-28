@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 import Select from "react-select";
@@ -24,9 +24,13 @@ import {
   selectCategoryUserVehicle,
   RsetCategoryUserVehicleOptions,
   selectCategoryUserVehicleOptions,
+  selectCategoryCurrentRequest,
 } from "../../../slices/categorySlices";
+import { postAddDeviceToDeviceGroup } from "../../../services/categoryServices";
+import { errorMessage, successMessage } from "../../../utils/msg";
 
 const CategoryAddVehicleModal = () => {
+  const [vehicleId, setVehicleId] = useState();
   const dispatch = useDispatch();
   const categoryAddVehicleModal = useSelector(selectCategoryAddVehicleModal);
   const formErrors = useSelector(selectFormErrors);
@@ -41,6 +45,51 @@ const CategoryAddVehicleModal = () => {
   const categoryUserVehicleOptions = useSelector(
     selectCategoryUserVehicleOptions
   );
+
+  const categoryCurrentRequest = useSelector(selectCategoryCurrentRequest);
+
+  console.log(categoryCurrentRequest);
+
+  let i = 1;
+  const vehicleOptions = [
+    {
+      label: categoryCurrentRequest.devices.map((item) => {
+        const vehicle = item.driverName + " " + item.deviceIMEI;
+        return vehicle;
+      }),
+      value: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.deviceIMEI;
+        return vehicleImei;
+      }),
+      driverNumber: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.driverPhoneNumber;
+        return vehicleImei;
+      }),
+      deviceImei: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.deviceIMEI;
+        return vehicleImei;
+      }),
+      simNumber: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.simNumber;
+        return vehicleImei;
+      }),
+      vehicleType: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.model.name;
+        return vehicleImei;
+      }),
+      vehicleNumber: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item.plate;
+        return vehicleImei;
+      }),
+      id: categoryCurrentRequest.devices.map((item) => {
+        const vehicleImei = item._id;
+        return vehicleImei;
+      }),
+    },
+  ];
+
+  console.log(vehicleId);
+  console.log(categoryCurrentRequest._id);
 
   const deviceImeiIsValid = deviceImei !== "";
   const driverNumberIsValid = driverNumber !== "";
@@ -81,8 +130,13 @@ const CategoryAddVehicleModal = () => {
     return errors;
   };
 
-  const handleAddVehicleform = (e) => {
+  const handleAddVehicleform = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    const values = {
+      vehicleId: vehicleId,
+      groupId: categoryCurrentRequest._id,
+    };
     if (addVehicleformIsValid) {
       console.log({
         deviceImei,
@@ -92,6 +146,17 @@ const CategoryAddVehicleModal = () => {
         vehicleType,
         categoryUserVehicle,
       });
+      const postAddDeviceToDeviceGroupRes = await postAddDeviceToDeviceGroup(
+        values,
+        token
+      );
+      console.log(postAddDeviceToDeviceGroupRes);
+      if (postAddDeviceToDeviceGroupRes.data.code === 200) {
+        successMessage("دستگاه با موفقیت اضافه شد");
+        dispatch(RsetCategoryAddVehicleModal(false));
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -107,16 +172,6 @@ const CategoryAddVehicleModal = () => {
       );
     }
   };
-
-  useEffect(() => {
-    //add the ddata to the Rsets
-    // dispatch(RsetDeviceImei(""));
-    // dispatch(RsetDriverNumber(""));
-    // dispatch(RsetVehicleNumber(""));
-    // dispatch(RsetDeviceNumber(""));
-    // dispatch(RsetVehicleType(""));
-    // dispatch(RsetCategoryUserVehicle(""));
-  }, []);
 
   const handleResetAddVehicleForm = () => {
     dispatch(RsetFormErrors(""));
@@ -141,7 +196,9 @@ const CategoryAddVehicleModal = () => {
       className="borderRadius-15"
     >
       <Modal.Header className="bg-success text-white ">
-        <Modal.Title id="contained-modal-title-vcenter">ویرایش</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          افزودن وسیله نقلیه
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -150,13 +207,27 @@ const CategoryAddVehicleModal = () => {
               <Form.Label className="required-field">وسیله نقلیه :</Form.Label>
               <Select
                 // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
-                // value={categoryGroupColor}
+                value={categoryUserVehicle}
                 name="deviceType"
-                // onChange={(e) => {
-                //   dispatch(e);
-                // }}
+                onChange={(selectedOption) => {
+                  const selectedVehicle = vehicleOptions.find(
+                    (option) => option.value === selectedOption.value
+                  );
+
+                  if (selectedVehicle) {
+                    setVehicleId(...selectedVehicle.id);
+                    dispatch(RsetCategoryUserVehicle(selectedVehicle));
+                    dispatch(RsetDeviceImei(...selectedVehicle.deviceImei));
+                    dispatch(RsetDriverNumber(...selectedVehicle.driverNumber));
+                    dispatch(RsetDeviceNumber(...selectedVehicle.simNumber));
+                    dispatch(RsetVehicleType(...selectedVehicle.vehicleType));
+                    dispatch(
+                      RsetVehicleNumber(...selectedVehicle.vehicleNumber)
+                    );
+                  }
+                }}
                 placeholder="انتخاب..."
-                // options={categoryGroupColorOptions}
+                options={vehicleOptions}
                 isSearchable={true}
               />
             </Form.Group>
@@ -165,6 +236,7 @@ const CategoryAddVehicleModal = () => {
               <Form.Control
                 className={`${!deviceImeiIsValid ? formErrors.deviceImei : ""}`}
                 value={deviceImei}
+                disabled
                 type="text"
                 name="deviceImei"
                 onChange={(e) => {
@@ -179,6 +251,7 @@ const CategoryAddVehicleModal = () => {
                   !driverNumberIsValid ? formErrors.driverNumber : ""
                 }`}
                 value={driverNumber}
+                disabled
                 type="text"
                 name="driverNumber"
                 onChange={(e) => {
@@ -193,6 +266,7 @@ const CategoryAddVehicleModal = () => {
                   !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
                 }`}
                 value={vehicleNumber}
+                disabled
                 type="text"
                 name="vehicleNumber"
                 onChange={(e) => {
@@ -209,6 +283,7 @@ const CategoryAddVehicleModal = () => {
                   !deviceNumberIsValid ? formErrors.deviceNumber : ""
                 }`}
                 value={deviceNumber}
+                disabled
                 type="text"
                 name="deviceNumber"
                 onChange={(e) => {
@@ -223,6 +298,7 @@ const CategoryAddVehicleModal = () => {
                   !vehicleTypeIsValid ? formErrors.vehicleType : ""
                 }`}
                 value={vehicleType}
+                disabled
                 type="text"
                 name="vehicleType"
                 onChange={(e) => {
