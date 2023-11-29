@@ -76,13 +76,24 @@ const ViewPathList = ({ setPageTitle }) => {
     },
   ]);
 
+  const handleVehicleList = (request) => {
+    return (
+      <p className="d-flex align-items-center">
+        <div className="font10">{request}</div>
+        <Button variant="primary" size="sm" className="font10 ms-2">
+          انتخاب وسیله نقلیه
+        </Button>
+      </p>
+    );
+  };
+
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
           idx: i + 1,
-          groupName: requests[i].groupName,
+          groupName: handleVehicleList(requests[i].groupName),
         };
         tableItems.push(tableItem);
       }
@@ -104,7 +115,7 @@ const ViewPathList = ({ setPageTitle }) => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            groupName: requests[i].groupName,
+            groupName: handleVehicleList(requests[i].groupName),
           };
           tableItems.push(tableItem);
         }

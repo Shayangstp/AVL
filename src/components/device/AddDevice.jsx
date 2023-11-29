@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 import {
   RsetDeviceNumber,
