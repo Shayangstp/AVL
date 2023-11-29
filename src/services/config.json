@@ -1,5 +1,6 @@
 {
   "localapi": "http://185.134.96.77:9080",
-  "R": "http://192.168.5.139:8008",
-  "s": "http://172.30.1.212:5006"
+  "serverLocal": "http://192.168.5.139:8008",
+  "s": "http://172.30.1.212:5006",
+  "R": "https://Shayanapi.b2bgrainmarket.com"
 }

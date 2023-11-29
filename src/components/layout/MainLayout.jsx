@@ -25,7 +25,7 @@ const MainLayout = (props) => {
             <Col sm="2" lg="3" xl="2" className="d-none d-xl-inline p-0">
               <Sidebar />
             </Col>
-            <Col className="p-0 min-vh-100">{props.children}</Col>
+            <Col className="p-0 min-vh-100 bg-secondary">{props.children}</Col>
           </Row>
         </div>
       )}
@@ -34,3 +34,7 @@ const MainLayout = (props) => {
 };
 
 export default MainLayout;
+
+
+
+  

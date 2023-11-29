@@ -2,6 +2,7 @@ import http from "./httpService";
 import config from "./config.json";
 
 export const getUsersList = (token) => {
+  console.log(config.R);
   return http.get(
     `${config.R}/api/v1/user`,
 
@@ -48,6 +49,8 @@ export const getUserUnLocked = (userId, token) => {
       timeout: 30000,
     }
   );
+
+  
 };
 export const postNewPassword = (values, token) => {
   return http.post(
