@@ -35,8 +35,6 @@ const DashboardMap = ({ height, width }) => {
     return marker.color;
   });
 
-  console.log(colorIcons);
-
   const colorpicker = (color) => {
     var greenIcon = new L.Icon({
       iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,

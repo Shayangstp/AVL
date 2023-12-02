@@ -12,7 +12,7 @@ import VehicleList from "../vehicleList/VehicleList";
 import { selectShowVehicleList } from "../../../slices/getReportSlices";
 import { useDispatch, useSelector } from "react-redux";
 
-const ViewPathTable = ({
+const ViewLastLocationTable = ({
   columns,
   data,
   onSort,
@@ -208,4 +208,4 @@ const ViewPathTable = ({
   );
 };
 
-export default ViewPathTable;
+export default ViewLastLocationTable;

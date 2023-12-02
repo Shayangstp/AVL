@@ -6,6 +6,7 @@ import deviceSlices from "../slices/deviceSlices";
 import categorySlices from "../slices/categorySlices";
 import userManagmentSlices from "../slices/userManagmentSlices";
 import filterSlices from "../slices/filterSlices";
+import getReportSlices from "../slices/getReportSlices";
 
 const rootReducer = {
   main: mainSlices,
@@ -15,6 +16,7 @@ const rootReducer = {
   category: categorySlices,
   userManagment: userManagmentSlices,
   filter: filterSlices,
+  getReport: getReportSlices,
 };
 
 export const store = configureStore({

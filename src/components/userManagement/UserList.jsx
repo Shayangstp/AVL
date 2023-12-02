@@ -54,6 +54,16 @@ const dataList = [
     roles: ["device_view", "device_add"],
     islockedout: false,
   },
+  {
+    username: "wolfi",
+    firstname: "shayan",
+    lastname: "goli",
+    mobileNumber: "09353835262",
+    email: "g.shayan5529@gmail.com",
+    gender: "male",
+    roles: ["device_view", "device_add"],
+    islockedout: false,
+  },
 ];
 
 const UserList = ({ setPageTitle }) => {

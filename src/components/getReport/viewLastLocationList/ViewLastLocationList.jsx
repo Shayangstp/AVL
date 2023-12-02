@@ -23,15 +23,15 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
-import ViewPathTable from "./ViewPathTable";
+import ViewLastLocationTable from "./ViewLastLocationTable";
 import moment from "moment-jalaali";
-import VehicleList from "../vehicleList/VehicleList";
+
 import {
   RsetShowVehicleList,
   selectShowVehicleList,
 } from "../../../slices/getReportSlices";
 
-const ViewPathList = () => {
+const ViewLastLocationList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -40,6 +40,7 @@ const ViewPathList = () => {
   const sortIdRef = useRef(0);
 
   const showVehicleList = useSelector(selectShowVehicleList);
+  // console.log(showVehicleList);
 
   const dataList = [
     {
@@ -76,6 +77,12 @@ const ViewPathList = () => {
     },
   ];
 
+  // console.log(showVehicleList);
+
+  useEffect(() => {
+    setPageTitle("لیست دسته ها");
+  }, [setPageTitle]);
+
   const columns = useMemo(() => [
     {
       Header: "نام دسته",
@@ -83,9 +90,8 @@ const ViewPathList = () => {
       sort: true,
     },
   ]);
-  // console.log("hi");
 
-  const handleVehicleList = useCallback((request) => {
+  const handleVehicleList = (request) => {
     return (
       <p className="d-flex align-items-center justify-content-between">
         <div className="font10">{request}</div>
@@ -101,29 +107,32 @@ const ViewPathList = () => {
         </Button>
       </p>
     );
-  }, []);
+  };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        var tableItem = {
-          idx: i + 1,
-          // groupName: handleVehicleList(requests[i].groupName),
-        };
-        tableItems.push(tableItem);
+  const fetchData = useCallback(
+    ({ pageSize, pageIndex, requests }) => {
+      var tableItems = [];
+      if (requests.length !== 0) {
+        for (var i = 0; i < requests.length; i++) {
+          var tableItem = {
+            idx: i + 1,
+            groupName: handleVehicleList(requests[i].groupName),
+          };
+          tableItems.push(tableItem);
+        }
       }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-      setload(false);
-    }
-  }, []);
+      const fetchId = ++fetchIdRef.current;
+      setload(true);
+      if (fetchId === fetchIdRef.current) {
+        const startRow = pageSize * pageIndex;
+        const endRow = startRow + pageSize;
+        setData(tableItems.slice(startRow, endRow));
+        setPageCount(Math.ceil(tableItems.length / pageSize));
+        setload(false);
+      }
+    },
+    [showVehicleList]
+  );
   const handleSort = useCallback(
     ({ sortBy, pageIndex, pageSize, requests }) => {
       var tableItems = [];
@@ -131,7 +140,7 @@ const ViewPathList = () => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            // groupName: handleVehicleList(requests[i].groupName),
+            groupName: handleVehicleList(requests[i].groupName),
           };
           tableItems.push(tableItem);
         }
@@ -156,7 +165,7 @@ const ViewPathList = () => {
         setload(false);
       }
     },
-    []
+    [showVehicleList]
   );
 
   return (
@@ -169,7 +178,7 @@ const ViewPathList = () => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <ViewPathTable
+                  <ViewLastLocationTable
                     requests={dataList}
                     // requests={dataList}
                     columns={columns}
@@ -193,4 +202,4 @@ const ViewPathList = () => {
   );
 };
 
-export default ViewPathList;
+export default ViewLastLocationList;

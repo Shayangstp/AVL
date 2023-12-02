@@ -22,7 +22,10 @@ body * {
   padding: 0;
   max-width: 100vw;
 }
-
+/* for reactTable */
+.smaller-column {
+  width: 50px;
+}
 .form-control[readonly] {
   background-color: #fff;
 }

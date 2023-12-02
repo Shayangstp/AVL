@@ -46,11 +46,11 @@ const AVL = () => {
           />
           {/* report */}
           <Route path="/getReport" element={<GetReport />} />
+          <Route path="/viewPath" element={<ViewPath />} />
           <Route
-            path="/ViewPath"
-            element={<ViewPath setPageTitle={setPageTitle} />}
+            path="/viewLastLocation"
+            element={<ViewLastLocation setPageTitle={setPageTitle} />}
           />
-          <Route path="/viewLastLocation" element={<ViewLastLocation />} />
           {/* user */}
           <Route path="/addUser" element={<AddUser />} />
           <Route path="/addPhoneNumber" element={<AddPhoneNumbers />} />

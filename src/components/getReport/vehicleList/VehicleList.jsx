@@ -1,3 +1,6 @@
+//fake data been made
+//the handle data been disabled
+
 import React, {
   useRef,
   useState,
@@ -7,7 +10,7 @@ import React, {
   Fragment,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
@@ -23,15 +26,11 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
-import ViewPathTable from "./ViewPathTable";
+import VehicleTable from "./VehicleTable";
 import moment from "moment-jalaali";
-import VehicleList from "../vehicleList/VehicleList";
-import {
-  RsetShowVehicleList,
-  selectShowVehicleList,
-} from "../../../slices/getReportSlices";
+import { selectShowVehicleList } from "../../../slices/getReportSlices";
 
-const ViewPathList = () => {
+const VehicleList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -43,87 +42,91 @@ const ViewPathList = () => {
 
   const dataList = [
     {
-      groupName: "کاوه فلوت",
-      id: 1,
+      driverName: "احمد",
+      vehicleNumber: "102030",
     },
     {
-      groupName: "فلوت کاویان",
-      id: 2,
+      driverName: "شایان",
+      vehicleNumber: "102030",
     },
     {
-      groupName: "کاوه سودا",
-      id: 3,
+      driverName: "امیر",
+      vehicleNumber: "102030",
     },
     {
-      groupName: "متانول کاوه",
-      id: 4,
+      driverName: "محمود",
+      vehicleNumber: "102030",
     },
     {
-      groupName: "کربنات کاوه",
-      id: 5,
-    },
-    {
-      groupName: "ابهر سیلیس",
-      id: 6,
-    },
-    {
-      groupName: "دفتر مرکزی",
-      id: 7,
-    },
-    {
-      groupName: "مظروف یزد",
-      id: 8,
+      driverName: "مهران",
+      vehicleNumber: "102030",
     },
   ];
 
+  // useEffect(() => {
+  //   setPageTitle("لیست دسته ها");
+  // }, [setPageTitle]);
+
   const columns = useMemo(() => [
     {
-      Header: "نام دسته",
-      accessor: "groupName",
+      Header: "انتخاب",
+      accessor: "checkBox",
+      sort: true,
+    },
+    {
+      Header: "نام راننده",
+      accessor: "driverName",
+      sort: true,
+    },
+    {
+      Header: "پلاک",
+      accessor: "vehicleNumber",
       sort: true,
     },
   ]);
-  // console.log("hi");
 
-  const handleVehicleList = useCallback((request) => {
+  const handleCheckBox = (i, request) => {
     return (
-      <p className="d-flex align-items-center justify-content-between">
-        <div className="font10">{request}</div>
-        <Button
-          variant="primary"
-          size="sm"
-          className="font10 ms-2"
-          onClick={() => {
-            dispatch(RsetShowVehicleList(!showVehicleList));
+      <Form className="d-flex justify-content-center">
+        <Form.Check
+          key={i}
+          type="checkbox"
+          id={i}
+          onChange={(e) => {
+            console.log("Checked Request:", request);
           }}
-        >
-          انتخاب وسیله نقلیه
-        </Button>
-      </p>
+        />
+      </Form>
     );
-  }, []);
+  };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        var tableItem = {
-          idx: i + 1,
-          // groupName: handleVehicleList(requests[i].groupName),
-        };
-        tableItems.push(tableItem);
+  const fetchData = useCallback(
+    ({ pageSize, pageIndex, requests }) => {
+      var tableItems = [];
+      if (requests.length !== 0) {
+        for (var i = 0; i < requests.length; i++) {
+          // console.log(requests[i]);
+          var tableItem = {
+            idx: i + 1,
+            driverName: requests[i].driverName,
+            vehicleNumber: requests[i].vehicleNumber,
+            checkBox: handleCheckBox(i, requests[i].vehicleNumber),
+          };
+          tableItems.push(tableItem);
+        }
       }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-      setload(false);
-    }
-  }, []);
+      const fetchId = ++fetchIdRef.current;
+      setload(true);
+      if (fetchId === fetchIdRef.current) {
+        const startRow = pageSize * pageIndex;
+        const endRow = startRow + pageSize;
+        setData(tableItems.slice(startRow, endRow));
+        setPageCount(Math.ceil(tableItems.length / pageSize));
+        setload(false);
+      }
+    },
+    []
+  );
   const handleSort = useCallback(
     ({ sortBy, pageIndex, pageSize, requests }) => {
       var tableItems = [];
@@ -131,7 +134,9 @@ const ViewPathList = () => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            // groupName: handleVehicleList(requests[i].groupName),
+            driverName: requests[i].driverName,
+            vehicleNumber: requests[i].vehicleNumber,
+            checkBox: handleCheckBox(requests[i]),
           };
           tableItems.push(tableItem);
         }
@@ -169,7 +174,7 @@ const ViewPathList = () => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <ViewPathTable
+                  <VehicleTable
                     requests={dataList}
                     // requests={dataList}
                     columns={columns}
@@ -193,4 +198,4 @@ const ViewPathList = () => {
   );
 };
 
-export default ViewPathList;
+export default VehicleList;

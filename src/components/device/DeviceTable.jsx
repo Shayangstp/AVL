@@ -60,7 +60,7 @@ const DeviceTable = ({
     // Use the index to filter and retrieve the specific item data
     const selectedItem = requests[index];
 
-    // Do something with the selected item data
+    // Do something with the selected item data 
     console.log(selectedItem);
   };
 

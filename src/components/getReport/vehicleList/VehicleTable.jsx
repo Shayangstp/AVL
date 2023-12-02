@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Row, Col, Button } from "react-bootstrap";
 import { useTable, useSortBy, usePagination } from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,11 +8,8 @@ import {
   faAngleRight,
   faAngleLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import VehicleList from "../vehicleList/VehicleList";
-import { selectShowVehicleList } from "../../../slices/getReportSlices";
-import { useDispatch, useSelector } from "react-redux";
 
-const ViewPathTable = ({
+const VehicleTable = ({
   columns,
   data,
   onSort,
@@ -21,8 +18,6 @@ const ViewPathTable = ({
   pageCount: controlledPageCount,
   requests,
 }) => {
-  // const dispatch = useDispatch();
-  const showVehicleList = useSelector(selectShowVehicleList);
   const {
     getTableProps,
     getTableBodyProps,
@@ -51,13 +46,12 @@ const ViewPathTable = ({
     usePagination
   );
 
-  const [openRowId, setOpenRowId] = useState(null);
-
   useEffect(() => {
     gotoPage(0);
   }, [requests]);
 
   useEffect(() => {
+    // handleNotVisited(requests);
     fetchData({ pageIndex, pageSize, requests });
     onSort({ sortBy, pageIndex, pageSize, requests });
   }, [onSort, sortBy, fetchData, pageIndex, pageSize, requests]);
@@ -68,9 +62,11 @@ const ViewPathTable = ({
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
+              {headerGroup.headers.map((column, columnIndex) => (
                 <th
-                  className="bg-secondary text-white fw-normal"
+                  className={`${
+                    columnIndex === 0 ? "smaller-column" : ""
+                  } bg-secondary text-white fw-normal`}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   title="" /*title={`مرتب سازی براساس ${column.render("Header")}`} */
                 >
@@ -91,29 +87,11 @@ const ViewPathTable = ({
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <Fragment>
-                <tr {...row.getRowProps()} key={i}>
-                  {row.cells.map((cell, index) => {
-                    return (
-                      <td
-                        key={index}
-                        onClick={() => {
-                          setOpenRowId(row.id);
-                        }}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-                {openRowId === row.id && (
-                  <tr>
-                    <td colSpan={columns.length}>
-                      <div>{showVehicleList && <VehicleList />}</div>
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
+              <tr {...row.getRowProps()} key={i}>
+                {row.cells.map((cell, index) => {
+                  return <td key={index}>{cell.render("Cell")}</td>;
+                })}
+              </tr>
             );
           })}
           <tr>
@@ -129,10 +107,10 @@ const ViewPathTable = ({
       </Table>
       <Row>
         <Col lg="12" xl="12">
-          <div className="row pagination justify-content-center align-items-center">
-            <div className="col-12 col-md-3">
+          <div className="d-flex flex-column pagination justify-content-center">
+            <div className="col-6">
               <select
-                className="form-control font10"
+                className="form-control font9"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -145,29 +123,33 @@ const ViewPathTable = ({
                 ))}
               </select>
             </div>
-            <div className="col-12 col-md-4 d-flex align-items-center font10">
-              <span className="font10">برو به صفحه:</span>
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  gotoPage(page);
-                }}
-                className="form-control font10"
-              />{" "}
+            <div className=" d-flex align-items-center mt-2 mb-2">
+              <div className="col-4 d-flex flex-column">
+                <span className="font9 mb-1">برو به صفحه:</span>
+                <input
+                  type="number"
+                  defaultValue={pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value
+                      ? Number(e.target.value) - 1
+                      : 0;
+                    gotoPage(page);
+                  }}
+                  className="form-control font9"
+                />{" "}
+              </div>
+              <div className="col-12 font10 ms-3">
+                صفحه{" "}
+                <strong className="font10">
+                  {pageIndex + 1} از {pageOptions.length}
+                </strong>{" "}
+              </div>
             </div>
-            <div className="col-12 col-md-3 font10">
-              صفحه{" "}
-              <strong className="font10">
-                {pageIndex + 1} از {pageOptions.length}
-              </strong>{" "}
-            </div>
-            <div className="col-12 col-md-4 mt-2 d-flex gap-1">
+            <div className="col-12 col-md-4 d-flex gap-1 justify-content-center w-100">
               <Button
                 size="sm"
                 variant="outline-secondary"
-                className="fw-bold py-0"
+                className="fw-bold py-0 border-secondary"
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
               >
@@ -176,14 +158,13 @@ const ViewPathTable = ({
               <Button
                 size="sm"
                 variant="outline-secondary"
-                className="fw-bold py-0"
+                className="fw-bold py-0 border-secondary"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
                 <FontAwesomeIcon icon={faAngleRight} />
               </Button>{" "}
               <Button
-                size="sm"
                 variant="outline-secondary"
                 className="fw-bold py-0"
                 onClick={() => nextPage()}
@@ -192,7 +173,6 @@ const ViewPathTable = ({
                 <FontAwesomeIcon icon={faAngleLeft} />
               </Button>{" "}
               <Button
-                size="sm"
                 variant="outline-secondary"
                 className="fw-bold py-0"
                 onClick={() => gotoPage(controlledPageCount - 1)}
@@ -208,4 +188,4 @@ const ViewPathTable = ({
   );
 };
 
-export default ViewPathTable;
+export default VehicleTable;
