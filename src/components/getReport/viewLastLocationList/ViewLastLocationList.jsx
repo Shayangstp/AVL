@@ -31,6 +31,41 @@ import {
   selectShowVehicleList,
 } from "../../../slices/getReportSlices";
 
+const dataList = [
+  {
+    groupName: "کاوه فلوت",
+    id: 1,
+  },
+  {
+    groupName: "فلوت کاویان",
+    id: 2,
+  },
+  {
+    groupName: "کاوه سودا",
+    id: 3,
+  },
+  {
+    groupName: "متانول کاوه",
+    id: 4,
+  },
+  {
+    groupName: "کربنات کاوه",
+    id: 5,
+  },
+  {
+    groupName: "ابهر سیلیس",
+    id: 6,
+  },
+  {
+    groupName: "دفتر مرکزی",
+    id: 7,
+  },
+  {
+    groupName: "مظروف یزد",
+    id: 8,
+  },
+];
+
 const ViewLastLocationList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -41,41 +76,6 @@ const ViewLastLocationList = ({ setPageTitle }) => {
 
   const showVehicleList = useSelector(selectShowVehicleList);
   // console.log(showVehicleList);
-
-  const dataList = [
-    {
-      groupName: "کاوه فلوت",
-      id: 1,
-    },
-    {
-      groupName: "فلوت کاویان",
-      id: 2,
-    },
-    {
-      groupName: "کاوه سودا",
-      id: 3,
-    },
-    {
-      groupName: "متانول کاوه",
-      id: 4,
-    },
-    {
-      groupName: "کربنات کاوه",
-      id: 5,
-    },
-    {
-      groupName: "ابهر سیلیس",
-      id: 6,
-    },
-    {
-      groupName: "دفتر مرکزی",
-      id: 7,
-    },
-    {
-      groupName: "مظروف یزد",
-      id: 8,
-    },
-  ];
 
   // console.log(showVehicleList);
 

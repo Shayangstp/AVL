@@ -30,6 +30,29 @@ import VehicleTable from "./VehicleTable";
 import moment from "moment-jalaali";
 import { selectShowVehicleList } from "../../../slices/getReportSlices";
 
+const dataList = [
+  {
+    driverName: "احمد",
+    vehicleNumber: "102030",
+  },
+  {
+    driverName: "شایان",
+    vehicleNumber: "102030",
+  },
+  {
+    driverName: "امیر",
+    vehicleNumber: "102030",
+  },
+  {
+    driverName: "محمود",
+    vehicleNumber: "102030",
+  },
+  {
+    driverName: "مهران",
+    vehicleNumber: "102030",
+  },
+];
+
 const VehicleList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -37,31 +60,9 @@ const VehicleList = ({ setPageTitle }) => {
   const [pageCount, setPageCount] = useState(0);
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const showVehicleList = useSelector(selectShowVehicleList);
-
-  const dataList = [
-    {
-      driverName: "احمد",
-      vehicleNumber: "102030",
-    },
-    {
-      driverName: "شایان",
-      vehicleNumber: "102030",
-    },
-    {
-      driverName: "امیر",
-      vehicleNumber: "102030",
-    },
-    {
-      driverName: "محمود",
-      vehicleNumber: "102030",
-    },
-    {
-      driverName: "مهران",
-      vehicleNumber: "102030",
-    },
-  ];
 
   // useEffect(() => {
   //   setPageTitle("لیست دسته ها");
@@ -86,47 +87,48 @@ const VehicleList = ({ setPageTitle }) => {
   ]);
 
   const handleCheckBox = (i, request) => {
+    const handleCheck = (e) => {
+      if (e.target.checked) {
+        setSelectedItems((prevItems) => [...prevItems, request]);
+      } else {
+        setSelectedItems((prevItems) =>
+          prevItems.filter((item) => item !== request)
+        );
+      }
+    };
     return (
       <Form className="d-flex justify-content-center">
-        <Form.Check
-          key={i}
-          type="checkbox"
-          id={i}
-          onChange={(e) => {
-            console.log("Checked Request:", request);
-          }}
-        />
+        <Form.Check key={i} type="checkbox" id={i} onChange={handleCheck} />
       </Form>
     );
   };
 
-  const fetchData = useCallback(
-    ({ pageSize, pageIndex, requests }) => {
-      var tableItems = [];
-      if (requests.length !== 0) {
-        for (var i = 0; i < requests.length; i++) {
-          // console.log(requests[i]);
-          var tableItem = {
-            idx: i + 1,
-            driverName: requests[i].driverName,
-            vehicleNumber: requests[i].vehicleNumber,
-            checkBox: handleCheckBox(i, requests[i].vehicleNumber),
-          };
-          tableItems.push(tableItem);
-        }
+  console.log(selectedItems);
+
+  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
+    var tableItems = [];
+    if (requests.length !== 0) {
+      for (var i = 0; i < requests.length; i++) {
+        // console.log(requests[i]);
+        var tableItem = {
+          idx: i + 1,
+          driverName: requests[i].driverName,
+          vehicleNumber: requests[i].vehicleNumber,
+          checkBox: handleCheckBox(i, requests[i]),
+        };
+        tableItems.push(tableItem);
       }
-      const fetchId = ++fetchIdRef.current;
-      setload(true);
-      if (fetchId === fetchIdRef.current) {
-        const startRow = pageSize * pageIndex;
-        const endRow = startRow + pageSize;
-        setData(tableItems.slice(startRow, endRow));
-        setPageCount(Math.ceil(tableItems.length / pageSize));
-        setload(false);
-      }
-    },
-    []
-  );
+    }
+    const fetchId = ++fetchIdRef.current;
+    setload(true);
+    if (fetchId === fetchIdRef.current) {
+      const startRow = pageSize * pageIndex;
+      const endRow = startRow + pageSize;
+      setData(tableItems.slice(startRow, endRow));
+      setPageCount(Math.ceil(tableItems.length / pageSize));
+      setload(false);
+    }
+  }, []);
   const handleSort = useCallback(
     ({ sortBy, pageIndex, pageSize, requests }) => {
       var tableItems = [];
@@ -136,7 +138,7 @@ const VehicleList = ({ setPageTitle }) => {
             idx: i + 1,
             driverName: requests[i].driverName,
             vehicleNumber: requests[i].vehicleNumber,
-            checkBox: handleCheckBox(requests[i]),
+            checkBox: handleCheckBox(i, requests[i]),
           };
           tableItems.push(tableItem);
         }
