@@ -29,28 +29,10 @@ import {
   RsetShowFilter,
   selectShowFilter,
 } from "../../slices/filterSlices";
-
-//fill this with api
-const dataList = [
-  {
-    firstName: "shayan",
-    lastName: "goli",
-    phoneNumber: "09121234567",
-    email: "g.shayan5529@gmail.com",
-  },
-  {
-    firstName: "shayan1",
-    lastName: "goli1",
-    phoneNumber: "09121234567",
-    email: "g.shayan5529@gmail.com1",
-  },
-  {
-    firstName: "shayan2",
-    lastName: "goli2",
-    phoneNumber: "09121234567",
-    email: "g.shayan5529@gmail.com2",
-  },
-];
+import {
+  handleAllUserPhoneNumberList,
+  selectUserPhoneNumberList,
+} from "../../slices/userManagmentSlices";
 
 const PhoneNumberList = () => {
   const dispatch = useDispatch();
@@ -62,22 +44,27 @@ const PhoneNumberList = () => {
 
   const filterValue = useSelector(selectFilterValue);
   const showFilter = useSelector(selectShowFilter);
+  const userPhoneNumberList = useSelector(selectUserPhoneNumberList);
+
+  useEffect(() => {
+    dispatch(handleAllUserPhoneNumberList());
+  }, []);
 
   //filter data
   const handleFilterChange = (event) => {
     dispatch(RsetFilterValue(event.target.value));
   };
 
-  const filteredData = filterValue
-    ? dataList.filter((item) => {
-        return (
-          item.firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
-          item.lastName.toLowerCase().includes(filterValue.toLowerCase()) ||
-          item.phoneNumber.includes(filterValue) ||
-          item.email.toLowerCase().includes(filterValue.toLowerCase())
-        );
-      })
-    : dataList;
+  // const filteredData = filterValue
+  //   ? dataList.filter((item) => {
+  //       return (
+  //         item.firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
+  //         item.lastName.toLowerCase().includes(filterValue.toLowerCase()) ||
+  //         item.phoneNumber.includes(filterValue) ||
+  //         item.email.toLowerCase().includes(filterValue.toLowerCase())
+  //       );
+  //     })
+  //   : dataList;
 
   const columns = useMemo(() => [
     {
@@ -213,7 +200,7 @@ const PhoneNumberList = () => {
                 <Fragment>
                   <PhoneNumberTable
                     // requests={userLists}
-                    requests={filteredData}
+                    requests={userPhoneNumberList}
                     // notVisited={notVisited}
                     columns={columns}
                     data={data}

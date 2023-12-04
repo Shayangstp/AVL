@@ -101,6 +101,8 @@ const UserManagmentEditModal = () => {
         mobileNumber: phoneNumber,
       };
 
+      console.log(values);
+
       const putEditUserRes = await putEditUser(values, token);
       console.log(putEditUserRes);
     } else {
@@ -128,15 +130,11 @@ const UserManagmentEditModal = () => {
     dispatch(RsetGender(currentUser.gender));
   }, []);
 
-  console.log(currentUser);
-
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    setUserData(currentUser);
+    setUserData({ ...currentUser });
   }, []);
-
-  console.log(gender);
 
   return (
     <Modal
@@ -170,10 +168,10 @@ const UserManagmentEditModal = () => {
                 name="gender"
                 type="radio"
                 id="female"
-                checked={userData.gender === "female"}
+                checked={userData.gender === "Female"}
                 onChange={(e) => {
-                  const newGender = e.target.checked ? "female" : "";
-                  setUserData({ ...userData, gender: newGender });
+                  const newGender = e.target.checked ? "Female" : "";
+                  setUserData({ ...currentUser, gender: newGender });
                   dispatch(RsetGender("female"));
                 }}
               />
@@ -183,10 +181,10 @@ const UserManagmentEditModal = () => {
                 name="gender"
                 type="radio"
                 id="male"
-                checked={userData.gender === "male"}
+                checked={userData.gender === "Male"}
                 onChange={(e) => {
-                  const newGender = e.target.checked ? "male" : "";
-                  setUserData({ ...userData, gender: newGender });
+                  const newGender = e.target.checked ? "Male" : "";
+                  setUserData({ ...currentUser, gender: newGender });
                   dispatch(RsetGender("male"));
                 }}
               />

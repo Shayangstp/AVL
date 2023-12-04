@@ -139,21 +139,23 @@ const DeviceListLocations = ({ setPageTitle }) => {
     dispatch(RsetDeviceCordinate(cordinateArr));
   };
 
+  const handleCheckboxChange = (i) => {
+    setCurrentIndex(i);
+  };
 
 
-  const handleCheckBox = (requests, i) => {
+  const handleCheckBox = (request, i) => {
     return (
       <Form.Check
         key={i}
         type="checkbox"
-        id={i}
-        value={i}
+        id={request[i] && request[i]._id}
+        value={request[i] && request[i].deviceName}
         checked={i === currentIndex}
         onChange={() => {
-          console.log(i === currentIndex);
+          handleCheckboxChange(i);
           console.log(i, currentIndex);
-          // handleCheckboxChange(i);
-          setCurrentIndex(i);
+
         }}
         className="me-3"
       />
@@ -198,7 +200,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
       for (var i = 0; i < requests.length; i++) {
         var tableItem = {
           idx: i + 1,
-          checkBox: handleCheckBox(requests, i),
+          checkBox: handleCheckBox(requests[i], i),
           date: moment
             .utc(requests[i].date, "YYYY/MM/DD")
             .locale("fa")

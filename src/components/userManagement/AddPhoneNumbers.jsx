@@ -26,8 +26,10 @@ const AddPhoneNumbers = () => {
 
   const firstNameIsValid = firstName !== "";
   const lastNameIsValid = lastName !== "";
-  const phoneNumberIsValid = phoneNumber !== "" && phoneNumber.length === 11;
-  const gmailIsValid = gmail !== "";
+  const phoneNumberIsValid =
+    /^0\d{10}$/.test(phoneNumber) && phoneNumber !== "";
+  const gmailIsValid =
+    /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@gmail\.com$/.test(gmail) && gmail !== "";
 
   const addPhoneNumberFormIsValid =
     firstNameIsValid && lastNameIsValid && phoneNumberIsValid && gmailIsValid;

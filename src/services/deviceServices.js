@@ -1,6 +1,5 @@
 import http from "./httpService";
 import config from "./config.json";
-import { headerConfig } from "../utils/headerConfig";
 
 export const getDeviceType = (token) => {
   return http.get(
@@ -14,17 +13,26 @@ export const getDeviceType = (token) => {
   );
 };
 
-export const postAddDevice = (values) => {
-  return http.post(`${config.R}/api/v1/device/add`, values, headerConfig, {
-    timeout: 30000,
-  });
+export const postAddDevice = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/device/add`,
+    values,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
 };
 
-export const postAddVehicle = (value) => {
+export const postAddVehicle = (value, token) => {
   return http.post(
     `${config.R}/api/v1/device/models/add`,
     value,
-    headerConfig,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
     {
       timeout: 30000,
     }
@@ -45,7 +53,7 @@ export const getDeviceList = (token) => {
 
 export const editDeviceList = (values, token) => {
   return http.put(
-    `${config.R}/api/v1/device/edit`,
+    `${config.R}/api/v1/device`,
     values,
     {
       headers: { Authorization: `Bearer ${token}` },

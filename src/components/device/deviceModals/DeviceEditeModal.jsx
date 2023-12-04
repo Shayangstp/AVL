@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
 import {
   RsetDeviceEditModal,
   selectDeviceEditModal,
@@ -19,6 +20,7 @@ import {
   RsetVehicleId,
   RsetDeviceImei,
   RsetDeviceType,
+  RsetCurrentDevice,
   selectVehicleNumber,
   selectVehicleType,
   selectVehicleCompany,
@@ -31,12 +33,20 @@ import {
   selectDeviceNumber,
   selectDeviceImei,
   selectDeviceType,
+  selectCurrentDevice,
+  selectVehicleTypeOptions,
+  handleVehicleTypeOptions,
 } from "../../../slices/deviceSlices";
 import { editDeviceList } from "../../../services/deviceServices";
 import { errorMessage, successMessage } from "../../../utils/msg";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import moment from "moment-jalaali";
+import { getDeviceType } from "../../../services/deviceServices";
 
 const DeviceEditeModal = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const deviceEditModal = useSelector(selectDeviceEditModal);
   const vehicleNumber = useSelector(selectVehicleNumber);
   const vehicleType = useSelector(selectVehicleType);
@@ -50,9 +60,44 @@ const DeviceEditeModal = () => {
   const deviceNumber = useSelector(selectDeviceNumber);
   const deviceImei = useSelector(selectDeviceImei);
   const deviceType = useSelector(selectDeviceType);
+  const currentDevice = useSelector(selectCurrentDevice);
+  const vehicleTypeOptions = useSelector(selectVehicleTypeOptions);
+
+  useEffect(() => {
+    dispatch(handleVehicleTypeOptions());
+  }, []);
+
+  useEffect(() => {
+    const apiDate = currentDevice.createDate;
+    const dateParts = apiDate.split(" ");
+    const day = parseInt(dateParts[2], 10);
+    const month = moment().month(dateParts[1]).format("jMM");
+    const year = parseInt(dateParts[3], 10);
+    const persianDate = `${year}/${month}/${day}`;
+
+    dispatch(RsetVehicleNumber(currentDevice.plate));
+    dispatch(RsetVehicleCompany(currentDevice.vehicleName));
+    dispatch(RsetVehicleType(currentDevice.model.name));
+    dispatch(RsetDriverName(currentDevice.driverName));
+    dispatch(RsetDriverNumber(currentDevice.driverPhoneNumber));
+    dispatch(RsetVehicleUsing(currentDevice.usage));
+    dispatch(RsetVehicleGas(currentDevice.fuel));
+    dispatch(
+      RsetEditTimeStamp(
+        moment
+          .utc(persianDate, "YYYY/MM/DD")
+          .locale("fa")
+          .format("jYYYY/jMM/jDD")
+      )
+    );
+    dispatch(RsetVehicleId(currentDevice._id));
+    dispatch(RsetDeviceNumber(currentDevice.simNumber));
+    dispatch(RsetDeviceImei(currentDevice.deviceIMEI));
+    dispatch(RsetDeviceType(currentDevice.trackerModel));
+    dispatch(RsetCurrentDevice(currentDevice));
+  }, []);
 
   const handleUpdateData = async () => {
-    console.log("hi");
     const token = localStorage.getItem("token");
     const values = {
       vehicleId: vehiclelId,
@@ -64,19 +109,21 @@ const DeviceEditeModal = () => {
       driverPhoneNumber: driverNumber,
       trackerModel: deviceType,
       fuel: vehicleGas,
-      model: vehicleType,
+      model: vehicleType.label,
       usage: vehicleUsing,
     };
-    console.log(values);
     const editDeviceListRes = await editDeviceList(values, token);
     console.log(editDeviceListRes);
     if (editDeviceListRes.data.code === 200) {
-      successMessage("ویرایش با موفقیت انجام شد");
       dispatch(RsetDeviceEditModal(false));
+      // navigate(0);
+      successMessage("ویرایش با موفقیت انجام شد");
     } else {
       errorMessage("خطا");
     }
   };
+
+  console.log(vehicleType.label);
 
   return (
     <Modal
@@ -142,18 +189,18 @@ const DeviceEditeModal = () => {
             </Form.Group>
             <Form.Group as={Col} md="4">
               <Form.Label className="required-field"> مدل:</Form.Label>
-              <Form.Control
+              <Select
                 // className={`${
-                //   !deviceImeiIsValid
-                //     ? `${formErrors.deviceImei} borderRaduis-15`
-                //     : ""
+                //   !vehicleTypeIsValid ? formErrors.vehicleType : ""
                 // }`}
-                type="text"
-                name="devcieModle"
                 value={vehicleType}
+                name="vehicleType"
                 onChange={(e) => {
-                  dispatch(RsetVehicleType(e.target.value));
+                  dispatch(RsetVehicleType(e));
                 }}
+                placeholder="انتخاب..."
+                options={vehicleTypeOptions}
+                isSearchable={true}
               />
             </Form.Group>
             <Form.Group as={Col} md="4">

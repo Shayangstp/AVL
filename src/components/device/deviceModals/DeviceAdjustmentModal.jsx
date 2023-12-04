@@ -176,12 +176,7 @@ const DeviceAdjustmentModal = () => {
       const postSpeedLimitationRes = await postSpeedLimitation(values, token);
       if (postSpeedLimitationRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
-        dispatch(RsetVehicleSpeed(""));
-        dispatch(RsetSmsReciver(""));
-        dispatch(RsetEmailReciver(""));
-        dispatch(RsetFormErrors(""));
-        setSms(false);
-        setEmail(false);
+        speedVehicleHandlerReset();
       } else {
         errorMessage("خطا");
       }
@@ -196,6 +191,15 @@ const DeviceAdjustmentModal = () => {
         )
       );
     }
+  };
+
+  const speedVehicleHandlerReset = () => {
+    dispatch(RsetVehicleSpeed(""));
+    dispatch(RsetSmsReciver(""));
+    dispatch(RsetEmailReciver(""));
+    dispatch(RsetFormErrors(""));
+    setSms(false);
+    setEmail(false);
   };
 
   //geo
@@ -247,11 +251,7 @@ const DeviceAdjustmentModal = () => {
       const postGpsLimitRes = await postGpsLimit(token, values);
       if (postGpsLimitRes.status === 200) {
         successMessage("محدودیت با موفقیت اعمال شد");
-        setSms(false);
-        setEmail(false);
-        dispatch(RsetSmsReciver(""));
-        dispatch(RsetEmailReciver(""));
-        dispatch(RsetTimeToSendSms(""));
+        geoHandlerReset();
         dispatch(RsetDeviceAdjusmentModal(false));
         navigate(0);
       } else {
@@ -268,6 +268,14 @@ const DeviceAdjustmentModal = () => {
         )
       );
     }
+  };
+
+  const geoHandlerReset = () => {
+    setSms(false);
+    setEmail(false);
+    dispatch(RsetSmsReciver(""));
+    dispatch(RsetEmailReciver(""));
+    dispatch(RsetTimeToSendSms(""));
   };
 
   const geoDeleteHandler = async (e) => {
@@ -317,9 +325,7 @@ const DeviceAdjustmentModal = () => {
       const postVehicleConditionRes = await postVehicleCondition(values, token);
       if (postVehicleConditionRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
-        dispatch(RsetVehicleCondition(""));
-        dispatch(RsetVehicleConditionDescription(""));
-        dispatch(RsetFormErrors(""));
+        handleVehicleConditionReset();
       } else {
         errorMessage("خطا");
       }
@@ -332,6 +338,12 @@ const DeviceAdjustmentModal = () => {
         )
       );
     }
+  };
+
+  const handleVehicleConditionReset = () => {
+    dispatch(RsetVehicleCondition(""));
+    dispatch(RsetVehicleConditionDescription(""));
+    dispatch(RsetFormErrors(""));
   };
 
   //GPS
@@ -383,6 +395,7 @@ const DeviceAdjustmentModal = () => {
       const putGpsEditRes = await putGpsEdit(values, token);
       if (putGpsEditRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
+        handleGpsReset();
       } else {
         errorMessage("خطا");
       }
@@ -399,14 +412,20 @@ const DeviceAdjustmentModal = () => {
     }
   };
 
+  const handleGpsReset = () => {
+    dispatch(RsetDeviceNumber(""));
+    dispatch(RsetDeviceImei(""));
+    dispatch(RsetDeviceType(""));
+  };
+
   return (
     <Modal
       size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      onHide={() => {
-        dispatch(RsetDeviceAdjusmentModal(false));
-      }}
+      // onHide={() => {
+      //   dispatch(RsetDeviceAdjusmentModal(false));
+      // }}
       show={deviceAdjusmentModal}
       className="borderRadius-15"
     >
@@ -427,6 +446,7 @@ const DeviceAdjustmentModal = () => {
             dispatch(RsetEmailReciver(""));
             dispatch(RsetVehicleCondition(""));
             dispatch(RsetVehicleConditionDescription(""));
+            dispatch(RsetVehicleSpeed(""));
           }}
           className="mb-3"
           fill
@@ -887,6 +907,10 @@ const DeviceAdjustmentModal = () => {
         <Button
           onClick={() => {
             dispatch(RsetDeviceAdjusmentModal(false));
+            handleGpsReset();
+            handleVehicleConditionReset();
+            geoHandlerReset();
+            speedVehicleHandlerReset();
           }}
         >
           بستن

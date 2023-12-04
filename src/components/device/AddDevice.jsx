@@ -171,6 +171,7 @@ const AddDevice = () => {
   const handleDeviceAdd = async (e) => {
     e.preventDefault();
     if (addDeviceFormIsValid) {
+      const token = localStorage.getItem("token");
       const values = {
         simNumber: deviceNumber,
         deviceIMEI: deviceImei,
@@ -183,7 +184,9 @@ const AddDevice = () => {
         driverPhoneNumber: driverNumber,
         fuel: vehicleGas,
       };
-      const postAddDeviceRes = await postAddDevice(values);
+      console.log(values);
+      const postAddDeviceRes = await postAddDevice(values, token);
+      console.log(postAddDeviceRes);
       if (postAddDeviceRes.data.code === 201) {
         successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
         handleResetAddDeviceForm();
@@ -403,6 +406,7 @@ const AddDevice = () => {
         <Row>
           <Col md="5" xl="4" className="mx-auto d-flex mt-5">
             <Button
+              size="sm"
               variant="success"
               className="mb-3 me-5 px-4"
               onClick={(e) => {
@@ -412,6 +416,7 @@ const AddDevice = () => {
               ثبت درخواست
             </Button>
             <Button
+              size="sm"
               variant="secondary"
               type="reset"
               className="mb-3 px-5 py-2"

@@ -2,7 +2,6 @@ import http from "./httpService";
 import config from "./config.json";
 
 export const getUsersList = (token) => {
-  console.log(config.R);
   return http.get(
     `${config.R}/api/v1/user`,
 
@@ -49,8 +48,6 @@ export const getUserUnLocked = (userId, token) => {
       timeout: 30000,
     }
   );
-
-  
 };
 export const postNewPassword = (values, token) => {
   return http.post(
@@ -69,6 +66,32 @@ export const putEditUser = (values, token) => {
   return http.put(
     `${config.R}/api/v1/user`,
     values,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+
+export const postAddPhoneNumber = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/user/phoneNumbers/add`,
+    values,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+export const getAllUserPhoneNumbers = (token) => {
+  return http.get(
+    `${config.R}/api/v1/user/phoneNumbers/show`,
 
     {
       headers: { Authorization: `Bearer ${token}` },

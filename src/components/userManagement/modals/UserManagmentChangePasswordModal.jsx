@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   RsetUserManagmentChangePasswordModal,
@@ -15,8 +15,12 @@ import {
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import { postNewPassword } from "../../../services/userServices";
 import { errorMessage, successMessage } from "../../../utils/msg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const UserManagmentChangePasswordModal = () => {
+  const [showPass, setShowPass] = useState(false);
+  const [showPassConfirm, setShowPassConfirm] = useState(false);
   const dispatch = useDispatch();
   const userManagmentChangePasswordModal = useSelector(
     selectUserManagmentChangePasswordModal
@@ -98,17 +102,24 @@ const UserManagmentChangePasswordModal = () => {
       <Modal.Body>
         <Form>
           <Row className="d-flex justify-content-center">
-            <Form.Group as={Col} md="6">
+            <Form.Group as={Col} md="6" className="position-relative">
               <Form.Label className="required-field">
                 رمز عبور جدید:{" "}
               </Form.Label>
               <Form.Control
                 className={`${!newPasswordIsValid ? formErrors.password : ""}`}
                 value={password}
-                type="text"
+                type={showPass ? "text" : "password"}
                 name="newPassWord"
                 onChange={(e) => {
                   dispatch(RsetPassword(e.target.value));
+                }}
+              />
+              <FontAwesomeIcon
+                icon={showPass ? faEye : faEyeSlash}
+                className="position-absolute top-50 end-0 mt-1 me-4 text-secondary"
+                onClick={() => {
+                  setShowPass(!showPass);
                 }}
               />
               {!newPasswordCharacterIsValid && (
@@ -117,16 +128,23 @@ const UserManagmentChangePasswordModal = () => {
                 </p>
               )}
             </Form.Group>
-            <Form.Group as={Col} md="6">
+            <Form.Group as={Col} md="6" className="position-relative">
               <Form.Label className="required-field">
                 تکرار رمز عبور:{" "}
               </Form.Label>
               <Form.Control
                 value={passwordConfirmation}
-                type="text"
+                type={showPassConfirm ? "text" : "password"}
                 name="repeatNewPassword"
                 onChange={(e) => {
                   dispatch(RsetPasswordConfirmation(e.target.value));
+                }}
+              />
+              <FontAwesomeIcon
+                icon={showPassConfirm ? faEye : faEyeSlash}
+                className="position-absolute top-50 end-0 mt-1 me-4 text-secondary"
+                onClick={() => {
+                  setShowPassConfirm(!showPassConfirm);
                 }}
               />
               {!newPasswordConfirmationIsValid && (

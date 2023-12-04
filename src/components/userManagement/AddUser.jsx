@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
@@ -23,8 +23,12 @@ import {
   handleAddUser,
   handleResetAddUser,
 } from "../../slices/userManagmentSlices";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const AddUser = () => {
+  const [showPass, setShowPass] = useState(false);
+  const [showPassConfirm, setShowPassConfirm] = useState(false);
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
   const firstName = useSelector(selectFirstName);
@@ -39,12 +43,14 @@ const AddUser = () => {
   const userNameIsValid = userName !== "";
   const firstNameIsValid = firstName !== "";
   const lastNameIsValid = lastName !== "";
-  const phoneNumberIsValid = phoneNumber !== "";
-  const gmailIsValid = gmail !== "";
   const passwordIsValid = password !== "";
   const passwordConfirmationIsValid =
     passwordConfirmation === password && passwordConfirmation !== "";
   const genderIsValid = gender !== "";
+  const phoneNumberIsValid =
+    /^0\d{10}$/.test(phoneNumber) && phoneNumber !== "";
+  const gmailIsValid =
+    /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@gmail\.com$/.test(gmail) && gmail !== "";
 
   useEffect(() => {
     dispatch(handleResetAddUser());
@@ -128,8 +134,9 @@ const AddUser = () => {
               type="radio"
               id="Female"
               value={gender}
+              checked={gender === "Female"}
               onChange={(e) => {
-                dispatch(RsetGender("female"));
+                dispatch(RsetGender("Female"));
               }}
             />
             <Form.Check
@@ -139,8 +146,9 @@ const AddUser = () => {
               type="radio"
               id="Male"
               value={gender}
+              checked={gender === "Male"}
               onChange={(e) => {
-                dispatch(RsetGender("male"));
+                dispatch(RsetGender("Male"));
               }}
             />
             {!genderIsValid && (
@@ -194,6 +202,7 @@ const AddUser = () => {
                 !phoneNumberIsValid ? formErrors.phoneNumber : ""
               }`}
               type="text"
+              maxLength={11}
               name="phoneNumber"
               value={phoneNumber}
               onChange={(e) => {
@@ -215,19 +224,26 @@ const AddUser = () => {
               }}
             />
           </Form.Group>
-          <Form.Group as={Col} md="3">
+          <Form.Group as={Col} md="3" className="position-relative">
             <Form.Label className="required-field">رمز عبور: </Form.Label>
             <Form.Control
               className={`${!passwordIsValid ? formErrors.password : ""}`}
-              type="text"
+              type={showPass ? "text" : "password"}
               name="password"
               value={password}
               onChange={(e) => {
                 dispatch(RsetPassword(e.target.value));
               }}
             />
+            <FontAwesomeIcon
+              icon={showPass ? faEye : faEyeSlash}
+              className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
+              onClick={() => {
+                setShowPass(!showPass);
+              }}
+            />
           </Form.Group>
-          <Form.Group as={Col} md="3">
+          <Form.Group as={Col} md="3" className="position-relative">
             <Form.Label className="required-field">تکرار رمز عبور: </Form.Label>
             <Form.Control
               className={`${
@@ -235,11 +251,18 @@ const AddUser = () => {
                   ? formErrors.passwordConfirmation
                   : ""
               }`}
-              type="text"
+              type={showPassConfirm ? "text" : "password"}
               name="passwordConfirmation"
               value={passwordConfirmation}
               onChange={(e) => {
                 dispatch(RsetPasswordConfirmation(e.target.value));
+              }}
+            />
+            <FontAwesomeIcon
+              icon={showPassConfirm ? faEye : faEyeSlash}
+              className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
+              onClick={() => {
+                setShowPassConfirm(!showPassConfirm);
               }}
             />
           </Form.Group>

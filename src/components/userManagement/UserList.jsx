@@ -43,29 +43,6 @@ import { getUserLocked, getUserUnLocked } from "../../services/userServices";
 import { useNavigate } from "react-router-dom";
 import { successMessage } from "../../utils/msg";
 
-const dataList = [
-  {
-    username: "shayanXX",
-    firstname: "shayan",
-    lastname: "goli",
-    mobileNumber: "09353835262",
-    email: "g.shayan5529@gmail.com",
-    gender: "male",
-    roles: ["device_view", "device_add"],
-    islockedout: false,
-  },
-  {
-    username: "wolfi",
-    firstname: "shayan",
-    lastname: "goli",
-    mobileNumber: "09353835262",
-    email: "g.shayan5529@gmail.com",
-    gender: "male",
-    roles: ["device_view", "device_add"],
-    islockedout: false,
-  },
-];
-
 const UserList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -91,6 +68,7 @@ const UserList = ({ setPageTitle }) => {
   useEffect(() => {
     setPageTitle("لیست درخواست نرم افزار");
   }, [setPageTitle]);
+
 
   const columns = useMemo(() => [
     {
@@ -330,23 +308,7 @@ const UserList = ({ setPageTitle }) => {
                 size="sm"
                 variant="primary"
                 className="mb-2 font12"
-                onClick={() => {
-                  // const handleFilterGroup = await dispatch(handleTabs());
-                  // if (activeTab !== "") {
-                  // const filterValues = {
-                  //   applicantId: localStorage.getItem("id"),
-                  //   serial: "",
-                  //   memberId: "",
-                  //   mDep: "",
-                  //   status: "",
-                  //   fromDate: "null",
-                  //   toDate: "null",
-                  //   type: 6,
-                  //   // group: handleFilterGroup.payload,
-                  // };
-                  // dispatch(handleReqsList(filterValues));
-                  // }
-                }}
+                onClick={() => {}}
               >
                 <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
                 به روزرسانی
@@ -358,16 +320,13 @@ const UserList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <UserTable
-                    // requests={userLists}
-                    requests={dataList}
-                    // notVisited={notVisited}
+                    requests={userLists}
                     columns={columns}
                     data={data}
                     onSort={handleSort}
                     fetchData={fetchData}
                     loading={load}
                     pageCount={pageCount}
-                    // handleNotVisited={handleNotVisited}
                   />
                   {userManagmentEditModal && <UserManagmentEditModal />}
                   {userManagmentRoleModal && <UserManagmentRoleModal />}

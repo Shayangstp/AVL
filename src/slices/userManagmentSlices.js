@@ -4,6 +4,10 @@ import { getUsersList } from "../services/userServices";
 import { RsetUser } from "./mainSlices";
 import { postAddUser } from "../services/userServices";
 import { RsetFormErrors } from "./mainSlices";
+import {
+  postAddPhoneNumber,
+  getAllUserPhoneNumbers,
+} from "../services/userServices";
 
 const initialState = {
   userName: "",
@@ -17,6 +21,7 @@ const initialState = {
   userLists: [],
   currentUser: "",
   userRoles: [],
+  userPhoneNumberList: [],
 };
 
 export const handleUserLists = createAsyncThunk(
@@ -25,8 +30,26 @@ export const handleUserLists = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const getUsersListRes = await getUsersList(token);
+      console.log(getUsersListRes);
       if (getUsersListRes.status === 200) {
         dispatch(RsetUserLists(getUsersListRes.data.allUser));
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleAllUserPhoneNumberList = createAsyncThunk(
+  "userManagment/handleAllUserPhoneNumberList",
+  async (obj, { dispatch, getState }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const getAllUserPhoneNumbersRes = await getAllUserPhoneNumbers(token);
+      console.log(getAllUserPhoneNumbersRes);
+      if (getAllUserPhoneNumbersRes.status === 200) {
+        dispatch(
+          RsetUserPhoneNumberList(getAllUserPhoneNumbersRes.data.Allusers)
+        );
       }
     } catch (ex) {
       console.log(ex);
@@ -65,7 +88,7 @@ export const handleAddUser = createAsyncThunk(
       console.log(postAddUserRes);
       if (postAddUserRes.status === 200) {
         successMessage("کاربر با موفقیت اضافه شد");
-        handleResetAddUser();
+        dispatch(handleResetAddUser());
       } else {
         errorMessage("خطا");
       }
@@ -100,22 +123,21 @@ export const handleAddPhoneNumber = createAsyncThunk(
       getState().userManagment;
 
     const values = {
-      firstname: firstName,
-      lastname: lastName,
-      mobileNumber: phoneNumber,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
       email: gmail,
     };
-    console.log(values);
     try {
-      //changeApi
-      // const postAddUserRes = await postAddUser(values, token);
-      // console.log(postAddUserRes);
-      // if (postAddUserRes.status === 200) {
-      //   successMessage("کاربر با موفقیت اضافه شد");
-      //   handleResetAddPhoneNumber();
-      // } else {
-      //   errorMessage("خطا");
-      // }
+      const postAddPhoneNumberRes = await postAddPhoneNumber(values, token);
+      if (postAddPhoneNumberRes.data.code === 201) {
+        dispatch(handleResetAddPhoneNumber());
+        successMessage("کاربر با موفقیت اضافه شد");
+      } else if (postAddPhoneNumberRes.data.code === "422") {
+        errorMessage("این شماره قبلا ثبت شده است!");
+      } else {
+        errorMessage("خطا");
+      }
     } catch (ex) {
       console.log(ex);
     }
@@ -170,6 +192,9 @@ const userManagmentSlices = createSlice({
     RsetUserRoles: (state, { payload }) => {
       return { ...state, userRoles: payload };
     },
+    RsetUserPhoneNumberList: (state, { payload }) => {
+      return { ...state, userPhoneNumberList: payload };
+    },
   },
 });
 
@@ -185,6 +210,7 @@ export const {
   RsetUserLists,
   RsetCurrentUser,
   RsetUserRoles,
+  RsetUserPhoneNumberList,
 } = userManagmentSlices.actions;
 
 export const selectUserName = (state) => state.userManagment.userName;
@@ -199,5 +225,7 @@ export const selectGender = (state) => state.userManagment.gender;
 export const selectUserLists = (state) => state.userManagment.userLists;
 export const selectCurrentUser = (state) => state.userManagment.currentUser;
 export const selectUserRoles = (state) => state.userManagment.userRoles;
+export const selectUserPhoneNumberList = (state) =>
+  state.userManagment.userPhoneNumberList;
 
 export default userManagmentSlices.reducer;

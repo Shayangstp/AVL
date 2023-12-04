@@ -62,6 +62,8 @@ import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
 import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
 import { handleDeviceLocList } from "../../slices/deviceSlices";
 
+
+
 const DeviceList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -90,11 +92,12 @@ const DeviceList = ({ setPageTitle }) => {
     }
   };
 
+  
   //data fetching
 
   useEffect(() => {
     handleDeviceList();
-  }, []);
+  }, [currentDevice]);
 
   // const dataList = [
   //   {
@@ -229,35 +232,36 @@ const DeviceList = ({ setPageTitle }) => {
             size="sm"
             active
             onClick={() => {
-              console.log(request);
-              //handle date bc came from api wrong way
-              const apiDate = request.createDate;
-              const dateParts = apiDate.split(" ");
-              const day = parseInt(dateParts[2], 10);
-              const month = moment().month(dateParts[1]).format("jMM");
-              const year = parseInt(dateParts[3], 10);
-              const persianDate = `${year}/${month}/${day}`;
-
               dispatch(RsetDeviceEditModal(true));
-              dispatch(RsetVehicleNumber(request.plate));
-              dispatch(RsetVehicleCompany(request.model.name));
-              dispatch(RsetVehicleType(request.model.name));
-              dispatch(RsetDriverName(request.driverName));
-              dispatch(RsetDriverNumber(request.driverPhoneNumber));
-              dispatch(RsetVehicleUsing(request.usage));
-              dispatch(RsetVehicleGas(request.fuel));
-              dispatch(
-                RsetEditTimeStamp(
-                  moment
-                    .utc(persianDate, "YYYY/MM/DD")
-                    .locale("fa")
-                    .format("jYYYY/jMM/jDD")
-                )
-              );
-              dispatch(RsetVehicleId(request._id));
-              dispatch(RsetDeviceNumber(request.simNumber));
-              dispatch(RsetDeviceImei(request.deviceIMEI));
-              dispatch(RsetDeviceType(request.trackerModel));
+              //handle date bc came from api wrong way
+              // const apiDate = request.createDate;
+              // const dateParts = apiDate.split(" ");
+              // const day = parseInt(dateParts[2], 10);
+              // const month = moment().month(dateParts[1]).format("jMM");
+              // const year = parseInt(dateParts[3], 10);
+              // const persianDate = `${year}/${month}/${day}`;
+
+              // dispatch(RsetDeviceEditModal(true));
+              // dispatch(RsetVehicleNumber(request.plate));
+              // dispatch(RsetVehicleCompany(request.model.name));
+              // dispatch(RsetVehicleType(request.model.name));
+              // dispatch(RsetDriverName(request.driverName));
+              // dispatch(RsetDriverNumber(request.driverPhoneNumber));
+              // dispatch(RsetVehicleUsing(request.usage));
+              // dispatch(RsetVehicleGas(request.fuel));
+              // dispatch(
+              //   RsetEditTimeStamp(
+              //     moment
+              //       .utc(persianDate, "YYYY/MM/DD")
+              //       .locale("fa")
+              //       .format("jYYYY/jMM/jDD")
+              //   )
+              // );
+              // dispatch(RsetVehicleId(request._id));
+              // dispatch(RsetDeviceNumber(request.simNumber));
+              // dispatch(RsetDeviceImei(request.deviceIMEI));
+              // dispatch(RsetDeviceType(request.trackerModel));
+              // dispatch(RsetCurrentDevice(request));
               dispatch(RsetCurrentDevice(request));
             }}
           >
@@ -296,6 +300,7 @@ const DeviceList = ({ setPageTitle }) => {
     var tableItems = [];
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
+        console.log(requests);
         var tableItem = {
           idx: i,
           imei: link(requests[i]),
@@ -303,10 +308,10 @@ const DeviceList = ({ setPageTitle }) => {
           driverName: requests[i].driverName,
           driverNumber: requests[i].driverPhoneNumber,
           vehicleNumber: requests[i].plate,
-          vehicleType: requests[i].model,
-          vehicleCategory: requests[i].model.name,
-          vehicleType: requests[i].model.name,
-          vehicleCompany: requests[i].model.name,
+          // vehicleType: requests[i].model.name,
+          // vehicleCategory: requests[i].model.name,
+          // vehicleType: requests[i].model.name,
+          // vehicleCompany: requests[i].model.name,
           vehicleUsage: requests[i].usage,
           gasUsage: requests[i].fuel,
           distance: requests[i].maxPMDistance,
@@ -330,6 +335,7 @@ const DeviceList = ({ setPageTitle }) => {
       var tableItems = [];
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
+          console.log(requests);
           var tableItem = {
             imei: link(requests[i]),
             idx: i,
@@ -337,9 +343,9 @@ const DeviceList = ({ setPageTitle }) => {
             driverName: requests[i].driverName,
             driverNumber: requests[i].driverPhoneNumber,
             vehicleNumber: requests[i].plate,
-            vehicleCategory: requests[i].model.name,
-            vehicleType: requests[i].model.name,
-            vehicleCompany: requests[i].model.name,
+            // vehicleCategory: requests[i].model.name,
+            // vehicleType: requests[i].model.name,
+            // vehicleCompany: requests[i].model.name,
             vehicleUsage: requests[i].usage,
             gasUsage: requests[i].fuel,
             distance: requests[i].maxPMDistance,
