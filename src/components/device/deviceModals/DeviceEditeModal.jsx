@@ -95,7 +95,7 @@ const DeviceEditeModal = () => {
     dispatch(RsetDeviceImei(currentDevice.deviceIMEI));
     dispatch(RsetDeviceType(currentDevice.trackerModel));
     dispatch(RsetCurrentDevice(currentDevice));
-  }, []);
+  }, [currentDevice]);
 
   const handleUpdateData = async () => {
     const token = localStorage.getItem("token");
@@ -116,14 +116,12 @@ const DeviceEditeModal = () => {
     console.log(editDeviceListRes);
     if (editDeviceListRes.data.code === 200) {
       dispatch(RsetDeviceEditModal(false));
-      // navigate(0);
       successMessage("ویرایش با موفقیت انجام شد");
+      dispatch(RsetCurrentDevice(""));
     } else {
       errorMessage("خطا");
     }
   };
-
-  console.log(vehicleType.label);
 
   return (
     <Modal

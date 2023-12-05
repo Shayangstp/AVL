@@ -101,3 +101,15 @@ export const getAllUserPhoneNumbers = (token) => {
     }
   );
 };
+export const postAddRoleToUser = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/user/addRoleToUser`,
+    values,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

@@ -12,17 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowsRotate,
-  faCheck,
-  faBan,
-  faClockRotateLeft,
-  faEye,
-  faFilter,
-  faPlus,
-  faPen,
-  faScrewdriverWrench,
-  faLocation,
-  faLocationDot,
+  faPlay,
+  faStop,
+  faForward,
+  faBackward,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
 import moment from "moment-jalaali";
@@ -35,6 +28,42 @@ import {
 } from "../../../../slices/deviceSlices";
 import DeviceTableLocations from "./DeviceTableLocations";
 
+const dataList = [
+  {
+    date: "date",
+    hour: "hour",
+    address: "address",
+    speed: "speed",
+    lat: 35.7219,
+    lng: 51.3347,
+  },
+  {
+    date: "date",
+    hour: "hour",
+    address: "address",
+    speed: "speed",
+    lat: 35.7219,
+    lng: 51.3347,
+  },
+
+  {
+    date: "date",
+    hour: "hour",
+    address: "address",
+    speed: "speed",
+    lat: 51,
+    lng: 32,
+  },
+  {
+    date: "date",
+    hour: "hour",
+    address: "address",
+    speed: "speed",
+    lat: 51,
+    lng: 32,
+  },
+];
+
 const DeviceListLocations = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -43,7 +72,8 @@ const DeviceListLocations = ({ setPageTitle }) => {
   //handleCheckboxPlay
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [checkboxes, setCheckboxes] = useState([]);
+
+  const [selectedValue, setSelectedValue] = useState("");
 
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
@@ -55,42 +85,6 @@ const DeviceListLocations = ({ setPageTitle }) => {
   }, [deviceLocList]);
 
   //fake data
-
-  const dataList = [
-    {
-      date: "date",
-      hour: "hour",
-      address: "address",
-      speed: "speed",
-      lat: 35.7219,
-      lng: 51.3347,
-    },
-    {
-      date: "date",
-      hour: "hour",
-      address: "address",
-      speed: "speed",
-      lat: 35.7219,
-      lng: 51.3347,
-    },
-
-    {
-      date: "date",
-      hour: "hour",
-      address: "address",
-      speed: "speed",
-      lat: 51,
-      lng: 32,
-    },
-    {
-      date: "date",
-      hour: "hour",
-      address: "address",
-      speed: "speed",
-      lat: 51,
-      lng: 32,
-    },
-  ];
 
   // useEffect(() => {
   //   setPageTitle("لیست درخواست نرم افزار");
@@ -139,23 +133,24 @@ const DeviceListLocations = ({ setPageTitle }) => {
     dispatch(RsetDeviceCordinate(cordinateArr));
   };
 
-  const handleCheckboxChange = (i) => {
+  const handleCheckboxChange = (requests, i) => {
     setCurrentIndex(i);
+    setSelectedValue(requests);
   };
 
-
-  const handleCheckBox = (request, i) => {
+  const handleCheckBox = (requests, i) => {
     return (
       <Form.Check
         key={i}
-        type="checkbox"
-        id={request[i] && request[i]._id}
-        value={request[i] && request[i].deviceName}
+        type="radio"
+        // id={requests._id}
         checked={i === currentIndex}
-        onChange={() => {
-          handleCheckboxChange(i);
-          console.log(i, currentIndex);
-
+        onChange={(e) => {
+          handleCheckboxChange(requests, i);
+          //get lat and lang
+          if (e.target.checked) {
+            console.log(requests[i]);
+          }
         }}
         className="me-3"
       />
@@ -170,7 +165,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
   useEffect(() => {
     if (isPlaying) {
       const timeoutId = setTimeout(() => {
-        if (currentIndex < checkboxes - 1) {
+        if (currentIndex < selectedValue.length - 1) {
           setCurrentIndex((prevIndex) => prevIndex + 1);
         } else {
           setIsPlaying(false);
@@ -181,11 +176,11 @@ const DeviceListLocations = ({ setPageTitle }) => {
     }
   }, [currentIndex, isPlaying]);
 
-  const getCheckBoxData = (index) => {
-    if (index >= 0 && index < checkboxes.length) {
-      // const label = checkboxes[index].label;
-      setCurrentIndex(index);
-      // console.log(label);
+  const getCheckBoxData = (i) => {
+    if (i >= 0 && i < selectedValue.length) {
+      const value = selectedValue[i];
+      setCurrentIndex(i);
+      console.log(value);
     }
   };
 
@@ -193,42 +188,11 @@ const DeviceListLocations = ({ setPageTitle }) => {
     getCheckBoxData(currentIndex);
   }, [currentIndex]);
 
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-    setCheckboxes(requests.length);
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        var tableItem = {
-          idx: i + 1,
-          checkBox: handleCheckBox(requests[i], i),
-          date: moment
-            .utc(requests[i].date, "YYYY/MM/DD")
-            .locale("fa")
-            .format("jYYYY/jMM/jDD"),
-          hour: moment
-            .utc(requests[i].date, "jYYYY-jMM-jDDTHH:mm:ss.SSZ")
-            .format("YYYY-MM-DD HH:mm:ss z"),
-          address: requests[i].address,
-          speed: requests[i].speed,
-          // opration: operation(requests[i]),
-        };
-        tableItems.push(tableItem);
-      }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-      setload(false);
-    }
-  }, []);
-  const handleSort = useCallback(
-    ({ sortBy, pageIndex, pageSize, requests }) => {
+  const fetchData = useCallback(
+    ({ pageSize, pageIndex, requests }) => {
       var tableItems = [];
       if (requests.length !== 0) {
+        setSelectedValue(requests);
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
@@ -237,10 +201,44 @@ const DeviceListLocations = ({ setPageTitle }) => {
               .utc(requests[i].date, "YYYY/MM/DD")
               .locale("fa")
               .format("jYYYY/jMM/jDD"),
+            hour: moment
+              .utc(requests[i].date, "jYYYY-jMM-jDDTHH:mm:ss.SSZ")
+              .format("YYYY-MM-DD HH:mm:ss z"),
+            address: requests[i].address,
+            speed: requests[i].speed,
+          };
+          tableItems.push(tableItem);
+        }
+      }
+      const fetchId = ++fetchIdRef.current;
+      setload(true);
+      if (fetchId === fetchIdRef.current) {
+        const startRow = pageSize * pageIndex;
+        const endRow = startRow + pageSize;
+        setData(tableItems.slice(startRow, endRow));
+        setPageCount(Math.ceil(tableItems.length / pageSize));
+        setload(false);
+      }
+    },
+    [currentIndex]
+  );
+  const handleSort = useCallback(
+    ({ sortBy, pageIndex, pageSize, requests }) => {
+      var tableItems = [];
+      if (requests.length !== 0) {
+        setSelectedValue(requests);
+        for (var i = 0; i < requests.length; i++) {
+          var tableItem = {
+            idx: i + 1,
+            checkBox: handleCheckBox(requests, i),
+
+            date: moment
+              .utc(requests[i].date, "YYYY/MM/DD")
+              .locale("fa")
+              .format("jYYYY/jMM/jDD"),
             hour: moment.utc(requests[i].date, "HH:mm:ss").format("HH:mm:ss"),
             address: requests[i].address,
             speed: requests[i].speed,
-            // opration: operation(requests[i]),
           };
           tableItems.push(tableItem);
         }
@@ -264,7 +262,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
         setload(false);
       }
     },
-    []
+    [currentIndex]
   );
 
   return (
@@ -292,48 +290,53 @@ const DeviceListLocations = ({ setPageTitle }) => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <Form.Group>
+                  <Form.Group className="d-flex justify-content-center mb-2 gap-1">
                     <Button
-                      variant="primary"
-                      onClick={() => {
-                        if (currentIndex !== 0) {
-                          setCurrentIndex((prev) => prev - 1);
-                        } else {
-                          setCurrentIndex(checkboxes.length - 1);
-                        }
-                      }}
-                    >
-                      backward
-                    </Button>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      onClick={handlePlayClick}
-                      disabled={isPlaying}
-                    >
-                      Play
-                    </Button>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      onClick={() => {
-                        setIsPlaying(false);
-                        setCurrentIndex(0);
-                      }}
-                    >
-                      Pause
-                    </Button>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        if (currentIndex <= checkboxes.length - 2) {
+                      variant="secondary"
+                      size="sm"
+                      onClick={(e) => {
+                        if (currentIndex <= selectedValue.length - 1) {
                           setCurrentIndex((prev) => prev + 1);
                         } else {
                           setCurrentIndex(0);
                         }
                       }}
                     >
-                      forward
+                      <FontAwesomeIcon icon={faForward} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      type="submit"
+                      onClick={handlePlayClick}
+                      disabled={isPlaying}
+                    >
+                      <FontAwesomeIcon icon={faPlay} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      type="submit"
+                      onClick={() => {
+                        setIsPlaying(false);
+                        setCurrentIndex(0);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faStop} />
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => {
+                        if (currentIndex !== 0) {
+                          setCurrentIndex((prev) => prev - 1);
+                        } else {
+                          setCurrentIndex(selectedValue.length - 1);
+                        }
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faBackward} />
                     </Button>
                   </Form.Group>
                   {/* this should be fix  */}

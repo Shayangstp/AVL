@@ -7,14 +7,19 @@ import {
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { selectCurrentUser } from "../../../slices/userManagmentSlices";
 import { useEffect } from "react";
+import { postAddRoleToUser } from "../../../services/userServices";
 
 const UserManagmentRoleModal = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const [checkedItems, setCheckedItems] = useState([]);
 
+  const rolesOfUser = currentUser.roles.map((role) => {
+    return role.rolename;
+  });
+
   useEffect(() => {
-    setCheckedItems(currentUser.roles.length !== 0 && [...currentUser.roles]);
+    setCheckedItems(currentUser.roles.length !== 0 && rolesOfUser);
   }, []);
 
   const userManagmentRoleModal = useSelector(selectUserManagmentRoleModal);
@@ -39,11 +44,20 @@ const UserManagmentRoleModal = () => {
     }
   };
 
-  const handleUserRoles = (e) => {
+  const handleUserRoles = async (e) => {
     e.preventDefault();
-    console.log(checkedItems);
+    // console.log(checkedItems);
+    const token = localStorage.getItem("token");
+    const values = {
+      userId: currentUser._id,
+      roleName: checkedItems,
+    };
+    const postAddRoleToUserRes = await postAddRoleToUser(values, token);
+    // console.log(postAddRoleToUserRes);
+
+    // console.log("hi");
     dispatch(RsetUserManagmentRoleModal(false));
-    setCheckedItems([]);
+    // setCheckedItems([]);
   };
 
   return (

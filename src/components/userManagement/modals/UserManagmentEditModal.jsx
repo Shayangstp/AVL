@@ -24,9 +24,12 @@ import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import { NumericFormat } from "react-number-format";
 import { useEffect } from "react";
 import { putEditUser } from "../../../services/userServices";
+import { errorMessage, successMessage } from "../../../utils/msg";
+import { useNavigate } from "react-router";
 
 const UserManagmentEditModal = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userManagmentEditModal = useSelector(selectUserManagmentEditModal);
   const userName = useSelector(selectUserName);
   const firstName = useSelector(selectFirstName);
@@ -105,6 +108,12 @@ const UserManagmentEditModal = () => {
 
       const putEditUserRes = await putEditUser(values, token);
       console.log(putEditUserRes);
+      if (putEditUserRes.data.code === "200") {
+        successMessage("مشخصات کاربر با موفقیت تغییر کرد");
+        navigate(0);
+      } else {
+        errorMessage("خطا");
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -121,10 +130,12 @@ const UserManagmentEditModal = () => {
     }
   };
 
+  console.log(currentUser);
+
   useEffect(() => {
     dispatch(RsetUserName(currentUser.username));
-    dispatch(RsetFirstName(currentUser.username));
-    dispatch(RsetLastName(currentUser.username));
+    dispatch(RsetFirstName(currentUser.firstname));
+    dispatch(RsetLastName(currentUser.lastname));
     dispatch(RsetPhoneNumber(currentUser.mobileNumber));
     dispatch(RsetGmail(currentUser.email));
     dispatch(RsetGender(currentUser.gender));
