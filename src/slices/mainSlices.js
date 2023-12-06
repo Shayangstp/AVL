@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
+import { getAllGpses } from "../services/dashboardServices";
 
 const initialState = {
   formErrors: {},
@@ -7,7 +8,27 @@ const initialState = {
   loading: false,
   avatar: false,
   uploadFile: "",
+  allGpses: [],
 };
+
+export const handleAllGpsesList = createAsyncThunk(
+  "main/handleAllGpsesList",
+  async (obj, { dispatch, getState }) => {
+    const { allGpeses } = getState().main;
+    const token = localStorage.getItem("token");
+
+    try {
+      const allGpesesRes = await getAllGpses(token);
+      console.log(allGpesesRes);
+      const allCordinates = allGpesesRes.data.foundedGpsData.map((device) => {
+        return [device.lat, device.lng];
+      });
+      dispatch(RsetAllGpses([...allCordinates]));
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
 
 const mainSlices = createSlice({
   name: "main",
@@ -28,16 +49,28 @@ const mainSlices = createSlice({
     RsetUploadFile: (state, { payload }) => {
       return { ...state, uploadFile: payload };
     },
+    RsetUploadFile: (state, { payload }) => {
+      return { ...state, uploadFile: payload };
+    },
+    RsetAllGpses: (state, { payload }) => {
+      return { ...state, allGpses: payload };
+    },
   },
 });
 
-export const { RsetFormErrors, RsetUser, RsetLoading, RsetUploadFile } =
-  mainSlices.actions;
+export const {
+  RsetFormErrors,
+  RsetUser,
+  RsetLoading,
+  RsetUploadFile,
+  RsetAllGpses,
+} = mainSlices.actions;
 
 export const selectFormErrors = (state) => state.main.formErrors;
 export const selectUser = (state) => state.main.user;
 export const selectLoading = (state) => state.main.loading;
 export const selectAvatar = (state) => state.main.avatar;
 export const selectUploadFile = (state) => state.main.uploadFile;
+export const selectAllGpses = (state) => state.main.allGpses;
 
 export default mainSlices.reducer;

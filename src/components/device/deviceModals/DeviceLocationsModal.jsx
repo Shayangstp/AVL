@@ -6,7 +6,7 @@ import {
 } from "../../../slices/modalSlices";
 import { useSelector, useDispatch } from "react-redux";
 import DeviceListLocations from "./DeviceLocations/DeviceListLocations";
-import Map from "../../map/Map";
+import MapDevice from "../../map/MapDevice";
 import {
   RsetDeviceCordinate,
   handleDeviceLocList,
@@ -50,7 +50,7 @@ const DeviceLocationsModal = () => {
             style={{ height: "300px", width: "100%" }}
             className="mt-4"
           >
-            <Map height="300px" />
+            <MapDevice height="300px" />
           </div>
         </div>
       </Modal.Body>

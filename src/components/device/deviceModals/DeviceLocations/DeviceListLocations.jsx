@@ -74,6 +74,7 @@ const DeviceListLocations = ({ setPageTitle }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [selectedValue, setSelectedValue] = useState("");
+  const [cordinate, setCordinate] = useState([]);
 
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
@@ -143,19 +144,26 @@ const DeviceListLocations = ({ setPageTitle }) => {
       <Form.Check
         key={i}
         type="radio"
-        // id={requests._id}
         checked={i === currentIndex}
         onChange={(e) => {
           handleCheckboxChange(requests, i);
-          //get lat and lang
           if (e.target.checked) {
-            console.log(requests[i]);
+            let cordinateItem = [requests[i].lng, requests[i].lat];
+            // setCordinate((prev) => [...prev, cordinateItem]);
+            setCordinate((prev) => [cordinateItem]);
+            setIsPlaying(false);
           }
         }}
         className="me-3"
       />
     );
   };
+
+  useEffect(() => {
+    dispatch(RsetDeviceCordinate(cordinate));
+  }, [cordinate]);
+
+  console.log(deviceCordinate);
 
   const handlePlayClick = () => {
     setIsPlaying(true);
@@ -180,6 +188,8 @@ const DeviceListLocations = ({ setPageTitle }) => {
     if (i >= 0 && i < selectedValue.length) {
       const value = selectedValue[i];
       setCurrentIndex(i);
+      let cordinateItem = [selectedValue[i].lng, selectedValue[i].lat];
+      setCordinate((prev) => [...prev, cordinateItem]);
       console.log(value);
     }
   };

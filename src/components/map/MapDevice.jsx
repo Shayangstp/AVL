@@ -7,8 +7,9 @@ import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useSelector } from "react-redux";
 import { selectDeviceCordinate } from "../../slices/deviceSlices";
 
-const Map = ({ height, width }) => {
+const MapDevice = ({ height, width }) => {
   const deviceCordinate = useSelector(selectDeviceCordinate);
+  console.log(deviceCordinate);
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -24,13 +25,12 @@ const Map = ({ height, width }) => {
       style={{ height: height, width: width }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker
-        position={
-          deviceCordinate.length !== 0 ? deviceCordinate : [35.7219, 51.3347]
-        }
-      />
+      {deviceCordinate?.map((marker) => (
+        // console.log(marker)
+        <Marker key={marker.key} position={marker}></Marker>
+      ))}
     </MapContainer>
   );
 };
 
-export default Map;
+export default MapDevice;

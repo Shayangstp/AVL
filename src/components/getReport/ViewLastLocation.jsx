@@ -1,6 +1,6 @@
 import React from "react";
 import ViewPathList from "./viewPathList/ViewPathList";
-import Map from "../map/Map";
+import Map from "../map/MapDevice";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import DateFrom from "./dateFrom/DateFrom";
 import ViewLastLocationList from "./viewLastLocationList/ViewLastLocationList";
@@ -22,7 +22,7 @@ const ViewLastLocation = ({ setPageTitle }) => {
             className="mt-5 ms-5"
             style={{ height: "500px", width: "500px" }}
           >
-            <Map />
+            {/* <Map /> */}
           </div>
         </div>
       </div>

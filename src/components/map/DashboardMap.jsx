@@ -6,32 +6,37 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useSelector } from "react-redux";
 import { selectDeviceCordinate } from "../../slices/deviceSlices";
+import { selectAllGpses } from "../../slices/mainSlices";
 
 const DashboardMap = ({ height, width }) => {
-  const deviceCordinate = useSelector(selectDeviceCordinate);
+  // const deviceCordinate = useSelector(selectDeviceCordinate);
 
-  const markers = [
-    {
-      position: [38.7219, 55.3347],
-      key: "marker1",
-      content: "shayan",
-      color: "blue",
-    },
-    {
-      position: [34.7219, 52.3347],
-      key: "marker2",
-      content: "amir",
-      color: "red",
-    },
-    {
-      position: [39.7219, 55.3347],
-      key: "marker3",
-      content: "mahmod",
-      color: "yellow",
-    },
-  ];
+  const allGpses = useSelector(selectAllGpses);
 
-  const colorIcons = markers.map((marker) => {
+  console.log(allGpses);
+
+  // const markers = [
+  //   {
+  //     position: [38.7219, 55.3347],
+  //     key: "marker1",
+  //     content: "shayan",
+  //     color: "blue",
+  //   },
+  //   {
+  //     position: [34.7219, 52.3347],
+  //     key: "marker2",
+  //     content: "amir",
+  //     color: "red",
+  //   },
+  //   {
+  //     position: [39.7219, 55.3347],
+  //     key: "marker3",
+  //     content: "mahmod",
+  //     color: "yellow",
+  //   },
+  // ];
+
+  const colorIcons = allGpses.map((marker) => {
     return marker.color;
   });
 
@@ -63,11 +68,11 @@ const DashboardMap = ({ height, width }) => {
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      {markers.map((marker) => (
+      {allGpses.map((marker) => (
         <Marker
-          key={marker.key}
-          position={marker.position}
-          icon={colorpicker(marker.color)}
+          // key={marker.key}
+          position={marker}
+          // icon={colorpicker(marker.color)}
         >
           <Popup>{marker.content}</Popup>
         </Marker>

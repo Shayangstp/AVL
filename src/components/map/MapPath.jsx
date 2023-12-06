@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -6,9 +6,13 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useSelector } from "react-redux";
 import { selectDeviceCordinate } from "../../slices/deviceSlices";
+import { useDispatch, useSelector } from "react-redux";
 
 const Map = ({ height, width }) => {
+  const dispatch = useDispatch();
   const deviceCordinate = useSelector(selectDeviceCordinate);
+
+  console.log(deviceCordinate);
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
