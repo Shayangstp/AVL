@@ -45,7 +45,6 @@ export const handleAllUserPhoneNumberList = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const getAllUserPhoneNumbersRes = await getAllUserPhoneNumbers(token);
-      console.log(getAllUserPhoneNumbersRes);
       if (getAllUserPhoneNumbersRes.status === 200) {
         dispatch(
           RsetUserPhoneNumberList(getAllUserPhoneNumbersRes.data.Allusers)

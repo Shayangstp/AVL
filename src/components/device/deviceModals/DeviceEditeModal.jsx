@@ -77,7 +77,7 @@ const DeviceEditeModal = () => {
 
     dispatch(RsetVehicleNumber(currentDevice.plate));
     dispatch(RsetVehicleCompany(currentDevice.vehicleName));
-    dispatch(RsetVehicleType(currentDevice.model.name));
+    dispatch(RsetVehicleType({ label: currentDevice.model.name, value: 1 }));
     dispatch(RsetDriverName(currentDevice.driverName));
     dispatch(RsetDriverNumber(currentDevice.driverPhoneNumber));
     dispatch(RsetVehicleUsing(currentDevice.usage));
@@ -128,22 +128,22 @@ const DeviceEditeModal = () => {
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      onHide={() => {
-        dispatch(RsetDeviceEditModal(false));
-        dispatch(RsetVehicleNumber(""));
-        dispatch(RsetVehicleCompany(""));
-        dispatch(RsetVehicleType(""));
-        dispatch(RsetDriverName(""));
-        dispatch(RsetDriverNumber(""));
-        dispatch(RsetVehicleUsing(""));
-        dispatch(RsetVehicleGas(""));
-        dispatch(RsetEditTimeStamp(null));
-        dispatch(RsetVehicleId(""));
-        dispatch(RsetDeviceNumber(""));
-        dispatch(RsetDeviceImei(""));
-        dispatch(RsetDeviceType(""));
-        dispatch(RsetDeviceEditModal(false));
-      }}
+      // onHide={() => {
+      //   dispatch(RsetDeviceEditModal(false));
+      //   dispatch(RsetVehicleNumber(""));
+      //   dispatch(RsetVehicleCompany(""));
+      //   dispatch(RsetVehicleType(""));
+      //   dispatch(RsetDriverName(""));
+      //   dispatch(RsetDriverNumber(""));
+      //   dispatch(RsetVehicleUsing(""));
+      //   dispatch(RsetVehicleGas(""));
+      //   dispatch(RsetEditTimeStamp(null));
+      //   dispatch(RsetVehicleId(""));
+      //   dispatch(RsetDeviceNumber(""));
+      //   dispatch(RsetDeviceImei(""));
+      //   dispatch(RsetDeviceType(""));
+      //   dispatch(RsetDeviceEditModal(false));
+      // }}
       show={deviceEditModal}
       className="borderRadius-15"
     >
@@ -244,6 +244,7 @@ const DeviceEditeModal = () => {
                 //     ? `${formErrors.deviceImei} borderRaduis-15`
                 //     : ""
                 // }`}
+                maxLength={11}
                 type="text"
                 name="driverNumber"
                 value={driverNumber}

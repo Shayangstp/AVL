@@ -46,11 +46,9 @@ const DeviceFilter = () => {
   // }, [user]);
 
   return (
-    <div
-      // className="d-flex flex-column  mb-5 lightGray2-bg p-3 borderRadius m-auto shadow border border-white border-2"
-    >
+    <div className="d-flex flex-column  mb-5 lightGray-bg p-3 borderRadius-15 m-auto shadow border border-white border-2">
       <Row className="align-items-center py-2">
-        <Form.Group className="d-flex align-items-center mb-3">
+        <Form.Group className="d-flex align-items-center mb-4">
           <Form.Switch
             type="checkbox"
             name="realFilter"

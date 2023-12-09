@@ -5,7 +5,10 @@ import {
   selectUserManagmentRoleModal,
 } from "../../../slices/modalSlices";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
-import { selectCurrentUser } from "../../../slices/userManagmentSlices";
+import {
+  RsetCurrentUser,
+  selectCurrentUser,
+} from "../../../slices/userManagmentSlices";
 import { useEffect } from "react";
 import { postAddRoleToUser } from "../../../services/userServices";
 
@@ -14,13 +17,17 @@ const UserManagmentRoleModal = () => {
   const currentUser = useSelector(selectCurrentUser);
   const [checkedItems, setCheckedItems] = useState([]);
 
-  const rolesOfUser = currentUser.roles.map((role) => {
-    return role.rolename;
-  });
+  let rolesOfUser;
+
+  useEffect(() => {
+    rolesOfUser = currentUser.roles.map((role) => {
+      return role.rolename;
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     setCheckedItems(currentUser.roles.length !== 0 && rolesOfUser);
-  }, []);
+  }, [currentUser]);
 
   const userManagmentRoleModal = useSelector(selectUserManagmentRoleModal);
 
@@ -53,12 +60,13 @@ const UserManagmentRoleModal = () => {
       roleName: checkedItems,
     };
     const postAddRoleToUserRes = await postAddRoleToUser(values, token);
-    // console.log(postAddRoleToUserRes);
-
-    // console.log("hi");
+    console.log(postAddRoleToUserRes);
     dispatch(RsetUserManagmentRoleModal(false));
-    // setCheckedItems([]);
+    setCheckedItems([]);
+    dispatch(RsetCurrentUser(""));
   };
+
+  console.log(currentUser);
 
   return (
     <Modal

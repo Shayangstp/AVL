@@ -53,10 +53,6 @@ const UserList = ({ setPageTitle }) => {
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
 
-  useEffect(() => {
-    dispatch(handleUserLists());
-  }, []);
-
   const userLists = useSelector(selectUserLists);
   const userManagmentEditModal = useSelector(selectUserManagmentEditModal);
   const userManagmentChangePasswordModal = useSelector(
@@ -66,10 +62,14 @@ const UserList = ({ setPageTitle }) => {
   const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
-    setPageTitle("لیست درخواست نرم افزار");
+    setPageTitle("لیست کاربران");
   }, [setPageTitle]);
 
+  useEffect(() => {
+    dispatch(handleUserLists());
+  }, [currentUser]);
 
+  console.log(currentUser);
   const columns = useMemo(() => [
     {
       Header: "نام کاربری",
@@ -153,12 +153,12 @@ const UserList = ({ setPageTitle }) => {
   };
 
   const operation = (request) => {
-    if (localStorage.getItem("token") !== undefined) {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
+    return (
+      <div className="d-flex justify-content-center">
+        <div>
           <Button
             title="رول ها"
-            className="btn btn-secondary d-flex align-items-center me-2 mb-2 mb-md-0"
+            className="btn btn-secondary d-flex align-items-center mb-2 mb-md-0 me-2"
             size="sm"
             active
             onClick={() => {
@@ -168,9 +168,11 @@ const UserList = ({ setPageTitle }) => {
           >
             <FontAwesomeIcon icon={faStamp} />
           </Button>
+        </div>
+        <div>
           <Button
             title="ویرایش"
-            className="btn btn-warning d-flex align-items-center me-2 mb-2 mb-md-0"
+            className="btn btn-warning d-flex align-items-center mb-2 mb-md-0 me-2"
             size="sm"
             active
             onClick={() => {
@@ -180,6 +182,8 @@ const UserList = ({ setPageTitle }) => {
           >
             <FontAwesomeIcon icon={faPen} />
           </Button>
+        </div>
+        <div>
           <Button
             title="تغییر رمزعبور"
             className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
@@ -193,9 +197,8 @@ const UserList = ({ setPageTitle }) => {
             <FontAwesomeIcon icon={faLock} />
           </Button>
         </div>
-      );
-    } else {
-    }
+      </div>
+    );
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
@@ -280,10 +283,7 @@ const UserList = ({ setPageTitle }) => {
       <Fragment>
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
         <section className="position-relative">
-          <div
-            // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
-            className="mt-5"
-          >
+          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow ">
             <div className="d-flex align-items-center justify-content-between">
               <div>
                 <Link to="/SoftwareReqRegistration">

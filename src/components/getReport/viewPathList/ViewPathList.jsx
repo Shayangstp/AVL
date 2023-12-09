@@ -30,6 +30,7 @@ import {
   RsetShowVehicleList,
   selectShowVehicleList,
 } from "../../../slices/getReportSlices";
+import { handleGroupList } from "../../../slices/getReportSlices";
 const dataList = [
   {
     groupName: "کاوه فلوت",
@@ -74,6 +75,10 @@ const ViewPathList = () => {
   const sortIdRef = useRef(0);
 
   const showVehicleList = useSelector(selectShowVehicleList);
+
+  useEffect(() => {
+    dispatch(handleGroupList());
+  }, []);
 
   const columns = useMemo(() => [
     {

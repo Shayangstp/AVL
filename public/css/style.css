@@ -26,6 +26,10 @@ body * {
 .smaller-column {
   width: 50px;
 }
+
+.lightGray-bg{
+  background: rgb(240, 239, 239);
+}
 .form-control[readonly] {
   background-color: #fff;
 }

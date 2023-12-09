@@ -19,6 +19,7 @@ import {
   RsetGender,
   selectGender,
   selectCurrentUser,
+  RsetCurrentUser,
 } from "../../../slices/userManagmentSlices";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import { NumericFormat } from "react-number-format";
@@ -26,8 +27,10 @@ import { useEffect } from "react";
 import { putEditUser } from "../../../services/userServices";
 import { errorMessage, successMessage } from "../../../utils/msg";
 import { useNavigate } from "react-router";
+import { handleVehicleTypeOptions } from "../../../slices/deviceSlices";
 
 const UserManagmentEditModal = () => {
+  const [userData, setUserData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userManagmentEditModal = useSelector(selectUserManagmentEditModal);
@@ -80,20 +83,28 @@ const UserManagmentEditModal = () => {
 
     return errors;
   };
+  useEffect(() => {
+    dispatch(handleVehicleTypeOptions());
+  }, []);
+
+  useEffect(() => {
+    dispatch(RsetUserName(currentUser.username));
+    dispatch(RsetFirstName(currentUser.firstname));
+    dispatch(RsetLastName(currentUser.lastname));
+    dispatch(RsetPhoneNumber(currentUser.mobileNumber));
+    dispatch(RsetGmail(currentUser.email));
+    dispatch(RsetGender(currentUser.gender));
+    dispatch(RsetCurrentUser(currentUser));
+  }, [currentUser]);
+
+  useEffect(() => {
+    setUserData({ ...currentUser });
+  }, [currentUser]);
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (updateUserFormIsValid) {
-      console.log({
-        userName,
-        firstName,
-        lastName,
-        phoneNumber,
-        gmail,
-        gender,
-      });
-
       const values = {
         userId: currentUser._id,
         username: userName,
@@ -103,14 +114,11 @@ const UserManagmentEditModal = () => {
         email: gmail,
         mobileNumber: phoneNumber,
       };
-
-      console.log(values);
-
       const putEditUserRes = await putEditUser(values, token);
-      console.log(putEditUserRes);
       if (putEditUserRes.data.code === "200") {
         successMessage("مشخصات کاربر با موفقیت تغییر کرد");
-        navigate(0);
+        dispatch(RsetUserManagmentEditModal(false));
+        dispatch(RsetCurrentUser(""));
       } else {
         errorMessage("خطا");
       }
@@ -129,23 +137,6 @@ const UserManagmentEditModal = () => {
       );
     }
   };
-
-  console.log(currentUser);
-
-  useEffect(() => {
-    dispatch(RsetUserName(currentUser.username));
-    dispatch(RsetFirstName(currentUser.firstname));
-    dispatch(RsetLastName(currentUser.lastname));
-    dispatch(RsetPhoneNumber(currentUser.mobileNumber));
-    dispatch(RsetGmail(currentUser.email));
-    dispatch(RsetGender(currentUser.gender));
-  }, []);
-
-  const [userData, setUserData] = useState({});
-
-  useEffect(() => {
-    setUserData({ ...currentUser });
-  }, []);
 
   return (
     <Modal

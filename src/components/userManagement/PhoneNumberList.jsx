@@ -156,63 +156,65 @@ const PhoneNumberList = () => {
     <Container fluid className="py-4">
       <Fragment>
         <section className="position-relative">
-          <div className="mt-3">
-            {showFilter && (
-              <Form.Group as={Col} md="5">
-                <Form.Control
-                  type="text"
-                  value={filterValue}
-                  onChange={handleFilterChange}
-                  placeholder="جستوجو..."
-                  className="font12 mb-3"
-                />
-              </Form.Group>
-            )}
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <Button
-                size="sm"
-                variant="warning"
-                className="mb-2 ms-2 font12 mt-1"
-                onClick={() => {
-                  dispatch(RsetShowFilter(!showFilter));
-                }}
-              >
-                <FontAwesomeIcon icon={faFilter} className="me-2" />
-                فیلتر
-              </Button>
-
-              <Button
-                size="sm"
-                variant="primary"
-                className="mb-2 font12"
-                onClick={() => {
-                  dispatch(RsetFilterValue(""));
-                }}
-              >
-                <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                به روزرسانی
-              </Button>
-            </div>
-            <div className="position-relative">
-              {/* {loading ? <Loading /> : null} */}
-              <Fragment>
-                {/* {reqsList !== undefined ? ( */}
-                <Fragment>
-                  <PhoneNumberTable
-                    // requests={userLists}
-                    requests={userPhoneNumberList}
-                    // notVisited={notVisited}
-                    columns={columns}
-                    data={data}
-                    onSort={handleSort}
-                    fetchData={fetchData}
-                    loading={load}
-                    pageCount={pageCount}
-                    // handleNotVisited={handleNotVisited}
+          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow mt-3">
+            <div className="mt-3">
+              {showFilter && (
+                <Form.Group as={Col} md="5">
+                  <Form.Control
+                    type="text"
+                    value={filterValue}
+                    onChange={handleFilterChange}
+                    placeholder="جستوجو..."
+                    className="font12 mb-3"
                   />
+                </Form.Group>
+              )}
+              <div className="d-flex align-items-center justify-content-between mb-2">
+                <Button
+                  size="sm"
+                  variant="warning"
+                  className="mb-2 ms-2 font12 mt-1"
+                  onClick={() => {
+                    dispatch(RsetShowFilter(!showFilter));
+                  }}
+                >
+                  <FontAwesomeIcon icon={faFilter} className="me-2" />
+                  فیلتر
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="primary"
+                  className="mb-2 font12"
+                  onClick={() => {
+                    dispatch(RsetFilterValue(""));
+                  }}
+                >
+                  <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
+                  به روزرسانی
+                </Button>
+              </div>
+              <div className="position-relative">
+                {/* {loading ? <Loading /> : null} */}
+                <Fragment>
+                  {/* {reqsList !== undefined ? ( */}
+                  <Fragment>
+                    <PhoneNumberTable
+                      // requests={userLists}
+                      requests={userPhoneNumberList}
+                      // notVisited={notVisited}
+                      columns={columns}
+                      data={data}
+                      onSort={handleSort}
+                      fetchData={fetchData}
+                      loading={load}
+                      pageCount={pageCount}
+                      // handleNotVisited={handleNotVisited}
+                    />
+                  </Fragment>
+                  {/* ) : null} */}
                 </Fragment>
-                {/* ) : null} */}
-              </Fragment>
+              </div>
             </div>
           </div>
         </section>

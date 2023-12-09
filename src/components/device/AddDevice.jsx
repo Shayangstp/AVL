@@ -87,7 +87,8 @@ const AddDevice = () => {
   }, []);
 
   // device validation
-  const deviceNumberIsValid = deviceNumber !== "" && deviceNumber.length === 11;
+  const deviceNumberIsValid =
+    deviceNumber !== "" && /^0\d{10}$/.test(deviceNumber);
   const deviceImeiIsValid = deviceImei !== "";
   const deviceTypeIsValid = deviceType !== "";
 
@@ -99,7 +100,8 @@ const AddDevice = () => {
 
   //driver validation
   const driverNameIsValid = driverName !== "";
-  const driverNumberIsValid = driverNumber !== "" && driverNumber.length === 11;
+  const driverNumberIsValid =
+    driverNumber !== "" && /^0\d{10}$/.test(driverNumber);
 
   //gas validation
   const vehicleGasIsValid = vehicleGas !== "";
@@ -162,7 +164,7 @@ const AddDevice = () => {
     //form validation
 
     if (!addDeviceFormIsValid) {
-      errors.formValidation = "* فیلد های مشخص شده را لطفا پر کنید";
+      errors.formValidation = "* فیلد های مشخص شده را لطفا پر کنید!";
     }
 
     return errors;
@@ -229,207 +231,208 @@ const AddDevice = () => {
 
   return (
     <Container fluid className="mt-4 mb-5">
-      {/* <section className="lightGray2-bg p-3 shadow borderRadius-15 border border-white border-2"> */}
-      {/* <div className="shadow p-4 mb-5 borderRadius-15 lightGray-bg  border border-white font16"> */}
-      <div className="mb-5 mt-5">افزودن دستگاه ﺟﺪﯾﺪ</div>
-      <Form>
-        {/* GPS info */}
-        <div className="mb-4">-اطلاعات ردیاب</div>
-        <Row>
-          <Form.Group as={Col} md="4">
-            <Form.Label className="required-field">
-              شماره تلفن سیم کارت:
-            </Form.Label>
-            <NumericFormat
-              className={`form-control ${
-                !deviceNumberIsValid ? formErrors.deviceNumber : ""
-              }`}
-              type="text"
-              name="deviceNumber"
-              maxLength={11}
-              value={deviceNumber}
-              onChange={(e) => {
-                dispatch(RsetDeviceNumber(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="4">
-            <Form.Label className="required-field">IMEI دستگاه:</Form.Label>
-            <Form.Control
-              className={`${
-                !deviceImeiIsValid
-                  ? `${formErrors.deviceImei} borderRaduis-15`
-                  : ""
-              }`}
-              type="text"
-              name="deviceImei"
-              value={deviceImei}
-              onChange={(e) => {
-                dispatch(RsetDeviceImei(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="4">
-            <Form.Label className="required-field">نوع GPS:</Form.Label>
-            <Select
-              className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
-              value={deviceType}
-              name="deviceType"
-              onChange={(e) => {
-                dispatch(RsetDeviceType(e));
-              }}
-              placeholder="انتخاب..."
-              options={deviceTypeOptions}
-              isSearchable={true}
-            />
-          </Form.Group>
-        </Row>
-        {/* VEHICLE INFO */}
-        <hr className="mt-5 mb-5" />
-        <div className="mt-4 mb-4">-اﻃﻼﻋﺎﺕ خودرو</div>
-        <Row>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">پلاک:</Form.Label>
-            <Form.Control
-              className={`${
-                !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
-              }`}
-              type="text"
-              name="vehicleNumber"
-              value={vehicleNumber}
-              onChange={(e) => {
-                dispatch(RsetVehicleNumber(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">مدل:</Form.Label>
-            <Select
-              className={`${!vehicleTypeIsValid ? formErrors.vehicleType : ""}`}
-              value={vehicleType}
-              name="vehicleType"
-              onChange={(e) => {
-                dispatch(RsetVehicleType(e));
-              }}
-              placeholder="انتخاب..."
-              options={vehicleTypeOptions}
-              isSearchable={true}
-            />
-          </Form.Group>
+      <section className="lightGray-bg p-3 shadow borderRadius-15 border border-white border-2">
+        <div className="mb-5 mt-5 fs-4">افزودن دستگاه ﺟﺪﯾﺪ</div>
+        <Form>
+          {/* GPS info */}
+          <div className="mb-5 fs-5">-اطلاعات ردیاب</div>
+          <Row>
+            <Form.Group as={Col} md="4" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">
+                شماره تلفن سیم کارت:
+              </Form.Label>
+              <NumericFormat
+                className={`form-control ${
+                  !deviceNumberIsValid ? formErrors.deviceNumber : ""
+                }`}
+                type="text"
+                name="deviceNumber"
+                maxLength={11}
+                value={deviceNumber}
+                onChange={(e) => {
+                  dispatch(RsetDeviceNumber(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="4" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">IMEI دستگاه:</Form.Label>
+              <Form.Control
+                className={`${
+                  !deviceImeiIsValid
+                    ? `${formErrors.deviceImei} borderRaduis-15`
+                    : ""
+                }`}
+                type="text"
+                name="deviceImei"
+                value={deviceImei}
+                onChange={(e) => {
+                  dispatch(RsetDeviceImei(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="4" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">نوع GPS:</Form.Label>
+              <Select
+                className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                value={deviceType}
+                name="deviceType"
+                onChange={(e) => {
+                  dispatch(RsetDeviceType(e));
+                }}
+                placeholder="انتخاب..."
+                options={deviceTypeOptions}
+                isSearchable={true}
+              />
+            </Form.Group>
+          </Row>
+          {/* VEHICLE INFO */}
+          <hr className="mt-5 mb-5" />
+          <div className="mb-5 fs-5">-اﻃﻼﻋﺎﺕ خودرو</div>
+          <Row>
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">پلاک:</Form.Label>
+              <Form.Control
+                className={`${
+                  !vehicleNumberIsValid ? formErrors.vehicleNumber : ""
+                }`}
+                type="text"
+                name="vehicleNumber"
+                value={vehicleNumber}
+                onChange={(e) => {
+                  dispatch(RsetVehicleNumber(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">مدل:</Form.Label>
+              <Select
+                className={`${
+                  !vehicleTypeIsValid ? formErrors.vehicleType : ""
+                }`}
+                value={vehicleType}
+                name="vehicleType"
+                onChange={(e) => {
+                  dispatch(RsetVehicleType(e));
+                }}
+                placeholder="انتخاب..."
+                options={vehicleTypeOptions}
+                isSearchable={true}
+              />
+            </Form.Group>
 
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">شرکت سازنده:</Form.Label>
-            <Form.Control
-              className={`${
-                !vehicleCompanyIsValid ? formErrors.vehicleCompany : ""
-              }`}
-              type="text"
-              name="softwareReqRequireParts"
-              value={vehicleCompany}
-              onChange={(e) => {
-                dispatch(RsetVehicleCompany(e.target.value));
-              }}
-            />
-          </Form.Group>
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">شرکت سازنده:</Form.Label>
+              <Form.Control
+                className={`${
+                  !vehicleCompanyIsValid ? formErrors.vehicleCompany : ""
+                }`}
+                type="text"
+                name="softwareReqRequireParts"
+                value={vehicleCompany}
+                onChange={(e) => {
+                  dispatch(RsetVehicleCompany(e.target.value));
+                }}
+              />
+            </Form.Group>
 
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">کاربری:</Form.Label>
-            <Form.Control
-              className={`${
-                !vehicleUsingIsValid ? formErrors.vehicleUsing : ""
-              }`}
-              type="text"
-              name="vehicleUsing"
-              value={vehicleUsing}
-              onChange={(e) => {
-                dispatch(RsetVehicleUsing(e.target.value));
-              }}
-            />
-          </Form.Group>
-        </Row>
-        {/* driver info */}
-        <hr className="mt-5 mb-5" />
-        <div className="mt-4 mb-4">-اﻃﻼﻋﺎﺕ راننده</div>
-        <Row>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">نام راننده:</Form.Label>
-            <Form.Control
-              className={`${!driverNameIsValid ? formErrors.driverName : ""}`}
-              type="text"
-              name="driverName"
-              value={driverName}
-              onChange={(e) => {
-                dispatch(RsetDriverName(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">تلفن راننده:</Form.Label>
-            <NumericFormat
-              className={`form-control ${
-                !driverNumberIsValid ? formErrors.driverNumber : ""
-              }`}
-              type="text"
-              name="deviceNumber"
-              maxLength={11}
-              value={driverNumber}
-              onChange={(e) => {
-                dispatch(RsetDriverNumber(e.target.value));
-              }}
-            />
-          </Form.Group>
-        </Row>
-        {/* sokhtGiri */}
-        <hr className="mt-5 mb-5" />
-        <div className="mt-4 mb-4">-اﻃﻼﻋﺎﺕ سوخت‌گیری</div>
-        <Row>
-          <Form.Group as={Col} md="4">
-            <Form.Label className="required-field mb-4">
-              میزان سوخت مصرفی در هر ۱۰۰ کیلومتر:
-            </Form.Label>
-            <Form.Control
-              className={`${!vehicleGasIsValid ? formErrors.vehicleGas : ""}`}
-              type="text"
-              name="vehicleGas"
-              value={vehicleGas}
-              onChange={(e) => {
-                dispatch(RsetVehicleGas(e.target.value));
-              }}
-            />
-          </Form.Group>
-        </Row>
-        {!addDeviceFormIsValid && (
-          <p className="text-danger font12 mt-5 ms-3">
-            {formErrors.formValidation}
-          </p>
-        )}
-        <Row>
-          <Col md="5" xl="4" className="mx-auto d-flex mt-5">
-            <Button
-              size="sm"
-              variant="success"
-              className="mb-3 me-5 px-4"
-              onClick={(e) => {
-                handleDeviceAdd(e);
-              }}
-            >
-              ثبت درخواست
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              type="reset"
-              className="mb-3 px-5 py-2"
-              onClick={() => {
-                handleResetAddDeviceForm();
-              }}
-            >
-              انصراف
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-      {/* </section> */}
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">کاربری:</Form.Label>
+              <Form.Control
+                className={`${
+                  !vehicleUsingIsValid ? formErrors.vehicleUsing : ""
+                }`}
+                type="text"
+                name="vehicleUsing"
+                value={vehicleUsing}
+                onChange={(e) => {
+                  dispatch(RsetVehicleUsing(e.target.value));
+                }}
+              />
+            </Form.Group>
+          </Row>
+          {/* driver info */}
+          <hr className="mt-5 mb-5" />
+          <div className="mb-5 fs-5">-اﻃﻼﻋﺎﺕ راننده</div>
+          <Row>
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">نام راننده:</Form.Label>
+              <Form.Control
+                className={`${!driverNameIsValid ? formErrors.driverName : ""}`}
+                type="text"
+                name="driverName"
+                value={driverName}
+                onChange={(e) => {
+                  dispatch(RsetDriverName(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="mb-3 mb-md-0">
+              <Form.Label className="required-field">تلفن راننده:</Form.Label>
+              <NumericFormat
+                className={`form-control ${
+                  !driverNumberIsValid ? formErrors.driverNumber : ""
+                }`}
+                type="text"
+                name="deviceNumber"
+                maxLength={11}
+                value={driverNumber}
+                onChange={(e) => {
+                  dispatch(RsetDriverNumber(e.target.value));
+                }}
+              />
+            </Form.Group>
+          </Row>
+          {/* sokhtGiri */}
+          <hr className="mt-5 mb-5" />
+          <div className="mb-5 fs-5">-اﻃﻼﻋﺎﺕ سوخت‌گیری</div>
+          <Row>
+            <Form.Group as={Col} md="4">
+              <Form.Label className="required-field mb-4">
+                میزان سوخت مصرفی در هر ۱۰۰ کیلومتر:
+              </Form.Label>
+              <Form.Control
+                className={`${!vehicleGasIsValid ? formErrors.vehicleGas : ""}`}
+                type="text"
+                name="vehicleGas"
+                value={vehicleGas}
+                onChange={(e) => {
+                  dispatch(RsetVehicleGas(e.target.value));
+                }}
+              />
+            </Form.Group>
+          </Row>
+          {!addDeviceFormIsValid && (
+            <p className="text-danger font12 mt-5 ms-3">
+              {formErrors.formValidation}
+            </p>
+          )}
+          <Row>
+            <Col className="d-flex mt-3 justify-content-center">
+              <Button
+                size="sm"
+                variant="success"
+                className="mb-3 me-5 px-4 py-2"
+                onClick={(e) => {
+                  handleDeviceAdd(e);
+                }}
+              >
+                ثبت درخواست
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                type="reset"
+                className="mb-3 px-4"
+                onClick={() => {
+                  handleResetAddDeviceForm();
+                }}
+              >
+                انصراف
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </section>
     </Container>
   );
 };

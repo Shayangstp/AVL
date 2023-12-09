@@ -13,6 +13,7 @@ import {
 import ChangeProfilePicModal from "./modals/ChangeProfilePicModal";
 import { useEffect } from "react";
 import { handleUserData } from "../../slices/authSlices";
+import { selectUser } from "../../slices/mainSlices";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const Header = () => {
   const loggedIn = useSelector(selectLoggedIn);
   const avatar = useSelector(selectAvatar);
   const profilePicModal = useSelector(selectChangeProfilePicModal);
+  const user = useSelector(selectUser);
+  console.log(user.id.username);
 
   return (
     <div>
@@ -42,7 +45,7 @@ const Header = () => {
             </div>
             <div className="d-flex">
               <Nav.Link className="mt-2 me-1">
-                <div>شایان گلستانی پور</div>
+                <div>{user.id.username}</div>
               </Nav.Link>
               <NavDropdown
                 dir="ltr"

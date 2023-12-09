@@ -61,7 +61,7 @@ const Sidebar = () => {
           >
             <div className="w-100 mt-5">
               <Nav className="flex-column w-100">
-                <Navbar.Brand href="#home" className="text-center mb-3">
+                <Navbar.Brand  className="text-center mb-3">
                   {/* <div className="text-center text-white">
                     <img
                       className="img-fluid invert w-25 mb-3"

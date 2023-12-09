@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
+import { getGroupList } from "../services/reportServices";
 
 const initialState = {
   getReportFromDate: null,
@@ -22,6 +23,19 @@ const initialState = {
   getReportFromSpeed: 0,
   getReportToSpeed: 0,
 };
+
+export const handleGroupList = createAsyncThunk(
+  "getReport/handleGroupList",
+  async (obj, { dispatch, getState }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const getGroupListRes = await getGroupList(token);
+      console.log(getGroupListRes);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
 
 const getReportSlices = createSlice({
   name: "getReport",

@@ -14,16 +14,15 @@ const initialState = {
 export const handleAllGpsesList = createAsyncThunk(
   "main/handleAllGpsesList",
   async (obj, { dispatch, getState }) => {
-    const { allGpeses } = getState().main;
+    // const { allGpeses } = getState().main;
     const token = localStorage.getItem("token");
 
     try {
       const allGpesesRes = await getAllGpses(token);
-      console.log(allGpesesRes);
-      const allCordinates = allGpesesRes.data.foundedGpsData.map((device) => {
-        return [device.lat, device.lng];
-      });
-      dispatch(RsetAllGpses([...allCordinates]));
+      // const allCordinates = allGpesesRes.data.lastLocation.map((device) => {
+      //   return [device.lat, device.lng];
+      // });
+      dispatch(RsetAllGpses(allGpesesRes.data));
     } catch (ex) {
       console.log(ex);
     }

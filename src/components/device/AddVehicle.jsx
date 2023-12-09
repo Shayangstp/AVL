@@ -15,7 +15,6 @@ import { useNavigate } from "react-router";
 
 const AddVehicle = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const vehicleAddType = useSelector(selectVehicleAddType);
   const formErrors = useSelector(selectFormErrors);
   const vehicleAdded = useSelector(selectVehicleAdded);
@@ -36,13 +35,15 @@ const AddVehicle = () => {
   const handleAddVehicleType = async (e) => {
     e.preventDefault();
     if (vehicleAddTypeIsValid) {
+      const token = localStorage.getItem("token");
       const value = {
         vehicleType: vehicleAddType,
       };
-      const postAddVehicleRes = await postAddVehicle(value);
+      const postAddVehicleRes = await postAddVehicle(value, token);
       if (postAddVehicleRes.data.code === 200) {
         successMessage("مدل دستگاه با موفقیت اضافه شد");
-        navigate(0);
+        getVehicleModles();
+        dispatch(RsetVehicleAddType(""));
       } else {
         errorMessage("خطا!");
       }
@@ -53,7 +54,6 @@ const AddVehicle = () => {
 
   const getVehicleModles = async () => {
     const token = localStorage.getItem("token");
-  
     const getDeviceTypeRes = await getDeviceType(token);
     console.log(getDeviceTypeRes);
     dispatch(RsetVehicleAdded(getDeviceTypeRes.data.foundedItem));
@@ -63,14 +63,12 @@ const AddVehicle = () => {
     getVehicleModles();
   }, []);
 
-  console.log(vehicleAdded);
-
   return (
     <Container className="h-75 mt-5 d-flex flex-column flex-md-row justify-content-md-between">
       <Form>
-        <div className="border p-5 borderRadius-15">
+        <div className="lightGray-bg p-5 shadow borderRadius-15 border border-white border-2">
           <Row className="">
-            <div className="mb-4">-افزودن مدل دستگاه ﺟﺪﯾﺪ</div>
+            <div className="mb-5 fs-5">-افزودن مدل دستگاه ﺟﺪﯾﺪ</div>
             <Form.Group as={Col} md="12">
               <Form.Label className="required-field">نام مدل: </Form.Label>
               <Form.Control
@@ -87,10 +85,10 @@ const AddVehicle = () => {
             </Form.Group>
           </Row>
           <Row className="mt-4 mb-5">
-            <Col className="d-flex flex-column flex-sm-row mt-4 justify-conten-center">
+            <Col className="d-flex flex-column flex-sm-row justify-content-center mt-4">
               <Button
                 variant="success"
-                className="mb-3 me-sm-5 font12 px-5"
+                className="mb-3 me-sm-5 font12 px-4"
                 onClick={(e) => {
                   console.log("hi");
                   handleAddVehicleType(e);
@@ -101,7 +99,7 @@ const AddVehicle = () => {
               <Button
                 variant="secondary"
                 type="reset"
-                className="mb-3 font12 px-5"
+                className="mb-3 font12 px-4"
                 onClick={() => {
                   dispatch(RsetFormErrors(""));
                   dispatch(RsetVehicleAddType(""));
@@ -113,7 +111,10 @@ const AddVehicle = () => {
           </Row>
         </div>
       </Form>
-      <Col md="7" className="border borderRadius-15 h-100">
+      <Col
+        md="7"
+        className="ms-0 ms-md-3 mt-3 mt-md-0 borderRadius-15 h-100 lightGray-bg shadow borderRadius-15 border border-white border-2"
+      >
         <ul className="ms-5 mt-4">
           {vehicleAdded.map((i, idx) => {
             return (

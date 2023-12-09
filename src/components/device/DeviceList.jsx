@@ -62,25 +62,26 @@ import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
 import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
 import { handleDeviceLocList } from "../../slices/deviceSlices";
 
-const dataList = [
-  {
-    deviceIMEI: "imei",
-    simNumber: "simNumber",
-    driverName: "driverName",
-    driverPhoneNumber: "driverPhoneNumber",
-    plate: "plate",
-    model: {
-      name: "modle",
-    },
-    usage: "usage",
-    fuel: 5000,
-    maxPMDistance: "5000",
-  },
-];
+// const dataList = [
+//   {
+//     deviceIMEI: "imei",
+//     simNumber: "simNumber",
+//     driverName: "driverName",
+//     driverPhoneNumber: "driverPhoneNumber",
+//     plate: "plate",
+//     model: {
+//       name: "modle",
+//     },
+//     usage: "usage",
+//     fuel: 5000,
+//     maxPMDistance: "5000",
+//   },
+// ];
 
 const DeviceList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
+  const [showFilter, setShowFilter] = useState(false);
   const [load, setload] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const fetchIdRef = useRef(0);
@@ -99,16 +100,13 @@ const DeviceList = ({ setPageTitle }) => {
   const handleDeviceList = async () => {
     const token = localStorage.getItem("token");
     const getDeviceListRes = await getDeviceList(token);
+    console.log(getDeviceListRes);
     if (getDeviceListRes.data.allVehicles !== null) {
       dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
     } else {
       errorMessage("خطا");
     }
   };
-
-  console.log(currentDevice);
-
-  //data fetching
 
   useEffect(() => {
     handleDeviceList();
@@ -183,12 +181,12 @@ const DeviceList = ({ setPageTitle }) => {
   ]);
 
   const operation = (request) => {
-    if (localStorage.getItem("token")) {
-      return (
-        <div className="d-flex justify-content-between flex-wrap">
+    return (
+      <div className="d-flex justify-content-center">
+        <div>
           <Button
             title="ویرایش"
-            className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
+            className="btn btn-success d-flex align-items-center mb-2 mb-md-1 me-2"
             size="sm"
             active
             onClick={() => {
@@ -198,9 +196,11 @@ const DeviceList = ({ setPageTitle }) => {
           >
             <FontAwesomeIcon icon={faPen} />
           </Button>
+        </div>
+        <div>
           <Button
             title="تنظیمات"
-            className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-0"
+            className="btn btn-danger d-flex align-items-center mb-2 mb-md-1 me-2"
             size="sm"
             active
             onClick={() => {
@@ -210,9 +210,11 @@ const DeviceList = ({ setPageTitle }) => {
           >
             <FontAwesomeIcon icon={faScrewdriverWrench} />
           </Button>
+        </div>
+        <div>
           <Button
             title="مشاهده مکان ها"
-            className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
+            className="btn btn-info d-flex align-items-center  mb-2 mb-md-1"
             size="sm"
             active
             onClick={() => {
@@ -223,8 +225,8 @@ const DeviceList = ({ setPageTitle }) => {
             <FontAwesomeIcon icon={faLocationDot} />
           </Button>
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
@@ -307,30 +309,20 @@ const DeviceList = ({ setPageTitle }) => {
   );
 
   return (
-    <Container fluid className="py-4">
+    <Container fluid className="py-3">
       {/* {menuPermission ? */}
       <Fragment>
-        {/* {showFilter ? <SoftwareReqFilter /> : null} */}
-        <DeviceFilter />
+        {showFilter ? <DeviceFilter /> : null}
         <section className="position-relative">
-          <div
-            // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
-            className="mt-5"
-          >
+          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow mt-3">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <Link to="/SoftwareReqRegistration">
-                  {/* <Button size="sm" variant="success" className="mb-2 font12">
-                    <FontAwesomeIcon icon={faPlus} className="me-2" />
-                    افزودن درخواست جدید
-                  </Button> */}
-                </Link>
                 <Button
                   size="sm"
                   variant="warning"
                   className="mb-2 ms-2 font12"
                   onClick={() => {
-                    // dispatch(RsetShowFilter(!showFilter));
+                    setShowFilter(!showFilter);
                   }}
                 >
                   <FontAwesomeIcon icon={faFilter} className="me-2" />
@@ -341,71 +333,32 @@ const DeviceList = ({ setPageTitle }) => {
                 size="sm"
                 variant="primary"
                 className="mb-2 font12"
-                onClick={async () => {
-                  // const handleFilterGroup = await dispatch(handleTabs());
-                  // if (activeTab !== "") {
-                  const filterValues = {
-                    applicantId: localStorage.getItem("id"),
-                    serial: "",
-                    memberId: "",
-                    mDep: "",
-                    status: "",
-                    fromDate: "null",
-                    toDate: "null",
-                    type: 6,
-                    // group: handleFilterGroup.payload,
-                  };
-                  // dispatch(handleReqsList(filterValues));
-                  // }
-                }}
+                onClick={async () => {}}
               >
                 <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
                 به روزرسانی
               </Button>
             </div>
             <div className="position-relative">
-              {/* {loading ? <Loading /> : null} */}
               <Fragment>
-                {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  {/* <Tabs
-                    defaultActiveKey={"myReqs"}
-                    onSelect={(e) => {
-                      dispatch(RsetActiveTab(e));
-                    }}
-                    className="mt-3"
-                  >
-                    <Tab eventKey={"myReqs"} title="درخواست های من"></Tab>
-                    <Tab
-                      eventKey={"inProcessReqs"}
-                      title="درخواست های در حال پردازش"
-                    ></Tab>
-                    <Tab eventKey={"allReqs"} title="کلیه درخواست ها"></Tab>
-                  </Tabs> */}
                   <DeviceTable
                     requests={deviceList}
-                    // requests={dataList}
-                    // notVisited={notVisited}
                     columns={columns}
                     data={data}
                     onSort={handleSort}
                     fetchData={fetchData}
                     loading={load}
                     pageCount={pageCount}
-                    // handleNotVisited={handleNotVisited}
                   />
                   {deviceEditModal && <DeviceEditeModal />}
                   {deviceAdjusmentModal && <DeviceAdjustmentModal />}
                   {deviceLocationsModal && <DeviceLocationsModal />}
                 </Fragment>
-                {/* ) : null} */}
               </Fragment>
             </div>
           </div>
         </section>
-        {/* : 
-        <Redirect to="/" />
-      } */}
       </Fragment>
     </Container>
   );

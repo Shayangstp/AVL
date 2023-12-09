@@ -36,22 +36,38 @@ const NavbarOff = () => {
 
   const avatar = useSelector(selectAvatar);
 
+  const handleStatesFalse = () => {
+    setDeviceDrop(false);
+    setCategoriesDrop(false);
+    setReportDrop(false);
+    setUserManagementDrop(false);
+    setProfileDrop(false);
+  };
+
   const handleDeviceDropdown = () => {
+    handleStatesFalse();
     setDeviceDrop(!deviceDrop);
   };
   const handleCategoriesDropdown = () => {
+    handleStatesFalse();
     setCategoriesDrop(!categoriesDrop);
   };
   const handleReportDropdown = () => {
+    handleStatesFalse();
     setReportDrop(!reportsDrop);
   };
   const handleUserManagmentdropDown = () => {
+    handleStatesFalse();
     setUserManagementDrop(!userManagmentDrop);
   };
+
   const handleProfileDropdown = () => {
     setProfileDrop(!profileDrop);
   };
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    handleStatesFalse();
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   return (
@@ -68,12 +84,12 @@ const NavbarOff = () => {
 
       <Offcanvas show={show} onHide={handleClose} className="text-white">
         <Offcanvas.Header closeButton closeVariant="white" className="ms-auto">
-          {/* <Offcanvas.Title>Offcanvas</Offcanvas.Title> */}
+          {/* <Offcanvas.Title className="mt-1"></Offcanvas.Title> */}
         </Offcanvas.Header>
         <Offcanvas.Body className="d-flex flex-column justify-content-between">
           <div className="w-100">
             <Nav className="flex-column w-100">
-              <Navbar.Brand href="#home" className="text-center mb-3">
+              <Navbar.Brand className="text-center mb-3">
                 {/* <div className="text-center text-white">
                   <img
                     className="img-fluid invert w-25 mb-3"
@@ -82,7 +98,10 @@ const NavbarOff = () => {
                 </div> */}
               </Navbar.Brand>
               <Nav.Link
-                onClick={() => navigate("/home")}
+                onClick={() => {
+                  handleClose();
+                  navigate("/home");
+                }}
                 className="sidebar-link text-white"
               >
                 <span className="ms-3">
@@ -111,19 +130,28 @@ const NavbarOff = () => {
               {deviceDrop && (
                 <div className="transitionAll">
                   <Nav.Link
-                    onClick={() => navigate("/addDevice")}
+                    onClick={() => {
+                      navigate("/addDevice");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">افزودن دستگاه</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/deviceList")}
+                    onClick={() => {
+                      handleClose();
+                      navigate("/deviceList");
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">مشاهده دستگاه ها</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/addVehicle")}
+                    onClick={() => {
+                      navigate("/addVehicle");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">افزودن مدل دستگاه</span>
@@ -150,7 +178,10 @@ const NavbarOff = () => {
               {categoriesDrop && (
                 <div className="transitionAll">
                   <Nav.Link
-                    onClick={() => navigate("/categoryList")}
+                    onClick={() => {
+                      navigate("/categoryList");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">مشاهده</span>
@@ -177,19 +208,28 @@ const NavbarOff = () => {
               {reportsDrop && (
                 <div className="transitionAll">
                   <Nav.Link
-                    onClick={() => navigate("/viewPath")}
+                    onClick={() => {
+                      navigate("/viewPath");
+                      handleClose();
+                    }}
                     className="sidebar-link text-white"
                   >
                     <span className="ms-4 lightGray">مشاهده مسیر</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/viewLastLocation")}
+                    onClick={() => {
+                      navigate("/viewLastLocation");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">مشاهده آخرین موقعیت</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/getReport")}
+                    onClick={() => {
+                      navigate("/getReport");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">گزارش گیری</span>
@@ -216,25 +256,37 @@ const NavbarOff = () => {
               {userManagmentDrop && (
                 <div className="transitionAll">
                   <Nav.Link
-                    onClick={() => navigate("/addUser")}
+                    onClick={() => {
+                      navigate("/addUser");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">افزودن کاربر</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/userList")}
+                    onClick={() => {
+                      navigate("/userList");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">مشاهده کاربرها</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/viewPhoneNumbers")}
+                    onClick={() => {
+                      navigate("/viewPhoneNumbers");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">مشاهده شماره تلفن ها</span>
                   </Nav.Link>
                   <Nav.Link
-                    onClick={() => navigate("/addPhoneNumber")}
+                    onClick={() => {
+                      navigate("/addPhoneNumber");
+                      handleClose();
+                    }}
                     className="sidebar-link"
                   >
                     <span className="ms-4 lightGray">افزودن شماره تلفن</span>

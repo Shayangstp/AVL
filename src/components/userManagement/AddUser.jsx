@@ -121,176 +121,182 @@ const AddUser = () => {
 
   return (
     <Container fluid className="mt-4 mb-5">
-      <div className="mb-5 mt-5">افزودن کاربر</div>
-      <Form>
-        <div className="mb-4"> - ﺛﺒﺖ ﻧﺎﻡ</div>
-        <Row>
-          <div>
-            <Form.Label className="me-2">جنسیت</Form.Label>
-            <Form.Check
-              inline
-              label="زن"
-              name="gender"
-              type="radio"
-              id="Female"
-              value={gender}
-              checked={gender === "Female"}
-              onChange={(e) => {
-                dispatch(RsetGender("Female"));
-              }}
-            />
-            <Form.Check
-              inline
-              label="مرد"
-              name="gender"
-              type="radio"
-              id="Male"
-              value={gender}
-              checked={gender === "Male"}
-              onChange={(e) => {
-                dispatch(RsetGender("Male"));
-              }}
-            />
-            {!genderIsValid && (
-              <p className="text-danger font12">{formErrors.gender}</p>
-            )}
-          </div>
-        </Row>
-        <Row className="mt-3">
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field"> نام کاربری: </Form.Label>
-            <Form.Control
-              className={`${!userNameIsValid ? formErrors.userName : ""}`}
-              value={userName}
-              type="text"
-              name="userName"
-              onChange={(e) => {
-                dispatch(RsetUserName(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">نام: </Form.Label>
-            <Form.Control
-              className={`${!firstNameIsValid ? formErrors.firstName : ""}`}
-              value={firstName}
-              type="text"
-              name="userName"
-              onChange={(e) => {
-                dispatch(RsetFirstName(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">نام خانوادگی: </Form.Label>
-            <Form.Control
-              className={`${!lastNameIsValid ? formErrors.lastName : ""}`}
-              type="text"
-              name="lastName"
-              value={lastName}
-              onChange={(e) => {
-                dispatch(RsetLastName(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">
-              شماره تلفن همراه:{" "}
-            </Form.Label>
-            <NumericFormat
-              className={`form-control ${
-                !phoneNumberIsValid ? formErrors.phoneNumber : ""
-              }`}
-              type="text"
-              maxLength={11}
-              name="phoneNumber"
-              value={phoneNumber}
-              onChange={(e) => {
-                dispatch(RsetPhoneNumber(e.target.value));
-              }}
-            />
-          </Form.Group>
-        </Row>
-        <Row className="mt-3">
-          <Form.Group as={Col} md="3">
-            <Form.Label className="required-field">پست الکترنیکی: </Form.Label>
-            <Form.Control
-              className={`${!gmailIsValid ? formErrors.gmail : ""}`}
-              type="text"
-              name="gmail"
-              value={gmail}
-              onChange={(e) => {
-                dispatch(RsetGmail(e.target.value));
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3" className="position-relative">
-            <Form.Label className="required-field">رمز عبور: </Form.Label>
-            <Form.Control
-              className={`${!passwordIsValid ? formErrors.password : ""}`}
-              type={showPass ? "text" : "password"}
-              name="password"
-              value={password}
-              onChange={(e) => {
-                dispatch(RsetPassword(e.target.value));
-              }}
-            />
-            <FontAwesomeIcon
-              icon={showPass ? faEye : faEyeSlash}
-              className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
-              onClick={() => {
-                setShowPass(!showPass);
-              }}
-            />
-          </Form.Group>
-          <Form.Group as={Col} md="3" className="position-relative">
-            <Form.Label className="required-field">تکرار رمز عبور: </Form.Label>
-            <Form.Control
-              className={`${
-                !passwordConfirmationIsValid
-                  ? formErrors.passwordConfirmation
-                  : ""
-              }`}
-              type={showPassConfirm ? "text" : "password"}
-              name="passwordConfirmation"
-              value={passwordConfirmation}
-              onChange={(e) => {
-                dispatch(RsetPasswordConfirmation(e.target.value));
-              }}
-            />
-            <FontAwesomeIcon
-              icon={showPassConfirm ? faEye : faEyeSlash}
-              className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
-              onClick={() => {
-                setShowPassConfirm(!showPassConfirm);
-              }}
-            />
-          </Form.Group>
-        </Row>
-        <Row className="mt-3">
-          <Col md="5" xl="4" className="mx-auto d-flex mt-5">
-            <Button
-              variant="success"
-              className="mb-3 me-5 px-4"
-              onClick={(e) => {
-                handleAdduserFormSubmit(e);
-              }}
-            >
-              ثبت درخواست
-            </Button>
-            <Button
-              variant="secondary"
-              type="reset"
-              className="mb-3 px-5 py-2"
-              onClick={() => {
-                handleResetAddUser();
-              }}
-            >
-              انصراف
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+      <section className="lightGray-bg p-3 shadow borderRadius-15 border border-white border-2">
+        <div className="mb-5 mt-5 fs-4">افزودن کاربر</div>
+        <Form>
+          <div className="mb-5 fs-5"> - ﺛﺒﺖ ﻧﺎﻡ</div>
+          <Row>
+            <div>
+              <Form.Label className="me-2 required-field">جنسیت: </Form.Label>
+              <Form.Check
+                inline
+                label="زن"
+                name="gender"
+                type="radio"
+                id="Female"
+                value={gender}
+                checked={gender === "Female"}
+                onChange={(e) => {
+                  dispatch(RsetGender("Female"));
+                }}
+              />
+              <Form.Check
+                inline
+                label="مرد"
+                name="gender"
+                type="radio"
+                id="Male"
+                value={gender}
+                checked={gender === "Male"}
+                onChange={(e) => {
+                  dispatch(RsetGender("Male"));
+                }}
+              />
+              {!genderIsValid && (
+                <p className="text-danger font12">{formErrors.gender}</p>
+              )}
+            </div>
+          </Row>
+          <Row className="mt-3">
+            <Form.Group as={Col} md="3">
+              <Form.Label className="required-field"> نام کاربری: </Form.Label>
+              <Form.Control
+                className={`${!userNameIsValid ? formErrors.userName : ""}`}
+                value={userName}
+                type="text"
+                name="userName"
+                onChange={(e) => {
+                  dispatch(RsetUserName(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3">
+              <Form.Label className="required-field">نام: </Form.Label>
+              <Form.Control
+                className={`${!firstNameIsValid ? formErrors.firstName : ""}`}
+                value={firstName}
+                type="text"
+                name="userName"
+                onChange={(e) => {
+                  dispatch(RsetFirstName(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3">
+              <Form.Label className="required-field">نام خانوادگی: </Form.Label>
+              <Form.Control
+                className={`${!lastNameIsValid ? formErrors.lastName : ""}`}
+                type="text"
+                name="lastName"
+                value={lastName}
+                onChange={(e) => {
+                  dispatch(RsetLastName(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3">
+              <Form.Label className="required-field">
+                شماره تلفن همراه:{" "}
+              </Form.Label>
+              <NumericFormat
+                className={`form-control ${
+                  !phoneNumberIsValid ? formErrors.phoneNumber : ""
+                }`}
+                type="text"
+                maxLength={11}
+                name="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => {
+                  dispatch(RsetPhoneNumber(e.target.value));
+                }}
+              />
+            </Form.Group>
+          </Row>
+          <Row className="mt-3">
+            <Form.Group as={Col} md="3">
+              <Form.Label className="required-field">
+                پست الکترنیکی:{" "}
+              </Form.Label>
+              <Form.Control
+                className={`${!gmailIsValid ? formErrors.gmail : ""}`}
+                type="text"
+                name="gmail"
+                value={gmail}
+                onChange={(e) => {
+                  dispatch(RsetGmail(e.target.value));
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="position-relative">
+              <Form.Label className="required-field">رمز عبور: </Form.Label>
+              <Form.Control
+                className={`${!passwordIsValid ? formErrors.password : ""}`}
+                type={showPass ? "text" : "password"}
+                name="password"
+                value={password}
+                onChange={(e) => {
+                  dispatch(RsetPassword(e.target.value));
+                }}
+              />
+              <FontAwesomeIcon
+                icon={showPass ? faEye : faEyeSlash}
+                className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
+                onClick={() => {
+                  setShowPass(!showPass);
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="position-relative">
+              <Form.Label className="required-field">
+                تکرار رمز عبور:{" "}
+              </Form.Label>
+              <Form.Control
+                className={`${
+                  !passwordConfirmationIsValid
+                    ? formErrors.passwordConfirmation
+                    : ""
+                }`}
+                type={showPassConfirm ? "text" : "password"}
+                name="passwordConfirmation"
+                value={passwordConfirmation}
+                onChange={(e) => {
+                  dispatch(RsetPasswordConfirmation(e.target.value));
+                }}
+              />
+              <FontAwesomeIcon
+                icon={showPassConfirm ? faEye : faEyeSlash}
+                className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
+                onClick={() => {
+                  setShowPassConfirm(!showPassConfirm);
+                }}
+              />
+            </Form.Group>
+          </Row>
+          <Row className="mt-3">
+            <Col md="5" xl="4" className="mx-auto d-flex mt-5">
+              <Button
+                variant="success"
+                className="mb-3 me-5 px-4"
+                onClick={(e) => {
+                  handleAdduserFormSubmit(e);
+                }}
+              >
+                ثبت درخواست
+              </Button>
+              <Button
+                variant="secondary"
+                type="reset"
+                className="mb-3 px-4"
+                onClick={() => {
+                  handleResetAddUser();
+                }}
+              >
+                انصراف
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </section>
     </Container>
   );
 };

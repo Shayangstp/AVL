@@ -33,6 +33,7 @@ import {
   selectCurrentDevice,
   RsetDeviceTypeOptions,
   selectDeviceCordinate,
+  RsetCurrentDevice,
 } from "../../../slices/deviceSlices";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import MapDraw from "../../map/MapDraw";
@@ -110,7 +111,9 @@ const DeviceAdjustmentModal = () => {
 
   //validation common
   const smsReciverIsValid = smsReciver.length !== 0;
-  const emailReciverIsValid = emailReciver !== "";
+  const emailReciverIsValid =
+    emailReciver !== "" &&
+    /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@gmail\.com$/.test(emailReciver);
   const emailSmsIsValid = smsReciverIsValid || emailReciverIsValid;
   //speed
   const vehicleSpeedIsValid = vehicleSpeed !== "";
@@ -205,8 +208,12 @@ const DeviceAdjustmentModal = () => {
   //geo
   const timeToSendSmsIsValid = timeToSendSms !== "";
   const smsEmailIsValidGeo = sms === true || email === true;
+  const deviceCordinateIsValid = deviceCordinate.length !== 0;
   const geoFormIsValid =
-    timeToSendSmsIsValid && emailSmsIsValid && smsEmailIsValidGeo;
+    timeToSendSmsIsValid &&
+    emailSmsIsValid &&
+    smsEmailIsValidGeo &&
+    deviceCordinateIsValid;
 
   const geoValidation = () => {
     var errors = {};
@@ -221,12 +228,16 @@ const DeviceAdjustmentModal = () => {
     if (!emailReciverIsValid) {
       errors.emailReciver = borderValidation;
     }
+    if (!deviceCordinateIsValid) {
+      errors.deviceCordinate = "ایجاد محدودیت بر روی نقشه اجباری است!";
+    }
     if (!smsEmailIsValidGeo) {
       errors.smsEmailGeo = "انتخاب یکی از موارد اطلاع رسانی اجباری است!";
     }
 
     return errors;
   };
+
   const geoHandler = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -253,7 +264,7 @@ const DeviceAdjustmentModal = () => {
         successMessage("محدودیت با موفقیت اعمال شد");
         geoHandlerReset();
         dispatch(RsetDeviceAdjusmentModal(false));
-        navigate(0);
+        dispatch(RsetCurrentDevice(""));
       } else {
         errorMessage("خطا");
       }
@@ -264,6 +275,7 @@ const DeviceAdjustmentModal = () => {
             timeToSendSms,
             smsReciver,
             emailReciver,
+            deviceCordinate,
           })
         )
       );
@@ -283,11 +295,16 @@ const DeviceAdjustmentModal = () => {
     const token = localStorage.getItem("token");
     const deviceId = currentDevice._id;
     const deleteGeoLimitRes = await deleteGeoLimit(deviceId, token);
-    if (deleteGeoLimitRes.status === 200) {
-      successMessage("محدودیت با موفقیت برداشته شد");
-      navigate(0);
+    if (currentDevice.permissibleZone !== undefined) {
+      if (deleteGeoLimitRes.status === 200) {
+        successMessage("محدودیت با موفقیت برداشته شد");
+        dispatch(RsetCurrentDevice(""));
+        dispatch(RsetDeviceAdjusmentModal(false));
+      } else {
+        errorMessage("خطا");
+      }
     } else {
-      errorMessage("خطا");
+      errorMessage("محدودیتی بروی دستگاه وجود ندارد!");
     }
   };
 
@@ -323,6 +340,7 @@ const DeviceAdjustmentModal = () => {
         desc: vehicleConditionDescription,
       };
       const postVehicleConditionRes = await postVehicleCondition(values, token);
+      console.log(postVehicleConditionRes);
       if (postVehicleConditionRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
         handleVehicleConditionReset();
@@ -728,7 +746,6 @@ const DeviceAdjustmentModal = () => {
                       className="mb-3 me-5 px-4 font12"
                       onClick={(e) => {
                         geoDeleteHandler(e);
-                        dispatch(RsetDeviceAdjusmentModal(false));
                       }}
                     >
                       حذف
@@ -752,6 +769,11 @@ const DeviceAdjustmentModal = () => {
                 </Row>
               </Form>
               <div id="map" className="w-100 mt-5" style={{ height: "300px" }}>
+                {!deviceCordinateIsValid && (
+                  <p className="text-danger font10 mb-2">
+                    {formErrors.deviceCordinate}
+                  </p>
+                )}
                 <MapDraw height="300px" width="100%" />
               </div>
             </div>
@@ -791,7 +813,7 @@ const DeviceAdjustmentModal = () => {
                 </Form.Group>
               </Row>
               <Row>
-                <Col md="5" xl="4" className="mx-auto d-flex mt-5">
+                <Col className="d-flex justify-content-center mt-5">
                   <Button
                     variant="success"
                     className="mb-3 me-5 px-4"
@@ -804,7 +826,7 @@ const DeviceAdjustmentModal = () => {
                   <Button
                     variant="secondary"
                     type="reset"
-                    className="mb-3 px-5 py-2"
+                    className="mb-3 px-4"
                     onClick={() => {
                       dispatch(RsetVehicleCondition(""));
                       dispatch(RsetVehicleConditionDescription(""));
