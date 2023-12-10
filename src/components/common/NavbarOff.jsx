@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAvatar } from "../../slices/mainSlices";
+import { selectAvatar, selectUser } from "../../slices/mainSlices";
 import { RsetLoggedIn, selectLoggedIn } from "../../slices/authSlices";
 import {
   RsetChangeProfilePicModal,
@@ -35,6 +35,7 @@ const NavbarOff = () => {
   const dispatch = useDispatch();
 
   const avatar = useSelector(selectAvatar);
+  const user = useSelector(selectUser);
 
   const handleStatesFalse = () => {
     setDeviceDrop(false);
@@ -305,9 +306,9 @@ const NavbarOff = () => {
             >
               {/* <Container className="me-5"> */}
               <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="d-flex justify-content-end w-100">
-                  <Nav.Link className="mt-2 me-1">
-                    <div>شایان گلستانی پور</div>
+                <Nav className="d-flex justify-content-center w-100  ms-3">
+                  <Nav.Link className="mt-2">
+                    <div>{user.id.username}</div>
                   </Nav.Link>
                   <NavDropdown
                     drop="up"

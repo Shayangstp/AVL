@@ -13,15 +13,16 @@ export const getGroupList = (token) => {
     }
   );
 };
-// export const get = (token) => {
-//   return http.get(
-//     `${config.R}/api/v1/deviceGroup`,
+export const postReportLastLocation = (values, token) => {
+  return http.post(
+    `${config.R}/api/v1/device/lastlocationsinp`,
+    values,
 
-//     {
-//       headers: { Authorization: `Bearer ${token}` },
-//     },
-//     {
-//       timeout: 30000,
-//     }
-//   );
-// };
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

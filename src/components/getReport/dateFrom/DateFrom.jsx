@@ -2,13 +2,20 @@ import React from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
-import DatePicker from "react-datepicker2";
+import {
+  DatePicker,
+  DateTimePicker,
+  DateRangePicker,
+  DateTimeRangePicker,
+} from "react-advance-jalaali-datepicker";
 import {
   RsetGetReportFromDate,
   RsetGetReportToDate,
   selectGetReportFromDate,
   selectGetReportToDate,
+  handleViewPath,
 } from "../../../slices/getReportSlices";
+import { convertUnixTimeStampToDate } from "../../common/ConvertUnixStamp";
 
 const DateFrom = () => {
   const dispatch = useDispatch();
@@ -33,10 +40,7 @@ const DateFrom = () => {
   };
   const handleDateSearch = (e) => {
     if (formIsValid) {
-      console.log({
-        fromDate,
-        toDate,
-      });
+      dispatch(handleViewPath());
     } else {
       dispatch(
         RsetFormErrors(
@@ -48,41 +52,50 @@ const DateFrom = () => {
       );
     }
   };
+
+  const DatePickerInput = (props) => {
+    return (
+      <input className="form-control" style={{ zIndex: "100" }} {...props} />
+    );
+  };
+
   return (
-    <Form className="d-flex">
-      <Form.Group className="me-2">
+    <Form className="d-flex flex-column flex-md-row">
+      <Form.Group className="me-md-2 me-0 mb-3 mb-md-0">
         <Form.Label>از تاریخ</Form.Label>
         <DatePicker
-          timePicker={false}
-          className={`form-control ${
-            !fromDateIsValid ? formErrors.fromDate : ""
-          }`}
-          showTodayButton={false}
-          isGregorian={false}
-          value={fromDate}
-          onChange={async (value) => {
-            dispatch(RsetGetReportFromDate(value));
+          inputComponent={DatePickerInput}
+          placeholder="انتخاب تاریخ"
+          format="jYYYY/jMM/jDD"
+          // className="bg-primary"
+          onChange={(e) => {
+            dispatch(RsetGetReportFromDate(e));
           }}
+          value={fromDate}
+          id="datePicker"
+          preSelected="1396/05/15"
         />
       </Form.Group>
       <Form.Group className="">
         <Form.Label>تا تاریخ</Form.Label>
         <DatePicker
-          timePicker={false}
-          className={`form-control ${!toDateIsValid ? formErrors.toDate : ""}`}
-          showTodayButton={false}
-          isGregorian={false}
-          value={toDate}
-          onChange={async (value) => {
-            dispatch(RsetGetReportToDate(value));
+          inputComponent={DatePickerInput}
+          placeholder="انتخاب تاریخ"
+          format="jYYYY/jMM/jDD"
+          onChange={(e) => {
+            dispatch(RsetGetReportToDate(e));
           }}
+          value={toDate}
+          id="datePicker"
+          preSelected="1396/05/15"
         />
       </Form.Group>
       <Form.Group>
         <Button
           variant="success"
-          size="sm"
-          className="mt-4 ms-2 font12"
+          size="md"
+          style={{ marginTop: "30px" }}
+          className="ms-2 font12"
           onClick={(e) => {
             handleDateSearch(e);
           }}

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import DatePicker from "react-datepicker2";
 import Select from "react-select";
 
 import { NumericFormat } from "react-number-format";

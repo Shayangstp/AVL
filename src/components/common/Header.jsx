@@ -23,7 +23,7 @@ const Header = () => {
   const avatar = useSelector(selectAvatar);
   const profilePicModal = useSelector(selectChangeProfilePicModal);
   const user = useSelector(selectUser);
-  console.log(user.id.username);
+
 
   return (
     <div>

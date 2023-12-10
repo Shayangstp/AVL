@@ -29,6 +29,7 @@ import VehicleList from "../vehicleList/VehicleList";
 import {
   RsetShowVehicleList,
   selectShowVehicleList,
+  selectGetReportGroupList,
 } from "../../../slices/getReportSlices";
 import { handleGroupList } from "../../../slices/getReportSlices";
 const dataList = [
@@ -75,6 +76,7 @@ const ViewPathList = () => {
   const sortIdRef = useRef(0);
 
   const showVehicleList = useSelector(selectShowVehicleList);
+  const groupList = useSelector(selectGetReportGroupList);
 
   useEffect(() => {
     dispatch(handleGroupList());
@@ -116,7 +118,7 @@ const ViewPathList = () => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            groupName: handleVehicleList(requests[i].groupName),
+            groupName: handleVehicleList(requests[i].name),
           };
           tableItems.push(tableItem);
         }
@@ -140,7 +142,7 @@ const ViewPathList = () => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            groupName: handleVehicleList(requests[i].groupName),
+            groupName: handleVehicleList(requests[i].name),
           };
           tableItems.push(tableItem);
         }
@@ -179,7 +181,7 @@ const ViewPathList = () => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <ViewPathTable
-                    requests={dataList}
+                    requests={groupList}
                     // requests={dataList}
                     columns={columns}
                     data={data}

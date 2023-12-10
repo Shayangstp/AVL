@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
-import { getGroupList } from "../services/reportServices";
+import {
+  getGroupList,
+  postReportLastLocation,
+} from "../services/reportServices";
 
 const initialState = {
   getReportFromDate: null,
@@ -22,6 +25,10 @@ const initialState = {
   getReportToTime: 0,
   getReportFromSpeed: 0,
   getReportToSpeed: 0,
+  getReportGroupList: [],
+  getReportVehicleList: [],
+  getReportSelectedItems: [],
+  getReportViewPathCordinates: [],
 };
 
 export const handleGroupList = createAsyncThunk(
@@ -31,6 +38,49 @@ export const handleGroupList = createAsyncThunk(
       const token = localStorage.getItem("token");
       const getGroupListRes = await getGroupList(token);
       console.log(getGroupListRes);
+      dispatch(
+        RsetGetReportGroupList(
+          getGroupListRes.data.populateUser.map((group) => {
+            return group;
+          })
+        )
+      );
+
+      const vehicleList = getGroupListRes.data.populateUser.map((group) => {
+        return group.devices;
+      });
+
+      dispatch(RsetGetReportVehicleList(vehicleList.flat()));
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleViewPath = createAsyncThunk(
+  "getReport/handleViewPath",
+  async (obj, { dispatch, getState }) => {
+    const { getReportFromDate, getReportToDate, getReportSelectedItems } =
+      getState().getReport;
+    try {
+      const token = localStorage.getItem("token");
+      const values = {
+        bTime: String(getReportFromDate),
+        eTime: String(getReportToDate),
+        devices: getReportSelectedItems,
+      };
+      console.log(values);
+      const postReportLastLocationRes = await postReportLastLocation(
+        values,
+        token
+      );
+      if (postReportLastLocationRes.data.code === 200) {
+        dispatch(
+          RsetGetReportViewPathCordinates(
+            postReportLastLocationRes.data.location
+          )
+        );
+      }
+      console.log(postReportLastLocationRes);
     } catch (ex) {
       console.log(ex);
     }
@@ -98,6 +148,18 @@ const getReportSlices = createSlice({
     RsetGetReportToSpeed: (state, { payload }) => {
       return { ...state, getReportToSpeed: payload };
     },
+    RsetGetReportGroupList: (state, { payload }) => {
+      return { ...state, getReportGroupList: payload };
+    },
+    RsetGetReportVehicleList: (state, { payload }) => {
+      return { ...state, getReportVehicleList: payload };
+    },
+    RsetGetReportSelectedItems: (state, { payload }) => {
+      return { ...state, getReportSelectedItems: payload };
+    },
+    RsetGetReportViewPathCordinates: (state, { payload }) => {
+      return { ...state, getReportViewPathCordinates: payload };
+    },
   },
 });
 
@@ -121,6 +183,10 @@ export const {
   RsetGetReportToTime,
   RsetGetReportFromSpeed,
   RsetGetReportToSpeed,
+  RsetGetReportGroupList,
+  RsetGetReportVehicleList,
+  RsetGetReportSelectedItems,
+  RsetGetReportViewPathCordinates,
 } = getReportSlices.actions;
 
 export const selectGetReportFromDate = (state) =>
@@ -156,5 +222,13 @@ export const selectGetReportFromSpeed = (state) =>
   state.getReport.getReportFromSpeed;
 export const selectGetReportToSpeed = (state) =>
   state.getReport.getReportToSpeed;
+export const selectGetReportGroupList = (state) =>
+  state.getReport.getReportGroupList;
+export const selectGetReportVehicleList = (state) =>
+  state.getReport.getReportVehicleList;
+export const selectGetReportSelectedItems = (state) =>
+  state.getReport.getReportSelectedItems;
+export const selectGetReportViewPathCordinates = (state) =>
+  state.getReport.getReportViewPathCordinates;
 
 export default getReportSlices.reducer;

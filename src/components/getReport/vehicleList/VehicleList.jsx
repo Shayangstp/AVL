@@ -28,32 +28,14 @@ import {
 import { Redirect, Link } from "react-router-dom";
 import VehicleTable from "./VehicleTable";
 import moment from "moment-jalaali";
-import { selectShowVehicleList } from "../../../slices/getReportSlices";
+import {
+  selectShowVehicleList,
+  selectGetReportVehicleList,
+  RsetGetReportSelectedItems,
+  selectGetReportSelectedItems,
+} from "../../../slices/getReportSlices";
 
-const dataList = [
-  {
-    driverName: "احمد",
-    vehicleNumber: "102030",
-  },
-  {
-    driverName: "شایان",
-    vehicleNumber: "102030",
-  },
-  {
-    driverName: "امیر",
-    vehicleNumber: "102030",
-  },
-  {
-    driverName: "محمود",
-    vehicleNumber: "102030",
-  },
-  {
-    driverName: "مهران",
-    vehicleNumber: "102030",
-  },
-];
-
-const VehicleList = ({ setPageTitle }) => {
+const VehicleList = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -63,10 +45,7 @@ const VehicleList = ({ setPageTitle }) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const showVehicleList = useSelector(selectShowVehicleList);
-
-  // useEffect(() => {
-  //   setPageTitle("لیست دسته ها");
-  // }, [setPageTitle]);
+  const vehicleList = useSelector(selectGetReportVehicleList);
 
   const columns = useMemo(() => [
     {
@@ -89,7 +68,7 @@ const VehicleList = ({ setPageTitle }) => {
   const handleCheckBox = (i, request) => {
     const handleCheck = (e) => {
       if (e.target.checked) {
-        setSelectedItems((prevItems) => [...prevItems, request]);
+        setSelectedItems((prevItems) => [...prevItems, request.deviceIMEI]);
       } else {
         setSelectedItems((prevItems) =>
           prevItems.filter((item) => item !== request)
@@ -103,7 +82,9 @@ const VehicleList = ({ setPageTitle }) => {
     );
   };
 
-  console.log(selectedItems);
+  useEffect(() => {
+    dispatch(RsetGetReportSelectedItems(selectedItems));
+  }, [selectedItems]);
 
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
@@ -113,7 +94,7 @@ const VehicleList = ({ setPageTitle }) => {
         var tableItem = {
           idx: i + 1,
           driverName: requests[i].driverName,
-          vehicleNumber: requests[i].vehicleNumber,
+          vehicleNumber: requests[i].plate,
           checkBox: handleCheckBox(i, requests[i]),
         };
         tableItems.push(tableItem);
@@ -137,7 +118,7 @@ const VehicleList = ({ setPageTitle }) => {
           var tableItem = {
             idx: i + 1,
             driverName: requests[i].driverName,
-            vehicleNumber: requests[i].vehicleNumber,
+            vehicleNumber: requests[i].plate,
             checkBox: handleCheckBox(i, requests[i]),
           };
           tableItems.push(tableItem);
@@ -177,8 +158,7 @@ const VehicleList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <VehicleTable
-                    requests={dataList}
-                    // requests={dataList}
+                    requests={vehicleList}
                     columns={columns}
                     data={data}
                     onSort={handleSort}
