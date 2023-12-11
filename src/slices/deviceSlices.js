@@ -1,6 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getDeviceType } from "../services/deviceServices";
-import { getDeviceLocList } from "../services/deviceServices";
+import {
+  getDeviceLocList,
+  postAddDevice,
+  postAddVehicle,
+  getDeviceList,
+  editDeviceList,
+} from "../services/deviceServices";
+import { RsetFormErrors } from "./mainSlices";
+import { RsetDeviceEditModal } from "../slices/modalSlices";
+import { successMessage, errorMessage } from "../utils/msg";
 
 const initialState = {
   deviceNumber: "",
@@ -78,6 +87,117 @@ export const handleDeviceLocList = createAsyncThunk(
       );
       if (getDeviceLocListRes.data.code === 200) {
         dispatch(RsetDeviceLocList(getDeviceLocListRes.data.foundedItem));
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleAddDevice = createAsyncThunk(
+  "device/handleAddDevice",
+  async (values, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const postAddDeviceRes = await postAddDevice(values, token);
+      console.log(postAddDeviceRes);
+      if (postAddDeviceRes.data.code === 201) {
+        successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
+        dispatch(handleAddDeviceReset());
+      } else {
+        errorMessage("خطا!");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleAddDeviceReset = createAsyncThunk(
+  "device/handleAddDeviceReset",
+  async (obj, { dispatch, getState }) => {
+    dispatch(RsetDeviceNumber(""));
+    dispatch(RsetDeviceImei(""));
+    dispatch(RsetDeviceType(""));
+    dispatch(RsetVehicleNumber(""));
+    dispatch(RsetVehicleType(""));
+    dispatch(RsetVehicleCompany(""));
+    dispatch(RsetVehicleUsing(""));
+    dispatch(RsetDriverName(""));
+    dispatch(RsetDriverNumber(""));
+    dispatch(RsetVehicleGas(""));
+    dispatch(RsetFormErrors(""));
+  }
+);
+
+export const handleVehicleModlesList = createAsyncThunk(
+  "device/handleVehicleModlesList",
+  async (obj, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const getDeviceTypeRes = await getDeviceType(token);
+      console.log(getDeviceTypeRes);
+      if (getDeviceTypeRes.data.code === 200) {
+        dispatch(RsetVehicleAdded(getDeviceTypeRes.data.foundedItem));
+      } else {
+        errorMessage("خطا در دریافت اطلاعات");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleAddVehicleType = createAsyncThunk(
+  "device/handleAddVehicleType",
+  async (values, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const postAddVehicleRes = await postAddVehicle(values, token);
+      console.log(postAddVehicleRes);
+      if (postAddVehicleRes.data.code === 200) {
+        successMessage("مدل دستگاه با موفقیت اضافه شد");
+        dispatch(RsetVehicleAddType(""));
+        dispatch(handleVehicleModlesList());
+      } else {
+        errorMessage("خطا!");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleDeviceList = createAsyncThunk(
+  "device/handleDeviceList",
+  async (values, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const getDeviceListRes = await getDeviceList(token);
+      console.log(getDeviceListRes);
+      if (getDeviceListRes.data.allVehicles !== null) {
+        dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
+      } else {
+        errorMessage("خطا");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+
+export const handleDeviceEdit = createAsyncThunk(
+  "device/handleDeviceEdit",
+  async (values, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const editDeviceListRes = await editDeviceList(values, token);
+      console.log(editDeviceListRes);
+      if (editDeviceListRes.data.code === 200) {
+        dispatch(RsetDeviceEditModal(false));
+        successMessage("ویرایش با موفقیت انجام شد");
+        dispatch(RsetCurrentDevice(""));
+      } else {
+        errorMessage("خطا");
       }
     } catch (ex) {
       console.log(ex);

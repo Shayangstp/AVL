@@ -25,48 +25,15 @@ import {
 import { Redirect, Link } from "react-router-dom";
 import ViewLastLocationTable from "./ViewLastLocationTable";
 import moment from "moment-jalaali";
-
+import VehicleList from "../vehicleList/VehicleList";
 import {
   RsetShowVehicleList,
   selectShowVehicleList,
+  selectGetReportGroupList,
 } from "../../../slices/getReportSlices";
+import { handleGroupList } from "../../../slices/getReportSlices";
 
-const dataList = [
-  {
-    groupName: "کاوه فلوت",
-    id: 1,
-  },
-  {
-    groupName: "فلوت کاویان",
-    id: 2,
-  },
-  {
-    groupName: "کاوه سودا",
-    id: 3,
-  },
-  {
-    groupName: "متانول کاوه",
-    id: 4,
-  },
-  {
-    groupName: "کربنات کاوه",
-    id: 5,
-  },
-  {
-    groupName: "ابهر سیلیس",
-    id: 6,
-  },
-  {
-    groupName: "دفتر مرکزی",
-    id: 7,
-  },
-  {
-    groupName: "مظروف یزد",
-    id: 8,
-  },
-];
-
-const ViewLastLocationList = ({ setPageTitle }) => {
+const ViewLastLocationList = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [load, setload] = useState(false);
@@ -75,13 +42,11 @@ const ViewLastLocationList = ({ setPageTitle }) => {
   const sortIdRef = useRef(0);
 
   const showVehicleList = useSelector(selectShowVehicleList);
-  // console.log(showVehicleList);
-
-  // console.log(showVehicleList);
+  const groupList = useSelector(selectGetReportGroupList);
 
   useEffect(() => {
-    setPageTitle("لیست دسته ها");
-  }, [setPageTitle]);
+    dispatch(handleGroupList());
+  }, []);
 
   const columns = useMemo(() => [
     {
@@ -91,23 +56,26 @@ const ViewLastLocationList = ({ setPageTitle }) => {
     },
   ]);
 
-  const handleVehicleList = (request) => {
-    return (
-      <p className="d-flex align-items-center justify-content-between">
-        <div className="font10">{request}</div>
-        <Button
-          variant="primary"
-          size="sm"
-          className="font10 ms-2"
-          onClick={() => {
-            dispatch(RsetShowVehicleList(!showVehicleList));
-          }}
-        >
-          انتخاب وسیله نقلیه
-        </Button>
-      </p>
-    );
-  };
+  const handleVehicleList = useCallback(
+    (request) => {
+      return (
+        <p className="d-flex align-items-center justify-content-between">
+          <div className="font10">{request}</div>
+          <Button
+            variant="primary"
+            size="sm"
+            className="font10 ms-2"
+            onClick={() => {
+              dispatch(RsetShowVehicleList(!showVehicleList));
+            }}
+          >
+            انتخاب وسیله نقلیه
+          </Button>
+        </p>
+      );
+    },
+    [showVehicleList]
+  );
 
   const fetchData = useCallback(
     ({ pageSize, pageIndex, requests }) => {
@@ -116,7 +84,7 @@ const ViewLastLocationList = ({ setPageTitle }) => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            groupName: handleVehicleList(requests[i].groupName),
+            groupName: handleVehicleList(requests[i].name),
           };
           tableItems.push(tableItem);
         }
@@ -140,7 +108,7 @@ const ViewLastLocationList = ({ setPageTitle }) => {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {
             idx: i + 1,
-            groupName: handleVehicleList(requests[i].groupName),
+            groupName: handleVehicleList(requests[i].name),
           };
           tableItems.push(tableItem);
         }
@@ -179,7 +147,7 @@ const ViewLastLocationList = ({ setPageTitle }) => {
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
                   <ViewLastLocationTable
-                    requests={dataList}
+                    requests={groupList}
                     // requests={dataList}
                     columns={columns}
                     data={data}
@@ -189,14 +157,10 @@ const ViewLastLocationList = ({ setPageTitle }) => {
                     pageCount={pageCount}
                   />
                 </Fragment>
-                {/* ) : null} */}
               </Fragment>
             </div>
           </div>
         </section>
-        {/* : 
-        <Redirect to="/" />
-      } */}
       </Fragment>
     </Container>
   );

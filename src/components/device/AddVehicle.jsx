@@ -3,15 +3,12 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import {
   RsetVehicleAddType,
   selectVehicleAddType,
-  RsetVehicleAdded,
   selectVehicleAdded,
+  handleVehicleModlesList,
+  handleAddVehicleType,
 } from "../../slices/deviceSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
-import { postAddVehicle } from "../../services/deviceServices";
-import { errorMessage, successMessage } from "../../utils/msg";
-import { getDeviceType } from "../../services/deviceServices";
-import { useNavigate } from "react-router";
 
 const AddVehicle = () => {
   const dispatch = useDispatch();
@@ -32,35 +29,20 @@ const AddVehicle = () => {
     return errors;
   };
 
-  const handleAddVehicleType = async (e) => {
+  const handleVehicleModel = (e) => {
     e.preventDefault();
     if (vehicleAddTypeIsValid) {
-      const token = localStorage.getItem("token");
-      const value = {
+      const values = {
         vehicleType: vehicleAddType,
       };
-      const postAddVehicleRes = await postAddVehicle(value, token);
-      if (postAddVehicleRes.data.code === 200) {
-        successMessage("مدل دستگاه با موفقیت اضافه شد");
-        getVehicleModles();
-        dispatch(RsetVehicleAddType(""));
-      } else {
-        errorMessage("خطا!");
-      }
+      dispatch(handleAddVehicleType(values));
     } else {
       dispatch(RsetFormErrors(validation({ vehicleAddType })));
     }
   };
 
-  const getVehicleModles = async () => {
-    const token = localStorage.getItem("token");
-    const getDeviceTypeRes = await getDeviceType(token);
-    console.log(getDeviceTypeRes);
-    dispatch(RsetVehicleAdded(getDeviceTypeRes.data.foundedItem));
-  };
-
   useEffect(() => {
-    getVehicleModles();
+    dispatch(handleVehicleModlesList());
   }, []);
 
   return (
@@ -90,8 +72,7 @@ const AddVehicle = () => {
                 variant="success"
                 className="mb-3 me-sm-5 font12 px-4"
                 onClick={(e) => {
-                  console.log("hi");
-                  handleAddVehicleType(e);
+                  handleVehicleModel(e);
                 }}
               >
                 ثبت

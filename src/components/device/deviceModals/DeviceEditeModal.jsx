@@ -36,6 +36,7 @@ import {
   selectCurrentDevice,
   selectVehicleTypeOptions,
   handleVehicleTypeOptions,
+  handleDeviceEdit,
 } from "../../../slices/deviceSlices";
 import { editDeviceList } from "../../../services/deviceServices";
 import { errorMessage, successMessage } from "../../../utils/msg";
@@ -112,15 +113,7 @@ const DeviceEditeModal = () => {
       model: vehicleType.label,
       usage: vehicleUsing,
     };
-    const editDeviceListRes = await editDeviceList(values, token);
-    console.log(editDeviceListRes);
-    if (editDeviceListRes.data.code === 200) {
-      dispatch(RsetDeviceEditModal(false));
-      successMessage("ویرایش با موفقیت انجام شد");
-      dispatch(RsetCurrentDevice(""));
-    } else {
-      errorMessage("خطا");
-    }
+    dispatch(handleDeviceEdit(values));
   };
 
   return (

@@ -85,12 +85,6 @@ const DeviceListLocations = ({ setPageTitle }) => {
     if (deviceLocList.length === 0) dispatch(handleDeviceLocList());
   }, [deviceLocList]);
 
-  //fake data
-
-  // useEffect(() => {
-  //   setPageTitle("لیست درخواست نرم افزار");
-  // }, [setPageTitle]);
-
   const columns = useMemo(() => [
     {
       Header: "ردیف",

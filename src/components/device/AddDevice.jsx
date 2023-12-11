@@ -30,6 +30,8 @@ import {
   selectDriverNumber,
   selectVehicleGas,
   handleVehicleTypeOptions,
+  handleAddDevice,
+  handleAddDeviceReset,
 } from "../../slices/deviceSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 import { postAddDevice } from "../../services/deviceServices";
@@ -173,7 +175,6 @@ const AddDevice = () => {
   const handleDeviceAdd = async (e) => {
     e.preventDefault();
     if (addDeviceFormIsValid) {
-      const token = localStorage.getItem("token");
       const values = {
         simNumber: deviceNumber,
         deviceIMEI: deviceImei,
@@ -186,15 +187,7 @@ const AddDevice = () => {
         driverPhoneNumber: driverNumber,
         fuel: vehicleGas,
       };
-      console.log(values);
-      const postAddDeviceRes = await postAddDevice(values, token);
-      console.log(postAddDeviceRes);
-      if (postAddDeviceRes.data.code === 201) {
-        successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
-        handleResetAddDeviceForm();
-      } else {
-        errorMessage("خطا!");
-      }
+      dispatch(handleAddDevice(values));
     } else {
       dispatch(
         RsetFormErrors(
@@ -213,20 +206,6 @@ const AddDevice = () => {
         )
       );
     }
-  };
-
-  const handleResetAddDeviceForm = () => {
-    dispatch(RsetDeviceNumber(""));
-    dispatch(RsetDeviceImei(""));
-    dispatch(RsetDeviceType(""));
-    dispatch(RsetVehicleNumber(""));
-    dispatch(RsetVehicleType(""));
-    dispatch(RsetVehicleCompany(""));
-    dispatch(RsetVehicleUsing(""));
-    dispatch(RsetDriverName(""));
-    dispatch(RsetDriverNumber(""));
-    dispatch(RsetVehicleGas(""));
-    dispatch(RsetFormErrors(""));
   };
 
   return (
@@ -424,7 +403,7 @@ const AddDevice = () => {
                 type="reset"
                 className="mb-3 px-4"
                 onClick={() => {
-                  handleResetAddDeviceForm();
+                  dispatch(handleAddDeviceReset());
                 }}
               >
                 انصراف

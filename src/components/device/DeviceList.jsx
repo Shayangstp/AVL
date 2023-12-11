@@ -30,22 +30,10 @@ import moment from "moment-jalaali";
 import DeviceFilter from "./DeviceFilter";
 import { getDeviceList } from "../../services/deviceServices";
 import {
-  RsetDeviceList,
   selectDeviceList,
   RsetCurrentDevice,
   selectCurrentDevice,
-  RsetDeviceImei,
-  RsetVehicleCompany,
-  RsetVehicleNumber,
-  RsetVehicleType,
-  RsetDeviceType,
-  RsetDeviceNumber,
-  RsetDriverName,
-  RsetDriverNumber,
-  RsetVehicleUsing,
-  RsetVehicleGas,
-  RsetEditTimeStamp,
-  RsetVehicleId,
+  handleDeviceList,
 } from "../../slices/deviceSlices";
 import {
   RsetDeviceAdjusmentModal,
@@ -60,23 +48,6 @@ import DeviceTable from "./DeviceTable";
 import DeviceEditeModal from "./deviceModals/DeviceEditeModal";
 import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
 import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
-import { handleDeviceLocList } from "../../slices/deviceSlices";
-
-// const dataList = [
-//   {
-//     deviceIMEI: "imei",
-//     simNumber: "simNumber",
-//     driverName: "driverName",
-//     driverPhoneNumber: "driverPhoneNumber",
-//     plate: "plate",
-//     model: {
-//       name: "modle",
-//     },
-//     usage: "usage",
-//     fuel: 5000,
-//     maxPMDistance: "5000",
-//   },
-// ];
 
 const DeviceList = ({ setPageTitle }) => {
   const dispatch = useDispatch();
@@ -88,7 +59,7 @@ const DeviceList = ({ setPageTitle }) => {
   const sortIdRef = useRef(0);
 
   useEffect(() => {
-    setPageTitle("لیست درخواست نرم افزار");
+    setPageTitle("لیست دستگاه ها");
   }, [setPageTitle]);
 
   const deviceList = useSelector(selectDeviceList);
@@ -97,19 +68,8 @@ const DeviceList = ({ setPageTitle }) => {
   const deviceAdjusmentModal = useSelector(selectDeviceAdjusmentModal);
   const deviceLocationsModal = useSelector(selectDeviceLocationsModal);
 
-  const handleDeviceList = async () => {
-    const token = localStorage.getItem("token");
-    const getDeviceListRes = await getDeviceList(token);
-    console.log(getDeviceListRes);
-    if (getDeviceListRes.data.allVehicles !== null) {
-      dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
-    } else {
-      errorMessage("خطا");
-    }
-  };
-
   useEffect(() => {
-    handleDeviceList();
+    dispatch(handleDeviceList());
   }, [currentDevice]);
 
   const columns = useMemo(() => [
