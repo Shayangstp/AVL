@@ -105,6 +105,8 @@ const CategoryList = ({ setPageTitle }) => {
     dispatch(handleCategoryList());
   }, []);
 
+  console.log(categoryList);
+
   useEffect(() => {
     setPageTitle("لیست درخواست نرم افزار");
   }, [setPageTitle]);
@@ -237,9 +239,9 @@ const CategoryList = ({ setPageTitle }) => {
   const handleSort = useCallback(
     ({ sortBy, pageIndex, pageSize, requests }) => {
       var tableItems = [];
-      let colors = requests.map((request) => {
-        return request.color.value;
-      });
+      // let colors = requests.map((request) => {
+      //   return request.color.value;
+      // });
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
           var tableItem = {

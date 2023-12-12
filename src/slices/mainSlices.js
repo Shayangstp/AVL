@@ -22,6 +22,7 @@ export const handleAllGpsesList = createAsyncThunk(
       // const allCordinates = allGpesesRes.data.lastLocation.map((device) => {
       //   return [device.lat, device.lng];
       // });
+      console.log(allGpesesRes);
       dispatch(RsetAllGpses(allGpesesRes.data));
     } catch (ex) {
       console.log(ex);

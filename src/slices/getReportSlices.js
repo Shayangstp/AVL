@@ -73,6 +73,7 @@ export const handleViewPath = createAsyncThunk(
         values,
         token
       );
+      console.log(postReportLastLocationRes);
       if (postReportLastLocationRes.data.code === 200) {
         dispatch(
           RsetGetReportViewPathCordinates(

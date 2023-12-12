@@ -16,10 +16,13 @@ import AddPhoneNumbers from "../components/userManagement/AddPhoneNumbers";
 import PhoneNumberList from "../components/userManagement/PhoneNumberList";
 import Test from "../components/test/Test";
 import { Navigate } from "react-router-dom";
+import { selectLoggedIn } from "../slices/authSlices";
+import { useSelector } from "react-redux";
 
 const AVL = () => {
   const [pageTitle, setPageTitle] = useState("");
-  const isLoggedIn = localStorage.getItem("token") !== null;
+  const isLoggedIn = useSelector(selectLoggedIn);
+  // const isLoggedIn = localStorage.getItem("token") !== null;
 
   return (
     <Fragment>

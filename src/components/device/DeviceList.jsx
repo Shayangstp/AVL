@@ -134,6 +134,11 @@ const DeviceList = ({ setPageTitle }) => {
       sort: false,
     },
     {
+      Header: "وضعیت",
+      accessor: "condition",
+      sort: false,
+    },
+    {
       Header: "عملیات",
       accessor: "opration",
       sort: false,
@@ -189,10 +194,62 @@ const DeviceList = ({ setPageTitle }) => {
     );
   };
 
+  const [value, setValue] = useState([]);
+
+  const handleVehicleCondition = (request, i) => {
+    let now = moment();
+    let date = moment(
+      request.lastLocation === null ? "null" : moment(request.lastLocation.date)
+    );
+
+    let gpsDate = now.diff(date, "hours");
+    if (gpsDate === NaN) {
+      console.log("null");
+    } else if (gpsDate !== NaN) {
+      if (0 <= gpsDate && gpsDate <= 24) {
+        return (
+          <div className="bg-success text-center text-white rounded-pill px-1">
+            {now.diff(date, "hours")}
+          </div>
+        );
+      } else if (24 < gpsDate && gpsDate <= 168) {
+        return (
+          <div
+            className="text-center text-black rounded-pill px-1 "
+            style={{ background: "#fad757" }}
+          >
+            {now.diff(date, "hours")}
+          </div>
+        );
+      } else if (168 < gpsDate && gpsDate <= 720) {
+        return (
+          <div
+            className="text-center text-black rounded-pill px-1 "
+            style={{ background: "#ffbc05" }}
+          >
+            {now.diff(date, "hours")}
+          </div>
+        );
+      } else if (720 < gpsDate) {
+        return (
+          <div
+            className="text-center text-black rounded-pill px-1 "
+            style={{ background: "#ff0505" }}
+          >
+            {now.diff(date, "hours")}
+          </div>
+        );
+      }
+    }
+  };
+
   const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
     var tableItems = [];
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
+        const cate = requests[i].groups?.map((item) => {
+          return item.name;
+        });
         var tableItem = {
           idx: i,
           imei: requests[i].deviceIMEI,
@@ -200,13 +257,13 @@ const DeviceList = ({ setPageTitle }) => {
           driverName: requests[i].driverName,
           driverNumber: requests[i].driverPhoneNumber,
           vehicleNumber: requests[i].plate,
-          // vehicleType: requests[i].model.name,
-          // vehicleCategory: requests[i].model.name,
-          // vehicleType: requests[i].model.name,
-          // vehicleCompany: requests[i].model.name,
+          vehicleType: requests[i].model.name,
+          vehicleCategory: requests[i].groups.length === 0 ? "" : cate.flat(),
+          vehicleCompany: requests[i].vehicleName,
           vehicleUsage: requests[i].usage,
           gasUsage: requests[i].fuel,
           distance: requests[i].maxPMDistance,
+          condition: handleVehicleCondition(requests[i], i),
           opration: operation(requests[i]),
         };
         tableItems.push(tableItem);
@@ -227,6 +284,9 @@ const DeviceList = ({ setPageTitle }) => {
       var tableItems = [];
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
+          const cate = requests[i].groups?.map((item) => {
+            return item.name;
+          });
           var tableItem = {
             imei: requests[i].deviceIMEI,
             idx: i,
@@ -234,13 +294,15 @@ const DeviceList = ({ setPageTitle }) => {
             driverName: requests[i].driverName,
             driverNumber: requests[i].driverPhoneNumber,
             vehicleNumber: requests[i].plate,
-            // vehicleCategory: requests[i].model.name,
-            // vehicleType: requests[i].model.name,
-            // vehicleCompany: requests[i].model.name,
+
+            vehicleCategory: requests[i].groups.length === 0 ? "" : cate.flat(),
+
+            vehicleType: requests[i].model.name,
+            vehicleCompany: requests[i].vehicleName,
             vehicleUsage: requests[i].usage,
             gasUsage: requests[i].fuel,
             distance: requests[i].maxPMDistance,
-
+            condition: handleVehicleCondition(requests[i]),
             opration: operation(requests[i]),
           };
           tableItems.push(tableItem);
@@ -300,21 +362,22 @@ const DeviceList = ({ setPageTitle }) => {
               </Button>
             </div>
             <div className="position-relative">
+              <div className="font10 mt-2 mb-2">
+                مجموع وسیله ها : {deviceList.length}
+              </div>
               <Fragment>
-                <Fragment>
-                  <DeviceTable
-                    requests={deviceList}
-                    columns={columns}
-                    data={data}
-                    onSort={handleSort}
-                    fetchData={fetchData}
-                    loading={load}
-                    pageCount={pageCount}
-                  />
-                  {deviceEditModal && <DeviceEditeModal />}
-                  {deviceAdjusmentModal && <DeviceAdjustmentModal />}
-                  {deviceLocationsModal && <DeviceLocationsModal />}
-                </Fragment>
+                <DeviceTable
+                  requests={deviceList}
+                  columns={columns}
+                  data={data}
+                  onSort={handleSort}
+                  fetchData={fetchData}
+                  loading={load}
+                  pageCount={pageCount}
+                />
+                {deviceEditModal && <DeviceEditeModal />}
+                {deviceAdjusmentModal && <DeviceAdjustmentModal />}
+                {deviceLocationsModal && <DeviceLocationsModal />}
               </Fragment>
             </div>
           </div>
