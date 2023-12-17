@@ -9,7 +9,6 @@ const initialState = {
   getReportFromDate: null,
   getReportToDate: null,
   currentCategoryReport: "",
-  showVehicleList: false,
   getReportVehiclesLocations: false,
   getReportAlarms: false,
   getReportGPSLocations: false,
@@ -29,6 +28,8 @@ const initialState = {
   getReportVehicleList: [],
   getReportSelectedItems: [],
   getReportViewPathCordinates: [],
+  getReportGroupValue: "",
+  getReportVehicleValue: "",
 };
 
 export const handleGroupList = createAsyncThunk(
@@ -161,6 +162,12 @@ const getReportSlices = createSlice({
     RsetGetReportViewPathCordinates: (state, { payload }) => {
       return { ...state, getReportViewPathCordinates: payload };
     },
+    RsetGetReportGroupValue: (state, { payload }) => {
+      return { ...state, getReportGroupValue: payload };
+    },
+    RsetGetReportVehicleValue: (state, { payload }) => {
+      return { ...state, getReportVehicleValue: payload };
+    },
   },
 });
 
@@ -188,6 +195,8 @@ export const {
   RsetGetReportVehicleList,
   RsetGetReportSelectedItems,
   RsetGetReportViewPathCordinates,
+  RsetGetReportGroupValue,
+  RsetGetReportVehicleValue,
 } = getReportSlices.actions;
 
 export const selectGetReportFromDate = (state) =>
@@ -231,5 +240,9 @@ export const selectGetReportSelectedItems = (state) =>
   state.getReport.getReportSelectedItems;
 export const selectGetReportViewPathCordinates = (state) =>
   state.getReport.getReportViewPathCordinates;
+export const selectGetReportGroupValue = (state) =>
+  state.getReport.getReportGroupValue;
+export const selectGetReportVehicleValue = (state) =>
+  state.getReport.getReportVehicleValue;
 
 export default getReportSlices.reducer;

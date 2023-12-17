@@ -1,6 +1,6 @@
 import React from "react";
-import ViewLastLocationList from "./viewLastLocationList/ViewLastLocationList";
 import MapHeat from "../map/MapHeat";
+import Select from "react-select";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import {
   DatePicker,
@@ -17,6 +17,11 @@ import {
   selectGetReportToDate,
   handleViewPath,
   selectGetReportSelectedItems,
+  RsetGetReportGroupValue,
+  selectGetReportGroupList,
+  selectGetReportGroupValue,
+  RsetGetReportVehicleValue,
+  selectGetReportVehicleValue,
 } from "../../slices/getReportSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 
@@ -26,11 +31,35 @@ const ViewLastLocation = () => {
   const toDate = useSelector(selectGetReportToDate);
   const selectedItems = useSelector(selectGetReportSelectedItems);
   const formErrors = useSelector(selectFormErrors);
+  const groupList = useSelector(selectGetReportGroupList);
+  const groupValue = useSelector(selectGetReportGroupValue);
+  const vehicleValue = useSelector(selectGetReportVehicleValue);
 
   const fromDateIsValid = fromDate !== null;
   const toDateIsValid = toDate !== null;
   const selectedItemsIsValid = selectedItems.length > 0;
   const formIsValid = fromDateIsValid && toDateIsValid && selectedItemsIsValid;
+
+  const groupListOptions = groupList.map((item, idx) => {
+    return { label: item?.name, value: idx };
+  });
+
+  const vehicleList = groupList.find((item, idx) => {
+    return groupValue.label === undefined
+      ? false
+      : item.name === groupValue.label;
+  });
+
+  const fakeVehiclesList = [{ name: "shayan" }, { name: "amir" }];
+  //vehicleList
+  // const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
+  //   return { lable: "shayan", value: 1 };
+  // });
+  const vehicleListOptions = fakeVehiclesList.map((item, idx) => {
+    return { label: item.name, value: idx };
+  });
+
+  console.log(vehicleListOptions);
 
   const validation = () => {
     let errors = {};
@@ -49,7 +78,7 @@ const ViewLastLocation = () => {
 
   const handleDateSearch = (e) => {
     if (formIsValid) {
-      //change this
+      //change this data and value based on the data
       dispatch(handleViewPath());
     } else {
       dispatch(
@@ -110,6 +139,36 @@ const ViewLastLocation = () => {
                 id="datePicker"
               />
             </Form.Group>
+            <Form.Group as={Col} md="3" className="me-md-2 me-0">
+              <Form.Label>نام دسته</Form.Label>
+              <Select
+                // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                value={groupValue}
+                name="deviceType"
+                onChange={(e) => {
+                  console.log(e);
+                  dispatch(RsetGetReportGroupValue(e));
+                }}
+                placeholder="انتخاب..."
+                options={groupListOptions}
+                isSearchable={true}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="">
+              <Form.Label>انتخاب وسیله نقلیه</Form.Label>
+              <Select
+                // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                value={vehicleValue}
+                name="deviceType"
+                onChange={(e) => {
+                  dispatch(RsetGetReportVehicleValue(e));
+                }}
+                placeholder="انتخاب..."
+                options={vehicleListOptions}
+                isSearchable={true}
+                isMulti
+              />
+            </Form.Group>
             <Form.Group>
               <Button
                 variant="success"
@@ -133,15 +192,6 @@ const ViewLastLocation = () => {
       </div>
       <Row className="d-flex flex-column flex-md-row justify-content-center align-items-center align-items-md-start">
         <Col
-          xs={12}
-          md={5}
-          className="lightGray-bg borderRadius-15 border border-white border-2 shadow mt-5"
-        >
-          <ViewLastLocationList />
-        </Col>
-        <Col
-          xs={12}
-          md={6}
           className="ms-0 ms-md-5 mt-5 lightGray-bg borderRadius-15 border border-white border-2 shadow p-3"
           style={{ height: "500px" }}
         >

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import ViewPathList from "./viewPathList/ViewPathList";
 import MapHeat from "../map/MapHeat";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import {
@@ -20,6 +19,10 @@ import {
   selectGetReportSelectedItems,
   selectGetReportGroupList,
   handleGroupList,
+  RsetGetReportGroupValue,
+  selectGetReportGroupValue,
+  RsetGetReportVehicleValue,
+  selectGetReportVehicleValue,
 } from "../../slices/getReportSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 
@@ -29,6 +32,30 @@ const ViewPath = () => {
   const toDate = useSelector(selectGetReportToDate);
   const selectedItems = useSelector(selectGetReportSelectedItems);
   const formErrors = useSelector(selectFormErrors);
+  const groupList = useSelector(selectGetReportGroupList);
+  const groupValue = useSelector(selectGetReportGroupValue);
+  const vehicleValue = useSelector(selectGetReportVehicleValue);
+
+  const groupListOptions = groupList.map((item, idx) => {
+    return { label: item?.name, value: idx };
+  });
+
+  const vehicleList = groupList.find((item, idx) => {
+    return groupValue.label === undefined
+      ? false
+      : item.name === groupValue.label;
+  });
+
+  const fakeVehiclesList = [{ name: "shayan" }, { name: "amir" }];
+  //vehicleList
+  // const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
+  //   return { lable: "shayan", value: 1 };
+  // });
+  const vehicleListOptions = fakeVehiclesList.map((item, idx) => {
+    return { label: item.name, value: idx };
+  });
+
+  console.log(vehicleListOptions);
 
   const fromDateIsValid = fromDate !== null;
   const toDateIsValid = toDate !== null;
@@ -81,6 +108,11 @@ const ViewPath = () => {
     );
   };
 
+  // report should be fix in data
+  console.log(vehicleValue);
+
+
+
   return (
     <Container fluid className="p-5 my-2">
       <div className="lightGray-bg borderRadius-15 border border-white border-2 shadow p-4">
@@ -119,13 +151,14 @@ const ViewPath = () => {
               <Form.Label>نام دسته</Form.Label>
               <Select
                 // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
-                // value={deviceType}
+                value={groupValue}
                 name="deviceType"
-                // onChange={(e) => {
-                //   dispatch(RsetDeviceType(e));
-                // }}
+                onChange={(e) => {
+                  console.log(e);
+                  dispatch(RsetGetReportGroupValue(e));
+                }}
                 placeholder="انتخاب..."
-                // options={deviceTypeOptions}
+                options={groupListOptions}
                 isSearchable={true}
               />
             </Form.Group>
@@ -133,14 +166,15 @@ const ViewPath = () => {
               <Form.Label>انتخاب وسیله نقلیه</Form.Label>
               <Select
                 // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
-                // value={deviceType}
+                value={vehicleValue}
                 name="deviceType"
-                // onChange={(e) => {
-                //   dispatch(RsetDeviceType(e));
-                // }}
+                onChange={(e) => {
+                  dispatch(RsetGetReportVehicleValue(e));
+                }}
                 placeholder="انتخاب..."
-                // options={deviceTypeOptions}
+                options={vehicleListOptions}
                 isSearchable={true}
+                isMulti
               />
             </Form.Group>
             <Form.Group>
@@ -166,15 +200,6 @@ const ViewPath = () => {
       </div>
       <Row className="d-flex flex-column flex-md-row justify-content-center align-items-center align-items-md-start">
         <Col
-          xs={12}
-          md={5}
-          className="lightGray-bg borderRadius-15 border border-white border-2 shadow mt-5"
-        >
-          <ViewPathList />
-        </Col>
-        <Col
-          xs={12}
-          md={6}
           className="ms-0 ms-md-5 mt-5 lightGray-bg borderRadius-15 border border-white border-2 shadow p-3"
           style={{ height: "500px" }}
         >
