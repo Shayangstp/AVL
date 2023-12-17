@@ -37,16 +37,10 @@ const AVL = () => {
           <Route path="/home" element={<Home />} />
           {/* devices */}
           <Route path="/addDevice" element={<AddDevice />} />
-          <Route
-            path="/deviceList"
-            element={<DeviceList setPageTitle={setPageTitle} />}
-          />
+          <Route path="/deviceList" element={<DeviceList />} />
           <Route path="/addVehicle" element={<AddVehicle />} />
           {/* category */}
-          <Route
-            path="/categoryList"
-            element={<CategoryList setPageTitle={setPageTitle} />}
-          />
+          <Route path="/categoryList" element={<CategoryList />} />
           {/* report */}
           <Route path="/getReport" element={<GetReport />} />
           <Route path="/viewPath" element={<ViewPath />} />

@@ -1,118 +1,135 @@
-import React, { useState, useEffect } from "react";
-import { Button, Modal, Form, Row, Col, Container } from "react-bootstrap";
+// import React, { useState } from "react";
+// // import { Table, ConfigProvider, Empty, Input, Space } from "antd";
+// // import "antd/dist/antd.css";
+// import { Scrollbars } from "react-custom-scrollbars";
+// // import "./YourComponent.css"; // Import your custom CSS file
 
-const Test = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+// const data = [
+//   // Your data items
+// ];
 
-  const checkboxes = [
-    { id: "view", label: "مشاهده", value: "device_view" },
-    { id: "add", label: "افزودن", value: "device_add" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-    { id: "edit", label: "ویرایش", value: "device_edit" },
-  ];
+// const Test = () => {
+//   const [searchText, setSearchText] = useState("");
+//   const [searchedColumn, setSearchedColumn] = useState("");
 
-  const handlePlayClick = () => {
-    setIsPlaying(true);
-    setCurrentIndex(currentIndex);
-  };
+//   const getColumnSearchProps = (dataIndex, placeholder) => ({
+//     filterDropdown: ({
+//       setSelectedKeys,
+//       selectedKeys,
+//       confirm,
+//       clearFilters,
+//     }) => (
+//       <div style={{ padding: 8 }}>
+//         <Input
+//           placeholder={placeholder}
+//           value={selectedKeys[0]}
+//           onChange={(e) =>
+//             setSelectedKeys(e.target.value ? [e.target.value] : [])
+//           }
+//           onPressEnter={() => confirm()}
+//           style={{ marginBottom: 8, display: "block" }}
+//         />
+//         <Space>
+//           <button
+//             type="button"
+//             onClick={() => {
+//               clearFilters();
+//               setSearchText("");
+//             }}
+//             style={{ width: 80 }}
+//           >
+//             Reset
+//           </button>
+//           <button
+//             type="button"
+//             onClick={() => {
+//               confirm();
+//               setSearchText(selectedKeys[0]);
+//               setSearchedColumn(dataIndex);
+//             }}
+//             style={{ width: 80 }}
+//           >
+//             Search
+//           </button>
+//         </Space>
+//       </div>
+//     ),
+//     filterIcon: (filtered) => (
+//       <i
+//         className={`fa ${filtered ? "fa-filter" : "fa-filter"}`}
+//         style={{ fontSize: "1.2rem", color: filtered ? "#1890ff" : undefined }}
+//       />
+//     ),
+//     onFilter: (value, record) => {
+//       const columnValue = record[dataIndex] ? record[dataIndex].toString() : "";
+//       return columnValue.toLowerCase().includes(value.toLowerCase());
+//     },
+//     onFilterDropdownVisibleChange: (visible) => {
+//       if (visible) {
+//         setTimeout(() => {
+//           const input = document.querySelector(
+//             ".ant-table-filter-dropdown input"
+//           );
+//           if (input) {
+//             input.focus();
+//           }
+//         }, 0);
+//       }
+//     },
+//     render: (text) =>
+//       searchedColumn === dataIndex ? (
+//         <span style={{ fontWeight: "bold" }}>{text}</span>
+//       ) : (
+//         text
+//       ),
+//   });
 
-  useEffect(() => {
-    if (isPlaying) {
-      const timeoutId = setTimeout(() => {
-        if (currentIndex < checkboxes.length - 1) {
-          setCurrentIndex((prevIndex) => prevIndex + 1);
-        } else {
-          setIsPlaying(false);
-        }
-      }, 1000);
+//   const columns = [
+//     {
+//       title: "Name",
+//       dataIndex: "name",
+//       key: "name",
+//       ...getColumnSearchProps("name", "Search Name"),
+//     },
+//     {
+//       title: "Age",
+//       dataIndex: "age",
+//       key: "age",
+//       ...getColumnSearchProps("age", "Search Age"),
+//     },
+//     // Add more columns as needed
+//   ];
 
-      return () => clearTimeout(timeoutId);
-    }
-  }, [currentIndex, isPlaying]);
+//   const handleSearch = (selectedKeys, confirm, dataIndex) => {
+//     confirm();
+//     setSearchText(selectedKeys[0]);
+//     setSearchedColumn(dataIndex);
+//   };
 
-  console.log(checkboxes.length, currentIndex);
+//   const handleReset = (clearFilters) => {
+//     clearFilters();
+//     setSearchText("");
+//   };
 
-  const handleCheckboxChange = (index) => {
-    setCurrentIndex(index);
-  };
+//   return (
+//     <div className="position-relative table-responsive">
+//       <ConfigProvider locale={faIR}>
+//         <Table
+//           locale={{
+//             emptyText: <Empty description="اطلاعات موجود نیست!" />,
+//           }}
+//           className="list"
+//           bordered
+//           dataSource={data}
+//           columns={columns}
+//           pagination={{
+//             position: ["bottomCenter", "bottomCenter"],
+//           }}
+//           scroll={{ x: "max-content" }}
+//         />
+//       </ConfigProvider>
+//     </div>
+//   );
+// };
 
-  const getCheckBoxData = (index) => {
-    if (index >= 0 && index < checkboxes.length) {
-      const label = checkboxes[index].label;
-      setCurrentIndex(index);
-      // console.log(label);
-    }
-  };
-
-  useEffect(() => {
-    getCheckBoxData(currentIndex);
-  }, [currentIndex]);
-
-  return (
-    <Container>
-      {checkboxes.map((checkbox, index) => (
-        <Form.Check
-          key={index}
-          type="checkbox"
-          id={checkbox.id}
-          label={checkbox.label}
-          value={checkbox.value}
-          checked={index === currentIndex}
-          onChange={() => handleCheckboxChange(index)}
-          className="me-3"
-        />
-      ))}
-      <Form.Group>
-        <Button
-          variant="primary"
-          onClick={() => {
-            if (currentIndex !== 0) {
-              setCurrentIndex((prev) => prev - 1);
-            } else {
-              setCurrentIndex(checkboxes.length - 1);
-            }
-          }}
-        >
-          backward
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={handlePlayClick}
-          disabled={isPlaying}
-        >
-          Play
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={() => {
-            setIsPlaying(false);
-            setCurrentIndex(0);
-          }}
-        >
-          Pause
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => {
-            if (currentIndex <= checkboxes.length - 2) {
-              setCurrentIndex((prev) => prev + 1);
-            } else {
-              setCurrentIndex(0);
-            }
-          }}
-        >
-          forward
-        </Button>
-      </Form.Group>
-    </Container>
-  );
-};
-
-export default Test;
+// export default Test;

@@ -1,34 +1,9 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  useCallback,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, Fragment } from "react";
+import { Input, Space, Table, ConfigProvider, Empty } from "antd";
+import faIR from "antd/lib/locale/fa_IR";
+import { SearchOutlined } from "@ant-design/icons";
 import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  faArrowsRotate,
-  faCheck,
-  faBan,
-  faClockRotateLeft,
-  faEye,
-  faFilter,
-  faStamp,
-  faPen,
-  faLock,
-} from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import { Redirect, Link } from "react-router-dom";
-import PhoneNumberTable from "./PhoneNumberTable";
-import {
-  RsetFilterValue,
-  selectFilterValue,
-  RsetShowFilter,
-  selectShowFilter,
-} from "../../slices/filterSlices";
 import {
   handleAllUserPhoneNumberList,
   selectUserPhoneNumberList,
@@ -36,121 +11,198 @@ import {
 
 const PhoneNumberList = () => {
   const dispatch = useDispatch();
-  const [data, setData] = useState([]);
-  const [load, setload] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = useRef(0);
-  const sortIdRef = useRef(0);
+  //table
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
-  const filterValue = useSelector(selectFilterValue);
-  const showFilter = useSelector(selectShowFilter);
   const userPhoneNumberList = useSelector(selectUserPhoneNumberList);
 
   useEffect(() => {
     dispatch(handleAllUserPhoneNumberList());
   }, []);
 
-  //filter data
-  const handleFilterChange = (event) => {
-    dispatch(RsetFilterValue(event.target.value));
+  const getColumnSearchProps = (dataIndex, placeholder) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={placeholder}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space className="d-flex justify-content-between">
+          <Button
+            variant="primary"
+            className="font10"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="sm"
+            style={{ width: 90 }}
+          >
+            جستجو
+          </Button>
+          <Button
+            variant="success "
+            className="font10"
+            size="sm"
+            onClick={() => {
+              clearFilters();
+              setSearchText("");
+              handleSearch(selectedKeys, confirm, "");
+              close();
+            }}
+            style={{ width: 80 }}
+          >
+            حذف فیلتر
+          </Button>
+          <Button
+            className="font10"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              close();
+            }}
+          >
+            بستن
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      const columnValue = record[dataIndex] ? record[dataIndex].toString() : "";
+      return columnValue.toLowerCase().includes(value.toLowerCase());
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          const input = document.querySelector(
+            ".ant-table-filter-dropdown input"
+          );
+          if (input) {
+            input.focus();
+          }
+        }, 0);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <span style={{ fontWeight: "bold" }}>{text}</span>
+      ) : (
+        text
+      ),
+  });
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
-  // const filteredData = filterValue
-  //   ? dataList.filter((item) => {
-  //       return (
-  //         item.firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
-  //         item.lastName.toLowerCase().includes(filterValue.toLowerCase()) ||
-  //         item.phoneNumber.includes(filterValue) ||
-  //         item.email.toLowerCase().includes(filterValue.toLowerCase())
-  //       );
-  //     })
-  //   : dataList;
-
-  const columns = useMemo(() => [
+  const columns = [
     {
-      Header: "نام",
-      accessor: "firstName",
-      sort: true,
+      key: "idx",
+      title: "ردیف",
+      dataIndex: "",
+      render: (text, record, index) => index + 1,
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 200,
     },
     {
-      Header: "نام خانوادگی",
-      accessor: "lastName",
-      sort: true,
-    },
-    {
-      Header: "شماره تلفن",
-      accessor: "phoneNumber",
-      sort: true,
-    },
-    {
-      Header: "پست الکترونیکی",
-      accessor: "email",
-      sort: true,
-    },
-  ]);
-
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        var tableItem = {
-          firstName: requests[i].firstName,
-          lastName: requests[i].lastName,
-          phoneNumber: requests[i].phoneNumber,
-          email: requests[i].email,
-        };
-        tableItems.push(tableItem);
-      }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-
-      setload(false);
-    }
-  }, []);
-  const handleSort = useCallback(
-    ({ sortBy, pageIndex, pageSize, requests }) => {
-      var tableItems = [];
-      if (requests.length !== 0) {
-        for (var i = 0; i < requests.length; i++) {
-          var tableItem = {
-            firstName: requests[i].firstName,
-            lastName: requests[i].lastName,
-            phoneNumber: requests[i].phoneNumber,
-            email: requests[i].email,
-          };
-          tableItems.push(tableItem);
-        }
-      }
-      const sortId = ++sortIdRef.current;
-      setload(true);
-      if (sortId === sortIdRef.current) {
-        let sorted = tableItems.slice();
-        sorted.sort((a, b) => {
-          for (let i = 0; i < sortBy.length; ++i) {
-            if (a[sortBy[i].id] > b[sortBy[i].id])
-              return sortBy[i].desc ? -1 : 1;
-            if (a[sortBy[i].id] < b[sortBy[i].id])
-              return sortBy[i].desc ? 1 : -1;
-          }
+      key: "firstName",
+      title: "نام",
+      dataIndex: "firstName",
+      sorter: (a, b) => {
+        if (!a.firstName && !b.firstName) {
           return 0;
-        });
-        const startRow = pageSize * pageIndex;
-        const endRow = startRow + pageSize;
-        setData(sorted.slice(startRow, endRow));
+        }
 
-        setload(false);
-      }
+        if (!a.firstName) {
+          return 1;
+        }
+
+        if (!b.firstName) {
+          return -1;
+        }
+
+        return a.firstName.localeCompare(b.firstName);
+      },
+      ...getColumnSearchProps("firstName", "جستجو..."),
+      width: 200,
     },
-    []
-  );
+    {
+      key: "lastName",
+      title: "نام خانوادگی",
+      dataIndex: "lastName",
+      sorter: (a, b) => {
+        if (!a.lastName && !b.lastName) {
+          return 0;
+        }
+
+        if (!a.lastName) {
+          return 1;
+        }
+
+        if (!b.lastName) {
+          return -1;
+        }
+
+        return a.lastName.localeCompare(b.lastName);
+      },
+      ...getColumnSearchProps("lastName", "جستجو..."),
+      width: 200,
+    },
+    {
+      key: "phoneNumber",
+      title: "شماره تلفن",
+      dataIndex: "phoneNumber",
+      sorter: (a, b) => {
+        if (!a.phoneNumber && !b.phoneNumber) {
+          return 0;
+        }
+
+        if (!a.phoneNumber) {
+          return 1;
+        }
+
+        if (!b.phoneNumber) {
+          return -1;
+        }
+
+        return a.phoneNumber.localeCompare(b.phoneNumber);
+      },
+      ...getColumnSearchProps("phoneNumber", "جستجو..."),
+      width: 200,
+    },
+  ];
+
+  const paginationConfig = {
+    position: ["bottomCenter"],
+    showTotal: (total) => (
+      <span className="font12">مجموع شماره تلفن ها : {total}</span>
+    ),
+    pageSize: 10,
+    showSizeChanger: false,
+    pageSizeOptions: [],
+    size: "small",
+  };
 
   return (
     <Container fluid className="py-4">
@@ -158,69 +210,35 @@ const PhoneNumberList = () => {
         <section className="position-relative">
           <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow mt-3">
             <div className="mt-3">
-              {showFilter && (
-                <Form.Group as={Col} md="5">
-                  <Form.Control
-                    type="text"
-                    value={filterValue}
-                    onChange={handleFilterChange}
-                    placeholder="جستوجو..."
-                    className="font12 mb-3"
-                  />
-                </Form.Group>
-              )}
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <Button
-                  size="sm"
-                  variant="warning"
-                  className="mb-2 ms-2 font12 mt-1"
-                  onClick={() => {
-                    dispatch(RsetShowFilter(!showFilter));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFilter} className="me-2" />
-                  فیلتر
-                </Button>
-
-                <Button
-                  size="sm"
-                  variant="primary"
-                  className="mb-2 font12"
-                  onClick={() => {
-                    dispatch(RsetFilterValue(""));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                  به روزرسانی
-                </Button>
-              </div>
               <div className="position-relative">
-                {/* {loading ? <Loading /> : null} */}
                 <Fragment>
-                  {/* {reqsList !== undefined ? ( */}
-                  <Fragment>
-                    <PhoneNumberTable
-                      // requests={userLists}
-                      requests={userPhoneNumberList}
-                      // notVisited={notVisited}
+                  <ConfigProvider
+                    locale={faIR}
+                    // theme={{
+                    //   token: {
+                    //     colorPrimary: "#00b96b",
+                    //     colorBgContainer: "#f6ffed",
+                    //   },
+                    // }}
+                  >
+                    <Table
+                      locale={{
+                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                      }}
+                      className="list"
+                      bordered
+                      dataSource={userPhoneNumberList}
                       columns={columns}
-                      data={data}
-                      onSort={handleSort}
-                      fetchData={fetchData}
-                      loading={load}
-                      pageCount={pageCount}
-                      // handleNotVisited={handleNotVisited}
+                      pagination={paginationConfig}
+                      scroll={{ x: "max-content" }}
+                      size="middle"
                     />
-                  </Fragment>
-                  {/* ) : null} */}
+                  </ConfigProvider>
                 </Fragment>
               </div>
             </div>
           </div>
         </section>
-        {/* :
-        <Redirect to="/" />
-      } */}
       </Fragment>
     </Container>
   );

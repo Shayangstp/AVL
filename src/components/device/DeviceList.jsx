@@ -1,6 +1,19 @@
 //fake data been made
 //the handle data been disabled
-
+import {
+  Input,
+  Space,
+  Table,
+  Collapse,
+  Form,
+  Popconfirm,
+  Select,
+  ConfigProvider,
+  Empty,
+  Pagination,
+} from "antd";
+import faIR from "antd/lib/locale/fa_IR";
+import { SearchOutlined } from "@ant-design/icons";
 import React, {
   useRef,
   useState,
@@ -48,8 +61,10 @@ import DeviceTable from "./DeviceTable";
 import DeviceEditeModal from "./deviceModals/DeviceEditeModal";
 import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
 import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
+import { NumericFormat } from "react-number-format";
+import { selectUnitsOption } from "../../slices/mainSlices";
 
-const DeviceList = ({ setPageTitle }) => {
+const DeviceList = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
@@ -58,9 +73,9 @@ const DeviceList = ({ setPageTitle }) => {
   const fetchIdRef = useRef(0);
   const sortIdRef = useRef(0);
 
-  useEffect(() => {
-    setPageTitle("لیست دستگاه ها");
-  }, [setPageTitle]);
+  //table
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const deviceList = useSelector(selectDeviceList);
   const deviceEditModal = useSelector(selectDeviceEditModal);
@@ -72,78 +87,395 @@ const DeviceList = ({ setPageTitle }) => {
     dispatch(handleDeviceList());
   }, [currentDevice]);
 
-  const columns = useMemo(() => [
+  const getColumnSearchProps = (dataIndex, placeholder) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={placeholder}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space className="d-flex justify-content-between">
+          <Button
+            variant="primary"
+            className="font10"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="sm"
+            style={{ width: 90 }}
+          >
+            جستجو
+          </Button>
+          <Button
+            variant="success "
+            className="font10"
+            size="sm"
+            onClick={() => {
+              clearFilters();
+              setSearchText("");
+              handleSearch(selectedKeys, confirm, "");
+              close();
+            }}
+            style={{ width: 80 }}
+          >
+            حذف فیلتر
+          </Button>
+          <Button
+            className="font10"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              close();
+            }}
+          >
+            بستن
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      const columnValue = record[dataIndex] ? record[dataIndex].toString() : "";
+      return columnValue.toLowerCase().includes(value.toLowerCase());
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          const input = document.querySelector(
+            ".ant-table-filter-dropdown input"
+          );
+          if (input) {
+            input.focus();
+          }
+        }, 0);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <span style={{ fontWeight: "bold" }}>{text}</span>
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const columns = [
     {
-      Header: "ردیف",
-      accessor: "idx",
-      sort: true,
+      key: "idx",
+      title: "ردیف",
+      dataIndex: "",
+      render: (text, record, index) => index + 1,
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 200,
     },
     {
-      Header: "IMEI دستگاه",
-      accessor: "imei",
-      sort: true,
+      key: "imei",
+      title: "IMEI دستگاه",
+      dataIndex: "deviceIMEI",
+      sorter: (a, b) => {
+        if (!a.deviceIMEI && !b.deviceIMEI) {
+          return 0;
+        }
+
+        if (!a.deviceIMEI) {
+          return 1;
+        }
+
+        if (!b.deviceIMEI) {
+          return -1;
+        }
+
+        return a.deviceIMEI.localeCompare(b.deviceIMEI);
+      },
+      ...getColumnSearchProps("deviceIMEI", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "شماره تلفن سیم کارت",
-      accessor: "deviceNumber",
-      sort: true,
+      key: "deviceNumber",
+      title: "شماره تلفن سیم کارت",
+      dataIndex: "simNumber",
+      sorter: (a, b) => {
+        if (!a.simNumber && !b.simNumber) {
+          return 0;
+        }
+
+        if (!a.simNumber) {
+          return 1;
+        }
+
+        if (!b.simNumber) {
+          return -1;
+        }
+
+        return a.simNumber.localeCompare(b.simNumber);
+      },
+      ...getColumnSearchProps("simNumber", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "نام راننده",
-      accessor: "driverName",
-      sort: true,
+      key: "driverName",
+      title: "نام راننده",
+      dataIndex: "driverName",
+      sorter: (a, b) => {
+        if (!a.driverName && !b.driverName) {
+          return 0;
+        }
+
+        if (!a.driverName) {
+          return 1;
+        }
+
+        if (!b.driverName) {
+          return -1;
+        }
+
+        return a.driverName.localeCompare(b.driverName);
+      },
+      ...getColumnSearchProps("driverName", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "تلفن راننده",
-      accessor: "driverNumber",
-      sort: true,
+      key: "driverNumber",
+      title: "تلفن راننده",
+      dataIndex: "driverPhoneNumber",
+      sorter: (a, b) => {
+        if (!a.driverPhoneNumber && !b.driverPhoneNumber) {
+          return 0;
+        }
+
+        if (!a.driverPhoneNumber) {
+          return 1;
+        }
+
+        if (!b.driverPhoneNumber) {
+          return -1;
+        }
+
+        return a.driverPhoneNumber.localeCompare(b.driverPhoneNumber);
+      },
+      ...getColumnSearchProps("driverPhoneNumber", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "پلاک",
-      accessor: "vehicleNumber",
-      sort: true,
+      key: "vehicleNumber",
+      title: "پلاک",
+      dataIndex: "plate",
+      sorter: (a, b) => {
+        if (!a.plate && !b.plate) {
+          return 0;
+        }
+
+        if (!a.plate) {
+          return 1;
+        }
+
+        if (!b.plate) {
+          return -1;
+        }
+
+        return a.plate.localeCompare(b.plate);
+      },
+      ...getColumnSearchProps("plate", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "دسته",
-      accessor: "vehicleCategory",
-      sort: false,
+      key: "group",
+      title: "دسته",
+      dataIndex: "group",
+      sorter: (a, b) => {
+        if (!a.group && !b.group) {
+          return 0;
+        }
+
+        if (!a.group) {
+          return 1;
+        }
+
+        if (!b.group) {
+          return -1;
+        }
+
+        return a.group.localeCompare(b.group);
+      },
+      ...getColumnSearchProps("group", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "مدل",
-      accessor: "vehicleType",
-      sort: false,
+      key: "model",
+      title: "مدل",
+      dataIndex: "model",
+      sorter: (a, b) => {
+        if (!a.model && !b.model) {
+          return 0;
+        }
+
+        if (!a.model) {
+          return 1;
+        }
+
+        if (!b.model) {
+          return -1;
+        }
+
+        return a.model?.name.localeCompare(b.model?.name);
+      },
+      render: (model) => model?.name,
+      ...getColumnSearchProps("model", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "شرکت سازنده",
-      accessor: "vehicleCompany",
-      sort: false,
+      key: "company",
+      title: "شرکت سازنده",
+      dataIndex: "company",
+      sorter: (a, b) => {
+        if (!a.company && !b.company) {
+          return 0;
+        }
+
+        if (!a.company) {
+          return 1;
+        }
+
+        if (!b.company) {
+          return -1;
+        }
+
+        return a.company.localeCompare(b.company);
+      },
+      ...getColumnSearchProps("company", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "کاربری",
-      accessor: "vehicleUsage",
-      sort: false,
+      key: "usage",
+      title: "کاربری",
+      dataIndex: "usage",
+      sorter: (a, b) => {
+        if (!a.usage && !b.usage) {
+          return 0;
+        }
+
+        if (!a.usage) {
+          return 1;
+        }
+
+        if (!b.usage) {
+          return -1;
+        }
+
+        return a.usage.localeCompare(b.usage);
+      },
+      ...getColumnSearchProps("usage", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "مسافت طی شده در ماه جاری",
-      accessor: "distance",
-      sort: false,
+      key: "distance",
+      title: "مسافت طی شده در ماه جاری",
+      dataIndex: "maxPMDistance",
+      sorter: (a, b) => {
+        if (!a.maxPMDistance && !b.maxPMDistance) {
+          return 0;
+        }
+
+        if (!a.maxPMDistance) {
+          return 1;
+        }
+
+        if (!b.maxPMDistance) {
+          return -1;
+        }
+
+        return a.maxPMDistance.localeCompare(b.maxPMDistance);
+      },
+      ...getColumnSearchProps("maxPMDistance", "جستجو..."),
+      width: 220,
     },
     {
-      Header: "میزان تقریبی سوخت در ماه جاری",
-      accessor: "gasUsage",
-      sort: false,
+      key: "gasUsage",
+      title: "میزان تقریبی سوخت در ماه جاری",
+      dataIndex: "gasUsage",
+      sorter: (a, b) => {
+        if (!a.gasUsage && !b.gasUsage) {
+          return 0;
+        }
+
+        if (!a.gasUsage) {
+          return 1;
+        }
+
+        if (!b.gasUsage) {
+          return -1;
+        }
+
+        return a.gasUsage.localeCompare(b.gasUsage);
+      },
+      ...getColumnSearchProps("gasUsage", "جستجو..."),
+      width: 220,
     },
     {
-      Header: "وضعیت",
-      accessor: "condition",
-      sort: false,
+      key: "conditions",
+      title: "وضعیت",
+      dataIndex: "conditions",
+      sorter: (a, b) => {
+        if (!a.conditions && !b.conditions) {
+          return 0;
+        }
+
+        if (!a.conditions) {
+          return 1;
+        }
+
+        if (!b.conditions) {
+          return -1;
+        }
+
+        return a.conditions.localeCompare(b.conditions);
+      },
+      ...getColumnSearchProps("conditions", "Search conditions"),
+      width: 100,
     },
     {
-      Header: "عملیات",
-      accessor: "opration",
-      sort: false,
+      key: "operation",
+      title: "عملیات",
+      dataIndex: "operation",
+      render: (_, record) => <span>{operation(record)}</span>,
+      width: 100,
     },
-  ]);
+  ];
+
+  const paginationConfig = {
+    position: ["bottomCenter"],
+    showTotal: (total) => (
+      <span className="font12">مجموع وسیله ها: {total}</span>
+    ),
+    pageSize: 10,
+    showSizeChanger: false,
+    pageSizeOptions: [],
+    size: "small",
+  };
 
   const operation = (request) => {
     return (
@@ -157,6 +489,7 @@ const DeviceList = ({ setPageTitle }) => {
             onClick={() => {
               dispatch(RsetDeviceEditModal(true));
               dispatch(RsetCurrentDevice(request));
+              console.log(request);
             }}
           >
             <FontAwesomeIcon icon={faPen} />
@@ -194,141 +527,54 @@ const DeviceList = ({ setPageTitle }) => {
     );
   };
 
-  const [value, setValue] = useState([]);
+  // handle the condition should be ok
 
-  const handleVehicleCondition = (request, i) => {
-    let now = moment();
-    let date = moment(
-      request.lastLocation === null ? "null" : moment(request.lastLocation.date)
-    );
+  // const handleVehicleCondition = (request, i) => {
+  //   let now = moment();
+  //   let date = moment(
+  //     request.lastLocation === null ? "null" : moment(request.lastLocation.date)
+  //   );
 
-    let gpsDate = now.diff(date, "hours");
-    if (gpsDate === NaN) {
-      console.log("null");
-    } else if (gpsDate !== NaN) {
-      if (0 <= gpsDate && gpsDate <= 24) {
-        return (
-          <div className="bg-success text-center text-white rounded-pill px-1">
-            {now.diff(date, "hours")}
-          </div>
-        );
-      } else if (24 < gpsDate && gpsDate <= 168) {
-        return (
-          <div
-            className="text-center text-black rounded-pill px-1 "
-            style={{ background: "#fad757" }}
-          >
-            {now.diff(date, "hours")}
-          </div>
-        );
-      } else if (168 < gpsDate && gpsDate <= 720) {
-        return (
-          <div
-            className="text-center text-black rounded-pill px-1 "
-            style={{ background: "#ffbc05" }}
-          >
-            {now.diff(date, "hours")}
-          </div>
-        );
-      } else if (720 < gpsDate) {
-        return (
-          <div
-            className="text-center text-black rounded-pill px-1 "
-            style={{ background: "#ff0505" }}
-          >
-            {now.diff(date, "hours")}
-          </div>
-        );
-      }
-    }
-  };
-
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        const cate = requests[i].groups?.map((item) => {
-          return item.name;
-        });
-        var tableItem = {
-          idx: i,
-          imei: requests[i].deviceIMEI,
-          deviceNumber: requests[i].simNumber,
-          driverName: requests[i].driverName,
-          driverNumber: requests[i].driverPhoneNumber,
-          vehicleNumber: requests[i].plate,
-          vehicleType: requests[i].model.name,
-          vehicleCategory: requests[i].groups.length === 0 ? "" : cate.flat(),
-          vehicleCompany: requests[i].vehicleName,
-          vehicleUsage: requests[i].usage,
-          gasUsage: requests[i].fuel,
-          distance: requests[i].maxPMDistance,
-          condition: handleVehicleCondition(requests[i], i),
-          opration: operation(requests[i]),
-        };
-        tableItems.push(tableItem);
-      }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-      setload(false);
-    }
-  }, []);
-  const handleSort = useCallback(
-    ({ sortBy, pageIndex, pageSize, requests }) => {
-      var tableItems = [];
-      if (requests.length !== 0) {
-        for (var i = 0; i < requests.length; i++) {
-          const cate = requests[i].groups?.map((item) => {
-            return item.name;
-          });
-          var tableItem = {
-            imei: requests[i].deviceIMEI,
-            idx: i,
-            deviceNumber: requests[i].simNumber,
-            driverName: requests[i].driverName,
-            driverNumber: requests[i].driverPhoneNumber,
-            vehicleNumber: requests[i].plate,
-
-            vehicleCategory: requests[i].groups.length === 0 ? "" : cate.flat(),
-
-            vehicleType: requests[i].model.name,
-            vehicleCompany: requests[i].vehicleName,
-            vehicleUsage: requests[i].usage,
-            gasUsage: requests[i].fuel,
-            distance: requests[i].maxPMDistance,
-            condition: handleVehicleCondition(requests[i]),
-            opration: operation(requests[i]),
-          };
-          tableItems.push(tableItem);
-        }
-      }
-      const sortId = ++sortIdRef.current;
-      setload(true);
-      if (sortId === sortIdRef.current) {
-        let sorted = tableItems.slice();
-        sorted.sort((a, b) => {
-          for (let i = 0; i < sortBy.length; ++i) {
-            if (a[sortBy[i].id] > b[sortBy[i].id])
-              return sortBy[i].desc ? -1 : 1;
-            if (a[sortBy[i].id] < b[sortBy[i].id])
-              return sortBy[i].desc ? 1 : -1;
-          }
-          return 0;
-        });
-        const startRow = pageSize * pageIndex;
-        const endRow = startRow + pageSize;
-        setData(sorted.slice(startRow, endRow));
-        setload(false);
-      }
-    },
-    []
-  );
+  //   let gpsDate = now.diff(date, "hours");
+  //   if (gpsDate === NaN) {
+  //     console.log("null");
+  //   } else if (gpsDate !== NaN) {
+  //     if (0 <= gpsDate && gpsDate <= 24) {
+  //       return (
+  //         <div className="bg-success text-center text-white rounded-pill px-1">
+  //           {now.diff(date, "hours")}
+  //         </div>
+  //       );
+  //     } else if (24 < gpsDate && gpsDate <= 168) {
+  //       return (
+  //         <div
+  //           className="text-center text-black rounded-pill px-1 "
+  //           style={{ background: "#fad757" }}
+  //         >
+  //           {now.diff(date, "hours")}
+  //         </div>
+  //       );
+  //     } else if (168 < gpsDate && gpsDate <= 720) {
+  //       return (
+  //         <div
+  //           className="text-center text-black rounded-pill px-1 "
+  //           style={{ background: "#ffbc05" }}
+  //         >
+  //           {now.diff(date, "hours")}
+  //         </div>
+  //       );
+  //     } else if (720 < gpsDate) {
+  //       return (
+  //         <div
+  //           className="text-center text-black rounded-pill px-1 "
+  //           style={{ background: "#ff0505" }}
+  //         >
+  //           {now.diff(date, "hours")}
+  //         </div>
+  //       );
+  //     }
+  //   }
+  // };
 
   return (
     <Container fluid className="py-3">
@@ -366,7 +612,8 @@ const DeviceList = ({ setPageTitle }) => {
                 مجموع وسیله ها : {deviceList.length}
               </div>
               <Fragment>
-                <DeviceTable
+                <div className="position-relative table-responsive">
+                  {/* <DeviceTable
                   requests={deviceList}
                   columns={columns}
                   data={data}
@@ -374,7 +621,30 @@ const DeviceList = ({ setPageTitle }) => {
                   fetchData={fetchData}
                   loading={load}
                   pageCount={pageCount}
-                />
+                /> */}
+                  <ConfigProvider
+                    locale={faIR}
+                    // theme={{
+                    //   token: {
+                    //     colorPrimary: "#00b96b",
+                    //     colorBgContainer: "#f6ffed",
+                    //   },
+                    // }}
+                  >
+                    <Table
+                      locale={{
+                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                      }}
+                      className="list"
+                      bordered
+                      dataSource={deviceList}
+                      columns={columns}
+                      pagination={paginationConfig}
+                      scroll={{ x: "max-content" }}
+                      size="middle"
+                    />
+                  </ConfigProvider>
+                </div>
                 {deviceEditModal && <DeviceEditeModal />}
                 {deviceAdjusmentModal && <DeviceAdjustmentModal />}
                 {deviceLocationsModal && <DeviceLocationsModal />}

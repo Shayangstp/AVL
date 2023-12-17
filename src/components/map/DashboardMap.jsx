@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactDOM } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -6,17 +7,70 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useSelector } from "react-redux";
 import { selectDeviceCordinate } from "../../slices/deviceSlices";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
+// import { library, icon } from "@fortawesome/fontawesome-svg-core";
 import { selectAllGpses } from "../../slices/mainSlices";
 import { Button } from "react-bootstrap";
 import { AwesomeMarkers } from "leaflet.awesome-markers";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.js";
 
-const DashboardMap = ({ height, width }) => {
-  const allGpses = useSelector(selectAllGpses);
+const allGpses = [
+  {
+    lastLocation: {
+      IMEI: "imei",
+      lat: 31,
+      lng: 51,
+    },
+    group: { color: "#f70505" },
+    deviceInfo: {
+      vehicleName: "vehicleName",
+      driverName: "driverName",
+      driverPhoneNumber: "driverPhoneNumber",
+      plate: "plate",
+      model: { name: "modelName" },
+      simNumber: "simNumber",
+    },
+  },
+  {
+    lastLocation: {
+      IMEI: "imei",
+      lat: 32.5,
+      lng: 51,
+    },
+    group: { color: "#f7a705" },
+    deviceInfo: {
+      vehicleName: "vehicleName",
+      driverName: "driverName",
+      driverPhoneNumber: "driverPhoneNumber",
+      plate: "plate",
+      model: { name: "modelName" },
+      simNumber: "simNumber",
+    },
+  },
+  {
+    lastLocation: {
+      IMEI: "imei",
+      lat: 33.5,
+      lng: 51,
+    },
+    group: { color: "#1105f7" },
+    deviceInfo: {
+      vehicleName: "vehicleName",
+      driverName: "driverName",
+      driverPhoneNumber: "driverPhoneNumber",
+      plate: "plate",
+      model: { name: "modelName" },
+      simNumber: "simNumber",
+    },
+  },
+];
 
-  console.log(allGpses);
+const DashboardMap = ({ height, width }) => {
+  // const allGpses = useSelector(selectAllGpses);
+
+  // console.log(allGpses);
 
   const allCordinates = allGpses.map((item, i) => {
     return item.lastLocation;
@@ -24,59 +78,20 @@ const DashboardMap = ({ height, width }) => {
 
   console.log(allCordinates);
 
-  // const colorIcons = allGpses.map((marker) => {
-  //   return marker.group?.color;
-  // });
-  const markerIconStyle = `
-  .custom-marker-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fff;
-    border-radius: 50%;
-    border: 2px solid #000;
-  }
-`;
-
-  const colorpicker = (color) => {
-    const hexToRgb = (hex) => {
-      // Remove the '#' character if present
-      console.log(hex);
-      hex = hex === undefined ? "fff" : hex.replace("#", "");
-      console.log(hex);
-      const bigint = parseInt(hex, 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return `rgb(${r}, ${g}, ${b})`;
-    };
-
-    return L.divIcon({
-      className: "custom-marker-icon",
-      iconSize: [30, 30],
-      html: `<i class="fa fa-map-marker" style="color:${hexToRgb(
-        color
-      )}; 
-      display: flex;
-      width:100px;
-      height:100%;
-      justify-content: center;
-      align-items: center;
-      background-color:${hexToRgb(color)};
-      border-radius: 50%;"></i>`,
+  const colorPicker = (color) => {
+    const icon = L.divIcon({
+      className: "my-custom-pin",
+      iconAnchor: [0, 24],
+      labelAnchor: [-6, 0],
+      popupAnchor: [0, -36],
+      html: `<i class="fa-solid fa-location-dot fa-2x" style="color: ${color};"></i>`,
     });
+
+    return icon;
   };
-
-  let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-  });
-
-  L.Marker.prototype.options.icon = DefaultIcon;
 
   return (
     <>
-      <style>{markerIconStyle}</style>
       <MapContainer
         center={[35.7219, 51.3347]}
         zoom={5}
@@ -86,9 +101,10 @@ const DashboardMap = ({ height, width }) => {
 
         {allGpses.map((marker, idx) => (
           <Marker
+            className="inner-circle"
             key={idx}
             position={marker.lastLocation}
-            icon={colorpicker(marker.group.color)}
+            icon={colorPicker(marker.group.color)}
           >
             <Popup>
               <Button size="sm" className="font10">

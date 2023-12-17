@@ -9,24 +9,75 @@
   font-display: swap;
 }
 
-.pin {
-  width: 100px ;
-  height: 100px ;
-  background-color: #a55eea ;
-  border-radius: 60px 60px 0px 60px ;
-  position:relative ;
-  transform: rotate(45deg);
+.list table {
+  min-width: 100% !important;
+  width: max-content !important;
 }
-.pin::after {
-  content: "" ;
-  width: 50px ;
-  height: 50px ;
-  background: #222 ;
-  position: absolute ;
-  left: 26% ;
-  top: 26% ;
-  border-radius: 60px ;
+
+.list ul.ant-pagination {
+  direction: ltr !important;
 }
+
+.list thead.ant-table-thead tr td,
+.list thead.ant-table-thead tr th {
+  background-color: #6c757d !important;
+  color: #fff !important;
+  padding: 6px !important;
+  font-size: 10px;
+}
+
+.list thead.ant-table-thead tr td span,
+.list thead.ant-table-thead tr th span {
+  font-size: 12px !important;
+  margin-inline: 0px !important;
+}
+/* 
+.warehouseReqsList .warehouseItemsList thead.ant-table-thead tr td,
+.warehouseReqsList .warehouseItemsList thead.ant-table-thead tr th {
+  background-color: #9fa8b0 !important;
+  color: #000 !important;
+  padding: 3px !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
+} */
+
+.list tbody.ant-table-tbody tr td {
+  padding: 6px !important;
+  font-size: 12px !important;
+}
+
+.list .ant-collapse-header {
+  padding: 5px !important;
+  align-items: center !important;
+}
+
+.list .ant-collapse-header .ant-collapse-header-text,
+.list .ant-collapse-header .ant-collapse-expand-icon {
+  font-size: 12px !important;
+}
+
+.tableScroll .ant-table-body {
+  overflow: auto !important;
+}
+
+.tableScroll .ant-table-body::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.tableScroll .ant-table-body::-webkit-scrollbar-track {
+  background-color: #f1f1f1 !important;
+}
+
+.tableScroll .ant-table-body::-webkit-scrollbar-thumb {
+  background-color: #888 !important;
+}
+
+.tableScroll .ant-table-body::-webkit-scrollbar-thumb:hover {
+  background-color: #555 !important;
+}
+/* .warehouseReqsList .warehouseItemsList {
+  margin: 30px !important;
+} */
 
 body * {
   font-family: iranSans;
@@ -46,7 +97,7 @@ body * {
   width: 50px;
 }
 
-.lightGray-bg{
+.lightGray-bg {
   background: rgb(240, 239, 239);
 }
 .form-control[readonly] {

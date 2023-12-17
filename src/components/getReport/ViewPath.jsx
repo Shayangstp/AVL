@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ViewPathList from "./viewPathList/ViewPathList";
 import MapHeat from "../map/MapHeat";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
@@ -8,6 +8,7 @@ import {
   DateRangePicker,
   DateTimeRangePicker,
 } from "react-advance-jalaali-datepicker";
+import Select from "react-select";
 import { convertUnixTimeStampToDate } from "../common/ConvertUnixStamp";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,6 +18,8 @@ import {
   selectGetReportToDate,
   handleViewPath,
   selectGetReportSelectedItems,
+  selectGetReportGroupList,
+  handleGroupList,
 } from "../../slices/getReportSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 
@@ -31,6 +34,10 @@ const ViewPath = () => {
   const toDateIsValid = toDate !== null;
   const selectedItemsIsValid = selectedItems.length > 0;
   const formIsValid = fromDateIsValid && toDateIsValid && selectedItemsIsValid;
+
+  useEffect(() => {
+    dispatch(handleGroupList());
+  }, []);
 
   const validation = () => {
     let errors = {};
@@ -73,6 +80,7 @@ const ViewPath = () => {
       />
     );
   };
+
   return (
     <Container fluid className="p-5 my-2">
       <div className="lightGray-bg borderRadius-15 border border-white border-2 shadow p-4">
@@ -80,7 +88,7 @@ const ViewPath = () => {
         <h6 className="mt-3">در این قسمت مشاهده مسیر دستگاه ها انجام می شود</h6>
         <div className="mt-5">
           <Form className="d-flex flex-column flex-md-row">
-            <Form.Group className="me-md-2 me-0 mb-3 mb-md-0">
+            <Form.Group as={Col} md="2" className="me-md-2 me-0 mb-3 mb-md-0">
               <Form.Label>از تاریخ</Form.Label>
               <DatePicker
                 inputComponent={DatePickerInput}
@@ -94,7 +102,7 @@ const ViewPath = () => {
                 id="datePicker"
               />
             </Form.Group>
-            <Form.Group className="">
+            <Form.Group as={Col} md="2" className="me-md-2 me-0">
               <Form.Label>تا تاریخ</Form.Label>
               <DatePicker
                 inputComponent={DatePickerInput}
@@ -105,6 +113,34 @@ const ViewPath = () => {
                 }}
                 value={toDate}
                 id="datePicker"
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="me-md-2 me-0">
+              <Form.Label>نام دسته</Form.Label>
+              <Select
+                // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                // value={deviceType}
+                name="deviceType"
+                // onChange={(e) => {
+                //   dispatch(RsetDeviceType(e));
+                // }}
+                placeholder="انتخاب..."
+                // options={deviceTypeOptions}
+                isSearchable={true}
+              />
+            </Form.Group>
+            <Form.Group as={Col} md="3" className="">
+              <Form.Label>انتخاب وسیله نقلیه</Form.Label>
+              <Select
+                // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                // value={deviceType}
+                name="deviceType"
+                // onChange={(e) => {
+                //   dispatch(RsetDeviceType(e));
+                // }}
+                placeholder="انتخاب..."
+                // options={deviceTypeOptions}
+                isSearchable={true}
               />
             </Form.Group>
             <Form.Group>

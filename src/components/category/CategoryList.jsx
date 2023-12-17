@@ -2,30 +2,26 @@ import React, {
   useRef,
   useState,
   useEffect,
-  useMemo,
   useCallback,
   Fragment,
 } from "react";
+import { Input, Space, Table, ConfigProvider, Empty } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import faIR from "antd/lib/locale/fa_IR";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowsRotate,
-  faBan,
-  faClockRotateLeft,
-  faFilter,
   faPen,
   faPlus,
   faCar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Redirect, Link } from "react-router-dom";
 import {
   handleCategoryList,
   selectCategorylist,
   RsetCategoryCurrentRequest,
 } from "../../slices/categorySlices";
-import CategoryTable from "./CategoryTable";
 import {
   RsetCategoryEditModal,
   selectCategoryEditModal,
@@ -84,13 +80,12 @@ const dataList = [
   },
 ];
 
-const CategoryList = ({ setPageTitle }) => {
+const CategoryList = () => {
   const dispatch = useDispatch();
-  const [data, setData] = useState([]);
-  const [load, setload] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = useRef(0);
-  const sortIdRef = useRef(0);
+
+  //table
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const categoryList = useSelector(selectCategorylist);
   const categoryEditModal = useSelector(selectCategoryEditModal);
@@ -107,45 +102,203 @@ const CategoryList = ({ setPageTitle }) => {
 
   console.log(categoryList);
 
-  useEffect(() => {
-    setPageTitle("لیست درخواست نرم افزار");
-  }, [setPageTitle]);
+  const getColumnSearchProps = (dataIndex, placeholder) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={placeholder}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space className="d-flex justify-content-between">
+          <Button
+            variant="primary"
+            className="font10"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="sm"
+            style={{ width: 90 }}
+          >
+            جستجو
+          </Button>
+          <Button
+            variant="success "
+            className="font10"
+            size="sm"
+            onClick={() => {
+              clearFilters();
+              setSearchText("");
+              handleSearch(selectedKeys, confirm, "");
+              close();
+            }}
+            style={{ width: 80 }}
+          >
+            حذف فیلتر
+          </Button>
+          <Button
+            className="font10"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              close();
+            }}
+          >
+            بستن
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      const columnValue = record[dataIndex] ? record[dataIndex].toString() : "";
+      return columnValue.toLowerCase().includes(value.toLowerCase());
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          const input = document.querySelector(
+            ".ant-table-filter-dropdown input"
+          );
+          if (input) {
+            input.focus();
+          }
+        }, 0);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <span style={{ fontWeight: "bold" }}>{text}</span>
+      ) : (
+        text
+      ),
+  });
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
 
-  const columns = useMemo(() => [
+  const columns = [
     {
-      Header: "شماره",
-      accessor: "idx",
-      sort: true,
+      key: "idx",
+      title: "ردیف",
+      dataIndex: "",
+      render: (text, record, index) => handleBackgroundColor(index, record),
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 200,
     },
     {
-      Header: "نام گروه",
-      accessor: "groupName",
-      sort: true,
+      key: "name",
+      title: "نام گروه",
+      dataIndex: "name",
+      sorter: (a, b) => {
+        if (!a.name && !b.name) {
+          return 0;
+        }
+
+        if (!a.name) {
+          return 1;
+        }
+
+        if (!b.name) {
+          return -1;
+        }
+
+        return a.name.localeCompare(b.name);
+      },
+      ...getColumnSearchProps("name", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "توضیحات",
-      accessor: "description",
-      sort: true,
+      key: "desc",
+      title: "توضیحات",
+      dataIndex: "desc",
+      sorter: (a, b) => {
+        if (!a.desc && !b.desc) {
+          return 0;
+        }
+
+        if (!a.desc) {
+          return 1;
+        }
+
+        if (!b.desc) {
+          return -1;
+        }
+
+        return a.desc.localeCompare(b.desc);
+      },
+      ...getColumnSearchProps("desc", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "تعداد وسیله نقلیه",
-      accessor: "vehicleNumber",
-      sort: true,
+      key: "devices",
+      title: "تعداد وسیله نقلیه",
+      dataIndex: "devices",
+      sorter: (a, b) => {
+        if (!a.driverName && !b.driverName) {
+          return 0;
+        }
+
+        if (!a.driverName) {
+          return 1;
+        }
+
+        if (!b.driverName) {
+          return -1;
+        }
+
+        return a.devices?.length.localeCompare(b.devices?.length);
+      },
+      render: (devices) => devices?.length,
+      ...getColumnSearchProps("devices", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "عملیات",
-      accessor: "oprations",
-      sort: true,
+      key: "operation",
+      title: "عملیات",
+      dataIndex: "operation",
+      render: (_, record) => <span>{operation(record)}</span>,
+      width: 100,
     },
-  ]);
+  ];
+
+  const paginationConfig = {
+    position: ["bottomCenter"],
+    showTotal: (total) => (
+      <span className="font12">مجموع وسیله ها: {total}</span>
+    ),
+    pageSize: 10,
+    showSizeChanger: false,
+    pageSizeOptions: [],
+    size: "small",
+  };
 
   const operation = (request) => {
-    // if (localStorage.getItem("token")) {
     return (
       <div className="d-flex justify-content-between flex-wrap">
         <Button
           title="ویرایش"
-          className="btn btn-primary d-flex align-items-center me-2 mb-2 mb-md-0"
+          className="btn btn-primary d-flex align-items-center me-2 mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -157,7 +310,7 @@ const CategoryList = ({ setPageTitle }) => {
         </Button>
         <Button
           title="افزودن وسیله نقلیه"
-          className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-0"
+          className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -169,7 +322,7 @@ const CategoryList = ({ setPageTitle }) => {
         </Button>
         <Button
           title="مدیریت وسیله نقلیه"
-          className="btn btn-danger d-flex align-items-center mb-2 mb-md-0"
+          className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -180,7 +333,7 @@ const CategoryList = ({ setPageTitle }) => {
         </Button>
         <Button
           title="کاربر های مشابه"
-          className="btn btn-info d-flex align-items-center mb-2 mb-md-0"
+          className="btn btn-info d-flex align-items-center me-2 mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -191,17 +344,17 @@ const CategoryList = ({ setPageTitle }) => {
         </Button>
       </div>
     );
-    // } else {
-    // }
   };
 
-  const handleBackgroundColor = (i, color) => {
+  //data should be ok in this color handling function
+
+  const handleBackgroundColor = (i, request) => {
     return (
       <div className="d-flex justify-content-center rounded-circle">
         <div
           className="rounded-circle d-flex align-items-center justify-content-center"
           style={{
-            background: `${color && color}`,
+            background: `${request.color && request.color}`,
             width: "30px",
             height: "30px",
           }}
@@ -211,70 +364,6 @@ const CategoryList = ({ setPageTitle }) => {
       </div>
     );
   };
-
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        var tableItem = {
-          idx: handleBackgroundColor(i, requests[i].color),
-          groupName: requests[i].name,
-          description: requests[i].desc,
-          vehicleNumber: requests[i].devices.length,
-          oprations: operation(requests[i]),
-        };
-        tableItems.push(tableItem);
-      }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-      setload(false);
-    }
-  }, []);
-  const handleSort = useCallback(
-    ({ sortBy, pageIndex, pageSize, requests }) => {
-      var tableItems = [];
-      // let colors = requests.map((request) => {
-      //   return request.color.value;
-      // });
-      if (requests.length !== 0) {
-        for (var i = 0; i < requests.length; i++) {
-          var tableItem = {
-            idx: handleBackgroundColor(i, requests[i].color),
-            groupName: requests[i].name,
-            description: requests[i].desc,
-            vehicleNumber: requests[i].devices.length,
-            oprations: operation(requests[i]),
-          };
-          tableItems.push(tableItem);
-        }
-      }
-      const sortId = ++sortIdRef.current;
-      setload(true);
-      if (sortId === sortIdRef.current) {
-        let sorted = tableItems.slice();
-        sorted.sort((a, b) => {
-          for (let i = 0; i < sortBy.length; ++i) {
-            if (a[sortBy[i].id] > b[sortBy[i].id])
-              return sortBy[i].desc ? -1 : 1;
-            if (a[sortBy[i].id] < b[sortBy[i].id])
-              return sortBy[i].desc ? 1 : -1;
-          }
-          return 0;
-        });
-        const startRow = pageSize * pageIndex;
-        const endRow = startRow + pageSize;
-        setData(sorted.slice(startRow, endRow));
-        setload(false);
-      }
-    },
-    []
-  );
 
   return (
     <Container fluid className="py-4">
@@ -303,19 +392,28 @@ const CategoryList = ({ setPageTitle }) => {
               <Fragment>
                 {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <CategoryTable
-                    requests={categoryList}
-                    // requests={dataList}
-                    // notVisited={notVisited}
-                    columns={columns}
-                    data={data}
-                    onSort={handleSort}
-                    fetchData={fetchData}
-                    loading={load}
-                    pageCount={pageCount}
-                    // handleNotVisited={handleNotVisited}
-                  />
-                  {/* {userInfoModal && <UserInfoModal />} */}
+                  <ConfigProvider
+                    locale={faIR}
+                    // theme={{
+                    //   token: {
+                    //     colorPrimary: "#00b96b",
+                    //     colorBgContainer: "#f6ffed",
+                    //   },
+                    // }}
+                  >
+                    <Table
+                      locale={{
+                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                      }}
+                      className="list"
+                      bordered
+                      dataSource={categoryList}
+                      columns={columns}
+                      pagination={paginationConfig}
+                      scroll={{ x: "max-content" }}
+                      size="middle"
+                    />
+                  </ConfigProvider>
                 </Fragment>
                 {/* ) : null} */}
               </Fragment>

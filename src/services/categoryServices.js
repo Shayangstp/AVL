@@ -13,6 +13,7 @@ export const getCategoryList = (token) => {
     }
   );
 };
+
 export const putCategoryEdit = (values, token) => {
   return http.put(
     `${config.R}/api/v1/devicegroup`,

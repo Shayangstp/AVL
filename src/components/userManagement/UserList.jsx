@@ -1,18 +1,12 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, Fragment } from "react";
+import { Input, Space, Table, ConfigProvider, Empty } from "antd";
+import faIR from "antd/lib/locale/fa_IR";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowsRotate,
-  faClockRotateLeft,
-  faEye,
   faFilter,
   faStamp,
   faPen,
@@ -38,20 +32,15 @@ import UserManagmentEditModal from "./modals/UserManagmentEditModal";
 import UserManagmentChangePasswordModal from "./modals/UserManagmentChangePasswordModal";
 import UserManagmentRoleModal from "./modals/UserManagmentRoleModal";
 
-import UserTable from "./UserTable";
 import { getUserLocked, getUserUnLocked } from "../../services/userServices";
-import { useNavigate } from "react-router-dom";
 import { successMessage } from "../../utils/msg";
 
-const UserList = ({ setPageTitle }) => {
+const UserList = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [checkboxes, setCheckboxes] = useState([]);
-  const [data, setData] = useState([]);
-  const [load, setload] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = useRef(0);
-  const sortIdRef = useRef(0);
+
+  //table
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const userLists = useSelector(selectUserLists);
   const userManagmentEditModal = useSelector(selectUserManagmentEditModal);
@@ -62,71 +51,204 @@ const UserList = ({ setPageTitle }) => {
   const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
-    setPageTitle("لیست کاربران");
-  }, [setPageTitle]);
-
-  useEffect(() => {
     dispatch(handleUserLists());
   }, [currentUser]);
 
-  console.log(currentUser);
-  const columns = useMemo(() => [
+  const getColumnSearchProps = (dataIndex, placeholder) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={placeholder}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space className="d-flex justify-content-between">
+          <Button
+            variant="primary"
+            className="font10"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="sm"
+            style={{ width: 90 }}
+          >
+            جستجو
+          </Button>
+          <Button
+            variant="success "
+            className="font10"
+            size="sm"
+            onClick={() => {
+              clearFilters();
+              setSearchText("");
+              handleSearch(selectedKeys, confirm, "");
+              close();
+            }}
+            style={{ width: 80 }}
+          >
+            حذف فیلتر
+          </Button>
+          <Button
+            className="font10"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              close();
+            }}
+          >
+            بستن
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => {
+      const columnValue = record[dataIndex] ? record[dataIndex].toString() : "";
+      return columnValue.toLowerCase().includes(value.toLowerCase());
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => {
+          const input = document.querySelector(
+            ".ant-table-filter-dropdown input"
+          );
+          if (input) {
+            input.focus();
+          }
+        }, 0);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <span style={{ fontWeight: "bold" }}>{text}</span>
+      ) : (
+        text
+      ),
+  });
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const columns = [
     {
-      Header: "نام کاربری",
-      accessor: "userName",
-      sort: true,
+      key: "idx",
+      title: "ردیف",
+      dataIndex: "",
+      render: (text, record, index) => index + 1,
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 200,
     },
     {
-      Header: "نام",
-      accessor: "firstName",
-      sort: true,
+      key: "username",
+      title: "نام کاربری",
+      dataIndex: "username",
+      sorter: (a, b) => {
+        if (!a.username && !b.username) {
+          return 0;
+        }
+
+        if (!a.username) {
+          return 1;
+        }
+
+        if (!b.username) {
+          return -1;
+        }
+
+        return a.username.localeCompare(b.username);
+      },
+      ...getColumnSearchProps("username", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "نام خانوادگی",
-      accessor: "lastName",
-      sort: true,
+      key: "username",
+      title: "نام",
+      dataIndex: "username",
+      sorter: (a, b) => {
+        if (!a.username && !b.username) {
+          return 0;
+        }
+
+        if (!a.username) {
+          return 1;
+        }
+
+        if (!b.username) {
+          return -1;
+        }
+
+        return a.username.localeCompare(b.username);
+      },
+      ...getColumnSearchProps("username", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "موبایل",
-      accessor: "phoneNumber",
-      sort: true,
+      key: "username",
+      title: "نام خانوادگی",
+      dataIndex: "username",
+      sorter: (a, b) => {
+        if (!a.username && !b.username) {
+          return 0;
+        }
+
+        if (!a.username) {
+          return 1;
+        }
+
+        if (!b.username) {
+          return -1;
+        }
+
+        return a.username.localeCompare(b.username);
+      },
+      ...getColumnSearchProps("username", "جستجو..."),
+      width: 200,
     },
     {
-      Header: "ایمیل",
-      accessor: "email",
-      sort: true,
+      key: "operation",
+      title: "فعال / غیرفعال",
+      dataIndex: "operation",
+      render: (_, record) => <span>{activeDeactive(record)}</span>,
+      width: 100,
     },
     {
-      Header: "جنسیت",
-      accessor: "gender",
-      sort: false,
+      key: "operation",
+      title: "عملیات",
+      dataIndex: "operation",
+      render: (_, record) => <span>{operation(record)}</span>,
+      width: 100,
     },
-    {
-      Header: "رول ها",
-      accessor: "roles",
-      sort: false,
-    },
-    {
-      Header: "فعال/غیرفعال",
-      accessor: "activeDeActive",
-      sort: false,
-    },
-    {
-      Header: " عملیات ها",
-      accessor: "oprations",
-      sort: false,
-    },
-  ]);
+  ];
 
   //handle active or deactive
-  const activeDeactive = (request, requests) => {
+  const activeDeactive = (request) => {
     const token = localStorage.getItem("token");
     return (
       <Form.Check
         type="switch"
         checked={request.islockedout}
         onChange={async (e) => {
-          const reqs = [...requests];
+          const reqs = [...userLists];
           const index = reqs.findIndex((item) => item._id === request._id);
           const item = { ...reqs[index] };
           item.islockedout = e.target.checked;
@@ -150,6 +272,17 @@ const UserList = ({ setPageTitle }) => {
         }}
       />
     );
+  };
+
+  const paginationConfig = {
+    position: ["bottomCenter"],
+    showTotal: (total) => (
+      <span className="font12">مجموع کاربران : {total}</span>
+    ),
+    pageSize: 10,
+    showSizeChanger: false,
+    pageSizeOptions: [],
+    size: "small",
   };
 
   const operation = (request) => {
@@ -201,147 +334,47 @@ const UserList = ({ setPageTitle }) => {
     );
   };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, requests }) => {
-    var tableItems = [];
-
-    if (requests.length !== 0) {
-      for (var i = 0; i < requests.length; i++) {
-        const roles = requests.flatMap((obj) => obj.roles.map((role) => role));
-        var tableItem = {
-          userName: requests[i].username,
-          firstName: requests[i].username,
-          lastName: requests[i].username,
-          phoneNumber: requests[i].mobileNumber,
-          email: requests[i].email,
-          gender: requests[i].gender,
-          roles: roles[i].rolename,
-          activeDeActive: activeDeactive(requests[i], requests),
-          oprations: operation(requests[i]),
-        };
-        tableItems.push(tableItem);
-      }
-    }
-    const fetchId = ++fetchIdRef.current;
-    setload(true);
-    if (fetchId === fetchIdRef.current) {
-      const startRow = pageSize * pageIndex;
-      const endRow = startRow + pageSize;
-
-      setData(tableItems.slice(startRow, endRow));
-      setPageCount(Math.ceil(tableItems.length / pageSize));
-
-      setload(false);
-    }
-  }, []);
-  const handleSort = useCallback(
-    ({ sortBy, pageIndex, pageSize, requests }) => {
-      var tableItems = [];
-      if (requests.length !== 0) {
-        for (var i = 0; i < requests.length; i++) {
-          const roles = requests.flatMap((obj) =>
-            obj.roles.map((role) => role)
-          );
-          var tableItem = {
-            userName: requests[i].username,
-            firstName: requests[i].username,
-            lastName: requests[i].username,
-            phoneNumber: requests[i].mobileNumber,
-            email: requests[i].email,
-            gender: requests[i].gender,
-            roles: roles[i].rolename,
-            activeDeActive: activeDeactive(requests[i], requests),
-            oprations: operation(requests[i]),
-          };
-          tableItems.push(tableItem);
-        }
-      }
-      const sortId = ++sortIdRef.current;
-      setload(true);
-      if (sortId === sortIdRef.current) {
-        let sorted = tableItems.slice();
-        sorted.sort((a, b) => {
-          for (let i = 0; i < sortBy.length; ++i) {
-            if (a[sortBy[i].id] > b[sortBy[i].id])
-              return sortBy[i].desc ? -1 : 1;
-            if (a[sortBy[i].id] < b[sortBy[i].id])
-              return sortBy[i].desc ? 1 : -1;
-          }
-          return 0;
-        });
-        const startRow = pageSize * pageIndex;
-        const endRow = startRow + pageSize;
-        setData(sorted.slice(startRow, endRow));
-
-        setload(false);
-      }
-    },
-    []
-  );
-
   return (
     <Container fluid className="py-4">
       <Fragment>
-        {/* {showFilter ? <SoftwareReqFilter /> : null} */}
         <section className="position-relative">
           <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow ">
-            <div className="d-flex align-items-center justify-content-between">
-              <div>
-                <Link to="/SoftwareReqRegistration">
-                  {/* <Button size="sm" variant="success" className="mb-2 font12">
-                    <FontAwesomeIcon icon={faPlus} className="me-2" />
-                    افزودن درخواست جدید
-                  </Button> */}
-                </Link>
-                <Button
-                  size="sm"
-                  variant="warning"
-                  className="mb-2 ms-2 font12"
-                  onClick={() => {
-                    // dispatch(RsetShowFilter(!showFilter));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFilter} className="me-2" />
-                  فیلتر
-                </Button>
-              </div>
-              <Button
-                size="sm"
-                variant="primary"
-                className="mb-2 font12"
-                onClick={() => {}}
-              >
-                <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                به روزرسانی
-              </Button>
-            </div>
+            <div className="d-flex align-items-center justify-content-between"></div>
             <div className="position-relative">
-              {/* {loading ? <Loading /> : null} */}
               <Fragment>
-                {/* {reqsList !== undefined ? ( */}
                 <Fragment>
-                  <UserTable
-                    requests={userLists}
-                    columns={columns}
-                    data={data}
-                    onSort={handleSort}
-                    fetchData={fetchData}
-                    loading={load}
-                    pageCount={pageCount}
-                  />
+                  <ConfigProvider
+                    locale={faIR}
+                    // theme={{
+                    //   token: {
+                    //     colorPrimary: "#00b96b",
+                    //     colorBgContainer: "#f6ffed",
+                    //   },
+                    // }}
+                  >
+                    <Table
+                      locale={{
+                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                      }}
+                      className="list"
+                      bordered
+                      dataSource={userLists}
+                      columns={columns}
+                      pagination={paginationConfig}
+                      scroll={{ x: "max-content" }}
+                      size="middle"
+                    />
+                  </ConfigProvider>
                   {userManagmentEditModal && <UserManagmentEditModal />}
                   {userManagmentRoleModal && <UserManagmentRoleModal />}
                   {userManagmentChangePasswordModal && (
                     <UserManagmentChangePasswordModal />
                   )}
                 </Fragment>
-                {/* ) : null} */}
               </Fragment>
             </div>
           </div>
         </section>
-        {/* :
-        <Redirect to="/" />
-      } */}
       </Fragment>
     </Container>
   );

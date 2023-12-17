@@ -82,6 +82,8 @@ const ViewPathList = () => {
     dispatch(handleGroupList());
   }, []);
 
+  console.log(groupList);
+
   const columns = useMemo(() => [
     {
       Header: "نام دسته",
