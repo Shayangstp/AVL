@@ -13,6 +13,7 @@ export const getGroupList = (token) => {
     }
   );
 };
+
 export const postReportLastLocation = (values, token) => {
   return http.post(
     `${config.R}/api/v1/device/lastlocationsinp`,

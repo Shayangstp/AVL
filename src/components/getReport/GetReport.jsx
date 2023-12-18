@@ -16,6 +16,10 @@ import {
   selectGetReportToTime,
   selectGetReportFromSpeed,
   selectGetReportToSpeed,
+  selectGetReportAlarms,
+  selectGetReportGPSLocations,
+  selectGetReportVehiclesChanges,
+  selectGetReportDriversConditions,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
 
@@ -30,6 +34,13 @@ const GetReport = () => {
   const getReportToTime = useSelector(selectGetReportToTime);
   const getReportFromSpeed = useSelector(selectGetReportFromSpeed);
   const getReportToSpeed = useSelector(selectGetReportToSpeed);
+
+  const getReportAlarms = useSelector(selectGetReportAlarms);
+  const getReportGPSLocations = useSelector(selectGetReportGPSLocations);
+  const getReportVehiclesChanges = useSelector(selectGetReportVehiclesChanges);
+  const getReportDriversConditions = useSelector(
+    selectGetReportDriversConditions
+  );
 
   const handleReport = () => {
     console.log({
@@ -64,12 +75,22 @@ const GetReport = () => {
         <Col md="3">
           <GetReportDateForm />
         </Col>
-        <Col md="3">
-          <GetReportTime />
-        </Col>
-        <Col md="3" className="mt-2">
-          <GetReportSpeed />
-        </Col>
+        {!getReportGPSLocations &&
+          !getReportVehiclesChanges &&
+          !getReportDriversConditions && (
+            <Col md="3">
+              <GetReportTime />
+            </Col>
+          )}
+        {!getReportAlarms &&
+          !getReportGPSLocations &&
+          !getReportVehiclesChanges &&
+          !getReportDriversConditions && (
+            <Col md="3" className="mt-2">
+              <GetReportSpeed />
+            </Col>
+          )}
+
         <Col md="3" className="d-flex align-items-end">
           <Button onClick={handleReport}>جستوجو</Button>
         </Col>

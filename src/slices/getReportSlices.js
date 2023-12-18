@@ -14,7 +14,7 @@ const initialState = {
   getReportGPSLocations: false,
   getReportVehiclesChanges: false,
   getReportDriversConditions: false,
-  getReportGroups: "",
+ 
   getReportGroupsOptions: [],
   getReportDrivers: "",
   getReportDriversOptions: [],

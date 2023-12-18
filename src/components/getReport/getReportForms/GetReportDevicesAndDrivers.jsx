@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Container, Button, Col, Row } from "react-bootstrap";
 import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,6 +18,12 @@ import {
   selectGetReportVehiclesNumber,
   RsetGetReportVehiclesNumberOptions,
   selectGetReportVehiclesNumberOptions,
+  handleGroupList,
+  selectGetReportGroupList,
+  selectGetReportGroupValue,
+  selectGetReportVehicleValue,
+  RsetGetReportGroupValue,
+  RsetGetReportVehicleValue,
 } from "../../../slices/getReportSlices";
 
 const GetReportDevicesAndDrivers = () => {
@@ -26,6 +32,40 @@ const GetReportDevicesAndDrivers = () => {
   const getReportDriversConditions = useSelector(
     selectGetReportDriversConditions
   );
+  const groupList = useSelector(selectGetReportGroupList);
+  const groupValue = useSelector(selectGetReportGroupValue);
+  const vehicleValue = useSelector(selectGetReportVehicleValue);
+
+  console.log(groupList);
+
+  useEffect(() => {
+    dispatch(handleGroupList());
+  }, []);
+
+  const groupListOptions = groupList.map((item, idx) => {
+    return { label: item?.name, value: idx };
+  });
+
+  const vehicleList = groupList.find((item, idx) => {
+    return groupValue.label === undefined
+      ? false
+      : item.name === groupValue.label;
+  });
+
+  const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
+    return {
+      label:
+        "نام راننده: " + item.driverName + " , " + "شماره پلاک : " + item.plate,
+      value: item.deviceIMEI,
+    };
+  });
+  const platesListOptions = vehicleList?.devices.map((item, idx) => {
+    return {
+      label: item.plate,
+      value: item.deviceIMEI,
+    };
+  });
+
   const getReportVehiclesChanges = useSelector(selectGetReportVehiclesChanges);
   const getReportGroups = useSelector(selectGetReportGroups);
   const getReportDrivers = useSelector(selectGetReportDrivers);
@@ -36,6 +76,12 @@ const GetReportDevicesAndDrivers = () => {
     selectGetReportVehiclesNumberOptions
   );
 
+  // console.log(
+  //   vehicleValue?.map((item) => {
+  //     return item.value;
+  //   })
+  // );
+
   return (
     <Form className="border p-3 bg-light rounded">
       <Form.Group>
@@ -45,40 +91,46 @@ const GetReportDevicesAndDrivers = () => {
         <Form.Group className="mt-2">
           <Form.Label>گروه</Form.Label>
           <Select
-            value={getReportGroups}
+            value={groupValue}
             name="groups"
             onChange={(e) => {
-              dispatch(RsetGetReportGroups(e));
+              dispatch(RsetGetReportGroupValue(e));
             }}
             placeholder="انتخاب..."
-            options={getReportGroupsOptions}
+            options={groupListOptions}
             isSearchable={true}
-            isMulti
+            // isMulti
           />
         </Form.Group>
         <Form.Group className="mt-2">
           <Form.Label>
             {!getReportVehiclesChanges ? "راننده" : "پلاک"}
           </Form.Label>
-          <Select
-            value={
-              !getReportVehiclesChanges
-                ? getReportDrivers
-                : getReportVehiclesNumber
-            }
-            name="drivers"
-            onChange={(e) => {
-              dispatch(RsetGetReportDrivers(e));
-            }}
-            placeholder="انتخاب..."
-            options={
-              !getReportVehiclesChanges
-                ? getReportDriversOptions
-                : getReportVehiclesNumberOptions
-            }
-            isSearchable={true}
-            isMulti
-          />
+          {!getReportVehiclesChanges ? (
+            <Select
+              value={vehicleValue}
+              name="drivers"
+              onChange={(e) => {
+                dispatch(RsetGetReportVehicleValue(e));
+              }}
+              placeholder="انتخاب..."
+              options={vehicleListOptions}
+              isSearchable={true}
+              isMulti
+            />
+          ) : (
+            <Select
+              value={getReportVehiclesNumber}
+              name="drivers"
+              onChange={(e) => {
+                dispatch(RsetGetReportVehiclesNumber(e));
+              }}
+              placeholder="انتخاب..."
+              options={platesListOptions}
+              isSearchable={true}
+              isMulti
+            />
+          )}
         </Form.Group>
       </Form.Group>
     </Form>

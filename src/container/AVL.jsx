@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../components/auth/Login";
 import Home from "../components/Home";
@@ -15,21 +15,31 @@ import GetReport from "../components/getReport/GetReport";
 import AddPhoneNumbers from "../components/userManagement/AddPhoneNumbers";
 import PhoneNumberList from "../components/userManagement/PhoneNumberList";
 import Test from "../components/test/Test";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { selectLoggedIn } from "../slices/authSlices";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import ErrorPage from "../components/common/ErrorPage";
 
-const AVL = () => {
+const AVL = ({ props }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [pageTitle, setPageTitle] = useState("");
-  const isLoggedIn = useSelector(selectLoggedIn);
-  // const isLoggedIn = localStorage.getItem("token") !== null;
+  const tokenIsValid = localStorage.getItem("token") !== null;
+
+  useEffect(() => {
+    if (!tokenIsValid) {
+      navigate("/", { replace: true });
+    }
+  }, [tokenIsValid]);
 
   return (
     <Fragment>
       <Routes>
+        {/* <Route path="*" element={<ErrorPage />} /> */}
         <Route
           path="/"
-          element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
+          element={tokenIsValid ? <Navigate to="/home" /> : <Login />}
         />
       </Routes>
       <MainLayout>

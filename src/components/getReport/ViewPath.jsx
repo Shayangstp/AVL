@@ -36,6 +36,8 @@ const ViewPath = () => {
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
 
+  console.log(groupList);
+
   const groupListOptions = groupList.map((item, idx) => {
     return { label: item?.name, value: idx };
   });
@@ -46,13 +48,12 @@ const ViewPath = () => {
       : item.name === groupValue.label;
   });
 
-  const fakeVehiclesList = [{ name: "shayan" }, { name: "amir" }];
-  //vehicleList
-  // const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
-  //   return { lable: "shayan", value: 1 };
-  // });
-  const vehicleListOptions = fakeVehiclesList.map((item, idx) => {
-    return { label: item.name, value: idx };
+  const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
+    return {
+      label:
+        "نام راننده: " + item.driverName + " , " + "شماره پلاک : " + item.plate,
+      value: item.deviceIMEI,
+    };
   });
 
   console.log(vehicleListOptions);
@@ -83,7 +84,12 @@ const ViewPath = () => {
 
   const handleDateSearch = (e) => {
     if (formIsValid) {
-      dispatch(handleViewPath());
+      // dispatch(handleViewPath());
+      const token = localStorage.getItem("token");
+      const values = {
+        bTime: String(fromDate),
+        eTime: String(toDate),
+      };
     } else {
       dispatch(
         RsetFormErrors(
@@ -110,8 +116,6 @@ const ViewPath = () => {
 
   // report should be fix in data
   console.log(vehicleValue);
-
-
 
   return (
     <Container fluid className="p-5 my-2">
