@@ -16,59 +16,59 @@ import { AwesomeMarkers } from "leaflet.awesome-markers";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.js";
 
-const allGpses = [
-  {
-    lastLocation: {
-      IMEI: "imei",
-      lat: 31,
-      lng: 51,
-    },
-    group: { color: "#f70505" },
-    deviceInfo: {
-      vehicleName: "vehicleName",
-      driverName: "driverName",
-      driverPhoneNumber: "driverPhoneNumber",
-      plate: "plate",
-      model: { name: "modelName" },
-      simNumber: "simNumber",
-    },
-  },
-  {
-    lastLocation: {
-      IMEI: "imei",
-      lat: 32.5,
-      lng: 51,
-    },
-    group: { color: "#f7a705" },
-    deviceInfo: {
-      vehicleName: "vehicleName",
-      driverName: "driverName",
-      driverPhoneNumber: "driverPhoneNumber",
-      plate: "plate",
-      model: { name: "modelName" },
-      simNumber: "simNumber",
-    },
-  },
-  {
-    lastLocation: {
-      IMEI: "imei",
-      lat: 33.5,
-      lng: 51,
-    },
-    group: { color: "#1105f7" },
-    deviceInfo: {
-      vehicleName: "vehicleName",
-      driverName: "driverName",
-      driverPhoneNumber: "driverPhoneNumber",
-      plate: "plate",
-      model: { name: "modelName" },
-      simNumber: "simNumber",
-    },
-  },
-];
+// const allGpses = [
+//   {
+//     lastLocation: {
+//       IMEI: "imei",
+//       lat: 31,
+//       lng: 51,
+//     },
+//     group: { color: "#f70505" },
+//     deviceInfo: {
+//       vehicleName: "vehicleName",
+//       driverName: "driverName",
+//       driverPhoneNumber: "driverPhoneNumber",
+//       plate: "plate",
+//       model: { name: "modelName" },
+//       simNumber: "simNumber",
+//     },
+//   },
+//   {
+//     lastLocation: {
+//       IMEI: "imei",
+//       lat: 32.5,
+//       lng: 51,
+//     },
+//     group: { color: "#f7a705" },
+//     deviceInfo: {
+//       vehicleName: "vehicleName",
+//       driverName: "driverName",
+//       driverPhoneNumber: "driverPhoneNumber",
+//       plate: "plate",
+//       model: { name: "modelName" },
+//       simNumber: "simNumber",
+//     },
+//   },
+//   {
+//     lastLocation: {
+//       IMEI: "imei",
+//       lat: 33.5,
+//       lng: 51,
+//     },
+//     group: { color: "#1105f7" },
+//     deviceInfo: {
+//       vehicleName: "vehicleName",
+//       driverName: "driverName",
+//       driverPhoneNumber: "driverPhoneNumber",
+//       plate: "plate",
+//       model: { name: "modelName" },
+//       simNumber: "simNumber",
+//     },
+//   },
+// ];
 
 const DashboardMap = ({ height, width }) => {
-  // const allGpses = useSelector(selectAllGpses);
+  const allGpses = useSelector(selectAllGpses);
 
   // console.log(allGpses);
 

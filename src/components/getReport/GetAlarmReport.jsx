@@ -12,7 +12,6 @@ import {
   Pagination,
 } from "antd";
 import faIR from "antd/lib/locale/fa_IR";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Reports from "./getReportForms/Reports";
 import GetReportDevicesAndDrivers from "./getReportForms/GetReportDevicesAndDrivers";
@@ -41,10 +40,9 @@ import {
   selectGetReportGroupValue,
   selectGetReportVehicleValue,
 } from "../../slices/getReportSlices";
-import MapHeat from "../map/MapHeat";
 import { postAlarmsReport } from "../../services/getReportServices";
 
-const GetReport = () => {
+const GetAlarmReport = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState();
   const [showList, setShowList] = useState(false);
@@ -176,42 +174,6 @@ const GetReport = () => {
         fontSize: "10px",
         fontWeight: "bold",
       },
-      width: 10,
-    },
-    {
-      key: "name",
-      title: "نام راننده",
-      dataIndex: ["driver", "name"],
-      sorter: (a, b) => {
-        if (!a.driver?.name && !b.driver?.name) {
-          return 0;
-        }
-
-        if (!a.driver?.name) {
-          return 1;
-        }
-
-        if (!b.driver?.name) {
-          return -1;
-        }
-
-        return a.driver.name.localeCompare(b.driver.name);
-      },
-      ...getColumnSearchProps("driver.name", "جستجو..."),
-      width: 200,
-    },
-  ];
-
-  const itemColumns = [
-    {
-      key: "idx",
-      title: "ردیف",
-      dataIndex: "",
-      render: (text, record, index) => index + 1,
-      titleStyle: {
-        fontSize: "10px",
-        fontWeight: "bold",
-      },
       width: 200,
     },
     {
@@ -282,101 +244,6 @@ const GetReport = () => {
     },
   ];
 
-  const expandedRowRender = (record) => {
-    const expandedColumns = [
-      {
-        key: "idx",
-        title: "ردیف",
-        dataIndex: "",
-        render: (text, record, index) => index + 1,
-        titleStyle: {
-          fontSize: "10px",
-          fontWeight: "bold",
-        },
-        width: 200,
-      },
-      {
-        key: "date",
-        title: "تاریخ",
-        dataIndex: "date",
-        sorter: (a, b) => {
-          if (!a.date && !b.date) {
-            return 0;
-          }
-
-          if (!a.date) {
-            return 1;
-          }
-
-          if (!b.date) {
-            return -1;
-          }
-
-          return a.date.localeCompare(b.date);
-        },
-        ...getColumnSearchProps("date", "جستجو..."),
-        width: 200,
-      },
-      {
-        key: "type",
-        title: "نوع هشدار",
-        dataIndex: "type",
-        sorter: (a, b) => {
-          if (!a.type && !b.type) {
-            return 0;
-          }
-
-          if (!a.type) {
-            return 1;
-          }
-
-          if (!b.type) {
-            return -1;
-          }
-
-          return a.type.localeCompare(b.type);
-        },
-        ...getColumnSearchProps("type", "جستجو..."),
-        width: 200,
-      },
-      {
-        key: "desc",
-        title: "توضیحات",
-        dataIndex: "desc",
-        sorter: (a, b) => {
-          if (!a.desc && !b.desc) {
-            return 0;
-          }
-
-          if (!a.desc) {
-            return 1;
-          }
-
-          if (!b.desc) {
-            return -1;
-          }
-
-          return a.desc.localeCompare(b.desc);
-        },
-        ...getColumnSearchProps("desc", "جستجو..."),
-        width: 200,
-      },
-    ];
-
-    const expandedData = record.alarms.map((device) => ({
-      ...device,
-      key: device.key,
-    }));
-
-    return (
-      <Table
-        columns={expandedColumns}
-        dataSource={expandedData}
-        pagination={true}
-      />
-    );
-  };
-
   const paginationConfig = {
     position: ["bottomCenter"],
     showTotal: (total) => (
@@ -417,7 +284,7 @@ const GetReport = () => {
           max: null,
         },
         groupFilter: [groupValue.value],
-        deviceFilter: vehicleValue?.map((item) => {
+        deviceFilter: vehicleValue.map((item) => {
           return item.value;
         }),
       };
@@ -426,15 +293,12 @@ const GetReport = () => {
       console.log(postAlaramsReportRes);
       if (postAlaramsReportRes.data.code === "200") {
         dispatch(
-          RsetGetAlarmsReport(postAlaramsReportRes.data.vehiclesAlarmData)
+          RsetGetAlarmsReport(
+            postAlaramsReportRes.data.vehiclesAlarmData.map((item) => {
+              return item.driver;
+            })
+          )
         );
-        // dispatch(
-        //   RsetGetAlarmsReport(
-        //     postAlaramsReportRes.data.vehiclesAlarmData.map((item) => {
-        //       return item.driver;
-        //     })
-        //   )
-        // );
         dispatch(
           RsetGetAlarmsReportList(
             postAlaramsReportRes.data.vehiclesAlarmData.map((item) => {
@@ -451,8 +315,6 @@ const GetReport = () => {
   }, [getAlarmsReportList]);
 
   console.log(list);
-
-  console.log(getAlarmsReport);
 
   const handleGetAlarmsReport = (e) => {
     e.preventDefault();
@@ -498,12 +360,27 @@ const GetReport = () => {
           <Button onClick={handleReport}>جستوجو</Button>
         </Col>
       </Row>
+      <Row>
+        <ul className="mt-5">
+          {getAlarmsReport && getAlarmsReport.length !== 0 ? (
+            getAlarmsReport.map((item, idx) => (
+              <li key={idx}>
+                <Button onClick={handleGetAlarmsReport}>{item.name}</Button>
+              </li>
+            ))
+          ) : (
+            <p>
+              {getAlarmsReport && getAlarmsReport.length === 0
+                ? "موردی یافت نشد"
+                : null}
+            </p>
+          )}
+        </ul>
+      </Row>
       <div>
-        {/* {list && showList && list.length !== 0 ? (
-          
-        ) : null} */}
-        <div className="position-relative table-responsive mt-4">
-          {/* <DeviceTable
+        {list && showList && list.length !== 0 ? (
+          <div className="position-relative table-responsive mt-4">
+            {/* <DeviceTable
                   requests={deviceList}
                   columns={columns}
                   data={data}
@@ -512,30 +389,30 @@ const GetReport = () => {
                   loading={load}
                   pageCount={pageCount}
                 /> */}
-          <ConfigProvider
-            locale={faIR}
-            // theme={{
-            //   token: {
-            //     colorPrimary: "#00b96b",
-            //     colorBgContainer: "#f6ffed",
-            //   },
-            // }}
-          >
-            <Table
-              locale={{
-                emptyText: <Empty description="اطلاعات موجود نیست!" />,
-              }}
-              className="list"
-              bordered
-              dataSource={getAlarmsReport}
-              columns={columns}
-              pagination={paginationConfig}
-              scroll={{ x: "max-content" }}
-              size="middle"
-              expandable={{ expandedRowRender }}
-            />
-          </ConfigProvider>
-        </div>
+            <ConfigProvider
+              locale={faIR}
+              // theme={{
+              //   token: {
+              //     colorPrimary: "#00b96b",
+              //     colorBgContainer: "#f6ffed",
+              //   },
+              // }}
+            >
+              <Table
+                locale={{
+                  emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                }}
+                className="list"
+                bordered
+                dataSource={list}
+                columns={columns}
+                pagination={paginationConfig}
+                scroll={{ x: "max-content" }}
+                size="middle"
+              />
+            </ConfigProvider>
+          </div>
+        ) : null}
       </div>
       {/* <Row
         className="mx-auto mt-5 lightGray-bg borderRadius-15 border border-white border-2 shadow p-3"
@@ -547,4 +424,4 @@ const GetReport = () => {
   );
 };
 
-export default GetReport;
+export default GetAlarmReport;

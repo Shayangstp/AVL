@@ -36,14 +36,12 @@ const GetReportDevicesAndDrivers = () => {
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
 
-  console.log(groupList);
-
   useEffect(() => {
     dispatch(handleGroupList());
   }, []);
 
   const groupListOptions = groupList.map((item, idx) => {
-    return { label: item?.name, value: idx };
+    return { label: item?.name, value: item?._id };
   });
 
   const vehicleList = groupList.find((item, idx) => {
@@ -66,6 +64,10 @@ const GetReportDevicesAndDrivers = () => {
     };
   });
 
+  useEffect(() => {
+    dispatch(RsetGetReportVehicleValue(""));
+  }, [groupValue]);
+
   const getReportVehiclesChanges = useSelector(selectGetReportVehiclesChanges);
   const getReportGroups = useSelector(selectGetReportGroups);
   const getReportDrivers = useSelector(selectGetReportDrivers);
@@ -81,6 +83,8 @@ const GetReportDevicesAndDrivers = () => {
   //     return item.value;
   //   })
   // );
+
+  console.log(vehicleValue);
 
   return (
     <Form className="border p-3 bg-light rounded">

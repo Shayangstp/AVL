@@ -11,3 +11,9 @@ export function convertUnixTimeStampToDateTime(timestamp) {
     .format("HH:mm - jYYYY/jMM/jDD");
   return converback;
 }
+
+
+export function convertUnixTimeStampToDateZz(timestamp) {
+  const convertedDate = new Date(timestamp * 1000).toISOString();
+  return convertedDate;
+}

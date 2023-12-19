@@ -64,3 +64,15 @@ export const deleteVehicleManage = (vehicleId, groupId, token) => {
     }
   );
 };
+export const getVehicleAddOptions = (token) => {
+  return http.get(
+    `${config.R}/api/v1/device`,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

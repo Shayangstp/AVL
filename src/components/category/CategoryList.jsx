@@ -250,29 +250,29 @@ const CategoryList = () => {
       ...getColumnSearchProps("desc", "جستجو..."),
       width: 200,
     },
-    {
-      key: "devices",
-      title: "تعداد وسیله نقلیه",
-      dataIndex: "devices",
-      sorter: (a, b) => {
-        if (!a.driverName && !b.driverName) {
-          return 0;
-        }
+    // {
+    //   key: "devices",
+    //   title: "تعداد وسیله نقلیه",
+    //   dataIndex: "devices",
+    //   sorter: (a, b) => {
+    //     if (!a.driverName && !b.driverName) {
+    //       return 0;
+    //     }
 
-        if (!a.driverName) {
-          return 1;
-        }
+    //     if (!a.driverName) {
+    //       return 1;
+    //     }
 
-        if (!b.driverName) {
-          return -1;
-        }
+    //     if (!b.driverName) {
+    //       return -1;
+    //     }
 
-        return a.devices?.length.localeCompare(b.devices?.length);
-      },
-      render: (devices) => devices?.length,
-      ...getColumnSearchProps("devices", "جستجو..."),
-      width: 200,
-    },
+    //     return a.devices?.length.localeCompare(b.devices?.length);
+    //   },
+    //   render: (devices) => devices?.length,
+    //   ...getColumnSearchProps("devices", "جستجو..."),
+    //   width: 200,
+    // },
     {
       key: "operation",
       title: "عملیات",

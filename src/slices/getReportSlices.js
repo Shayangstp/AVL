@@ -14,7 +14,7 @@ const initialState = {
   getReportGPSLocations: false,
   getReportVehiclesChanges: false,
   getReportDriversConditions: false,
- 
+
   getReportGroupsOptions: [],
   getReportDrivers: "",
   getReportDriversOptions: [],
@@ -30,6 +30,10 @@ const initialState = {
   getReportViewPathCordinates: [],
   getReportGroupValue: "",
   getReportVehicleValue: "",
+
+  //
+  getAlarmsReports: [],
+  getAlarmsReportsList: [],
 };
 
 export const handleGroupList = createAsyncThunk(
@@ -168,6 +172,13 @@ const getReportSlices = createSlice({
     RsetGetReportVehicleValue: (state, { payload }) => {
       return { ...state, getReportVehicleValue: payload };
     },
+    //
+    RsetGetAlarmsReport: (state, { payload }) => {
+      return { ...state, getAlarmsReport: payload };
+    },
+    RsetGetAlarmsReportList: (state, { payload }) => {
+      return { ...state, getAlarmsReportList: payload };
+    },
   },
 });
 
@@ -197,6 +208,9 @@ export const {
   RsetGetReportViewPathCordinates,
   RsetGetReportGroupValue,
   RsetGetReportVehicleValue,
+  //
+  RsetGetAlarmsReport,
+  RsetGetAlarmsReportList,
 } = getReportSlices.actions;
 
 export const selectGetReportFromDate = (state) =>
@@ -244,5 +258,8 @@ export const selectGetReportGroupValue = (state) =>
   state.getReport.getReportGroupValue;
 export const selectGetReportVehicleValue = (state) =>
   state.getReport.getReportVehicleValue;
-
+//
+export const selectGetAlarmsReport = (state) => state.getReport.getAlarmsReport;
+export const selectGetAlarmsReportList = (state) =>
+  state.getReport.getAlarmsReportList;
 export default getReportSlices.reducer;

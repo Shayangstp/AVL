@@ -26,7 +26,10 @@ import {
   selectCategoryUserVehicleOptions,
   selectCategoryCurrentRequest,
 } from "../../../slices/categorySlices";
-import { postAddDeviceToDeviceGroup } from "../../../services/categoryServices";
+import {
+  postAddDeviceToDeviceGroup,
+  getVehicleAddOptions,
+} from "../../../services/categoryServices";
 import { errorMessage, successMessage } from "../../../utils/msg";
 
 const CategoryAddVehicleModal = () => {
@@ -49,6 +52,12 @@ const CategoryAddVehicleModal = () => {
   const categoryCurrentRequest = useSelector(selectCategoryCurrentRequest);
 
   console.log(categoryCurrentRequest);
+
+  //view
+  // useEffect(async () => {
+  //   const getVehicleAddOptionsres = await getVehicleAddOptions();
+  //   console.log(getVehicleAddOptionsres);
+  // }, []);
 
   let i = 1;
   const vehicleOptions = [
