@@ -48,11 +48,12 @@ import { postAlarmsReport } from "../../services/getReportServices";
 const fakeList = [
   {
     _id: "5992786811dc0505f290f86b",
-    alarms: [
+    status: [
       {
         date: "2021-11-06T07:10:22.000Z",
-        type: "Out of Zone",
-        desc: "vehicle location [35.1204183,50.3808883] is out of permissible zone",
+        _id: "6198ab0a98880c65d4fe9a14",
+        status: "به روز",
+        desc: "",
       },
     ],
     driver: { name: "جعفر هنرمند", phoneNumber: "09127559751" },
@@ -228,6 +229,28 @@ const GetAlarmReport = () => {
       width: 200,
     },
     {
+      key: "status",
+      title: "نوع هشدار",
+      dataIndex: "status",
+      sorter: (a, b) => {
+        if (!a.status && !b.status) {
+          return 0;
+        }
+
+        if (!a.status) {
+          return 1;
+        }
+
+        if (!b.status) {
+          return -1;
+        }
+
+        return a.status.localeCompare(b.status);
+      },
+      ...getColumnSearchProps("status", "جستجو..."),
+      width: 200,
+    },
+    {
       key: "date",
       title: "تاریخ",
       dataIndex: "date",
@@ -250,25 +273,25 @@ const GetAlarmReport = () => {
       width: 200,
     },
     {
-      key: "type",
-      title: "نوع هشدار",
-      dataIndex: "type",
+      key: "desc",
+      title: "توضیحات",
+      dataIndex: "desc",
       sorter: (a, b) => {
-        if (!a.type && !b.type) {
+        if (!a.desc && !b.desc) {
           return 0;
         }
 
-        if (!a.type) {
+        if (!a.desc) {
           return 1;
         }
 
-        if (!b.type) {
+        if (!b.desc) {
           return -1;
         }
 
-        return a.type.localeCompare(b.type);
+        return a.desc.localeCompare(b.desc);
       },
-      ...getColumnSearchProps("type", "جستجو..."),
+      ...getColumnSearchProps("desc", "جستجو..."),
       width: 200,
     },
     {
@@ -309,6 +332,28 @@ const GetAlarmReport = () => {
         width: 10,
       },
       {
+        key: "status",
+        title: "نوع هشدار",
+        dataIndex: "status",
+        sorter: (a, b) => {
+          if (!a.status && !b.status) {
+            return 0;
+          }
+
+          if (!a.status) {
+            return 1;
+          }
+
+          if (!b.status) {
+            return -1;
+          }
+
+          return a.status.localeCompare(b.status);
+        },
+        ...getColumnSearchProps("status", "جستجو..."),
+        width: 200,
+      },
+      {
         key: "date",
         title: "تاریخ",
         dataIndex: "date",
@@ -328,28 +373,6 @@ const GetAlarmReport = () => {
           return a.date.localeCompare(b.date);
         },
         ...getColumnSearchProps("date", "جستجو..."),
-        width: 200,
-      },
-      {
-        key: "type",
-        title: "نوع هشدار",
-        dataIndex: "type",
-        sorter: (a, b) => {
-          if (!a.type && !b.type) {
-            return 0;
-          }
-
-          if (!a.type) {
-            return 1;
-          }
-
-          if (!b.type) {
-            return -1;
-          }
-
-          return a.type.localeCompare(b.type);
-        },
-        ...getColumnSearchProps("type", "جستجو..."),
         width: 200,
       },
       {
@@ -373,11 +396,10 @@ const GetAlarmReport = () => {
         },
         ...getColumnSearchProps("desc", "جستجو..."),
         width: 200,
-        editable: true,
       },
     ];
 
-    const expandedData = record.alarms.map((device) => ({
+    const expandedData = record.status.map((device) => ({
       ...device,
       key: device.key,
     }));
@@ -409,7 +431,7 @@ const GetAlarmReport = () => {
   const paginationConfigItemList = {
     position: ["bottomCenter"],
     showTotal: (total) => (
-      <span className="font12">مجموعه هشدار ها: {total}</span>
+      <span className="font12">مجموعه اطلاعات ها: {total}</span>
     ),
     pageSize: 10,
     showSizeChanger: false,
@@ -418,7 +440,7 @@ const GetAlarmReport = () => {
   };
 
   const handleReport = async () => {
-    if (getReportAlarms) {
+    if (getReportGPSLocations) {
       const token = localStorage.getItem("token");
       // const alarmsValues = {
       //   dateFilter: {
@@ -460,9 +482,6 @@ const GetAlarmReport = () => {
         </Col>
         <Col md="3">
           <GetReportDateForm />
-        </Col>
-        <Col md="3">
-          <GetReportTime />
         </Col>
         <Col md="3" className="d-flex align-items-end">
           <Button size="sm" onClick={handleReport}>

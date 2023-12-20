@@ -228,7 +228,7 @@ const NavbarOff = () => {
                   </Nav.Link>
                   <Nav.Link
                     onClick={() => {
-                      navigate("/getReport");
+                      navigate("/getReportPage");
                       handleClose();
                     }}
                     className="sidebar-link"

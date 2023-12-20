@@ -12,6 +12,7 @@ import {
   Pagination,
 } from "antd";
 import faIR from "antd/lib/locale/fa_IR";
+import { CaretRightOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Reports from "./getReportForms/Reports";
@@ -34,20 +35,37 @@ import {
   selectGetReportGPSLocations,
   selectGetReportVehiclesChanges,
   selectGetReportDriversConditions,
-  RsetGetAlarmsReport,
-  selectGetAlarmsReport,
-  RsetGetAlarmsReportList,
-  selectGetAlarmsReportList,
+  RsetGetReportList,
+  selectGetReportList,
   selectGetReportGroupValue,
   selectGetReportVehicleValue,
+  RsetShowReportList,
+  selectShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
 import { postAlarmsReport } from "../../services/getReportServices";
 
-const GetReport = () => {
+const fakeList = [
+  {
+    _id: "5992786811dc0505f290f86b",
+    changes: [
+      {
+        actionType: "update",
+        date: "2021-11-06T07:10:22.000Z",
+        fieldName: "driverName",
+        newValue: "جعفر هنرمند",
+        objectId: "5992786811dc0505f290f86b",
+        objectModel: "vehicle",
+        oldValue: "محمد جواد دالخان",
+        user: { firstname: "ادمین", lastName: "کل", username: "admin" },
+      },
+    ],
+    driver: { name: "جعفر هنرمند", phoneNumber: "09127559751" },
+  },
+];
+
+const GetVehicleChangeReport = () => {
   const dispatch = useDispatch();
-  const [list, setList] = useState();
-  const [showList, setShowList] = useState(false);
   //table
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -70,8 +88,8 @@ const GetReport = () => {
   const getReportDriversConditions = useSelector(
     selectGetReportDriversConditions
   );
-  const getAlarmsReport = useSelector(selectGetAlarmsReport);
-  const getAlarmsReportList = useSelector(selectGetAlarmsReportList);
+  const getReport = useSelector(selectGetReportList);
+  const showReportList = useSelector(selectShowReportList);
 
   const getColumnSearchProps = (dataIndex, placeholder) => ({
     filterDropdown: ({
@@ -198,7 +216,7 @@ const GetReport = () => {
         return a.driver.name.localeCompare(b.driver.name);
       },
       ...getColumnSearchProps("driver.name", "جستجو..."),
-      width: 200,
+      width: 500,
     },
   ];
 
@@ -293,6 +311,28 @@ const GetReport = () => {
           fontSize: "10px",
           fontWeight: "bold",
         },
+        width: 10,
+      },
+      {
+        key: "actionType",
+        title: "نوع رویداد",
+        dataIndex: "actionType",
+        sorter: (a, b) => {
+          if (!a.actionType && !b.actionType) {
+            return 0;
+          }
+
+          if (!a.actionType) {
+            return 1;
+          }
+
+          if (!b.actionType) {
+            return -1;
+          }
+
+          return a.actionType.localeCompare(b.actionType);
+        },
+        ...getColumnSearchProps("actionType", "جستجو..."),
         width: 200,
       },
       {
@@ -318,69 +358,132 @@ const GetReport = () => {
         width: 200,
       },
       {
-        key: "type",
-        title: "نوع هشدار",
-        dataIndex: "type",
+        key: "fieldName",
+        title: "فیلد تغییریافته",
+        dataIndex: "fieldName",
         sorter: (a, b) => {
-          if (!a.type && !b.type) {
+          if (!a.fieldName && !b.fieldName) {
             return 0;
           }
 
-          if (!a.type) {
+          if (!a.fieldName) {
             return 1;
           }
 
-          if (!b.type) {
+          if (!b.fieldName) {
             return -1;
           }
 
-          return a.type.localeCompare(b.type);
+          return a.fieldName.localeCompare(b.fieldName);
         },
-        ...getColumnSearchProps("type", "جستجو..."),
+        ...getColumnSearchProps("fieldName", "جستجو..."),
         width: 200,
+        editable: true,
       },
       {
-        key: "desc",
-        title: "توضیحات",
-        dataIndex: "desc",
+        key: "oldValue",
+        title: "مقدار قبلی",
+        dataIndex: "oldValue",
         sorter: (a, b) => {
-          if (!a.desc && !b.desc) {
+          if (!a.oldValue && !b.oldValue) {
             return 0;
           }
 
-          if (!a.desc) {
+          if (!a.oldValue) {
             return 1;
           }
 
-          if (!b.desc) {
+          if (!b.oldValue) {
             return -1;
           }
 
-          return a.desc.localeCompare(b.desc);
+          return a.oldValue.localeCompare(b.oldValue);
         },
-        ...getColumnSearchProps("desc", "جستجو..."),
+        ...getColumnSearchProps("oldValue", "جستجو..."),
         width: 200,
+        editable: true,
+      },
+      {
+        key: "newValue",
+        title: "مقدار جدید",
+        dataIndex: "newValue",
+        sorter: (a, b) => {
+          if (!a.newValue && !b.newValue) {
+            return 0;
+          }
+
+          if (!a.newValue) {
+            return 1;
+          }
+
+          if (!b.newValue) {
+            return -1;
+          }
+
+          return a.newValue.localeCompare(b.newValue);
+        },
+        ...getColumnSearchProps("newValue", "جستجو..."),
+        width: 200,
+        editable: true,
+      },
+      {
+        key: "user",
+        title: "مقدار جدید",
+        dataIndex: ["user", "username"],
+        sorter: (a, b) => {
+          if (!a.user.username && !b.user.username) {
+            return 0;
+          }
+
+          if (!a.user.username) {
+            return 1;
+          }
+
+          if (!b.user.username) {
+            return -1;
+          }
+
+          return a.user.username.localeCompare(b.user.username);
+        },
+        ...getColumnSearchProps("user.username", "جستجو..."),
+        width: 200,
+        editable: true,
       },
     ];
 
-    const expandedData = record.alarms.map((device) => ({
+    const expandedData = record.changes.map((device) => ({
       ...device,
       key: device.key,
     }));
 
     return (
-      <Table
-        columns={expandedColumns}
-        dataSource={expandedData}
-        pagination={true}
-      />
+      <div className="mt-4">
+        <Table
+          className="itemList"
+          columns={expandedColumns}
+          dataSource={expandedData}
+          pagination={paginationConfigItemList}
+          scroll={{ x: "max-content" }}
+          size="small"
+        />
+      </div>
     );
   };
 
-  const paginationConfig = {
+  const paginationConfigList = {
     position: ["bottomCenter"],
     showTotal: (total) => (
-      <span className="font12">مجموع وسیله ها: {total}</span>
+      <span className="font12">مجموع راننده ها : {total}</span>
+    ),
+    pageSize: 10,
+    showSizeChanger: false,
+    pageSizeOptions: [],
+    size: "small",
+  };
+  const paginationConfigItemList = {
+    position: ["bottomCenter"],
+    showTotal: (total) => (
+      <span className="font12">مجموع اطلاعات ها: {total}</span>
     ),
     pageSize: 10,
     showSizeChanger: false,
@@ -389,162 +492,78 @@ const GetReport = () => {
   };
 
   const handleReport = async () => {
-    console.log({
-      getReportGroups,
-      getReportDrivers,
-      getReportVehiclesNumber,
-      fromDate,
-      toDate,
-      getReportFromTime,
-      getReportToTime,
-      getReportFromSpeed,
-      getReportToSpeed,
-    });
-
-    if (getReportAlarms) {
+    if (getReportVehiclesChanges) {
       const token = localStorage.getItem("token");
-      const alarmsValues = {
-        dateFilter: {
-          start: fromDate ? fromDate : null,
-          end: toDate ? toDate : null,
-        },
-        timeFilter: {
-          start: getReportFromTime ? getReportFromTime : null,
-          end: getReportToTime ? getReportToTime : null,
-        },
-        speedFilter: {
-          min: null,
-          max: null,
-        },
-        groupFilter: [groupValue.value],
-        deviceFilter: vehicleValue?.map((item) => {
-          return item.value;
-        }),
-      };
-      console.log(alarmsValues);
-      const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
-      console.log(postAlaramsReportRes);
-      if (postAlaramsReportRes.data.code === "200") {
-        dispatch(
-          RsetGetAlarmsReport(postAlaramsReportRes.data.vehiclesAlarmData)
-        );
-        // dispatch(
-        //   RsetGetAlarmsReport(
-        //     postAlaramsReportRes.data.vehiclesAlarmData.map((item) => {
-        //       return item.driver;
-        //     })
-        //   )
-        // );
-        dispatch(
-          RsetGetAlarmsReportList(
-            postAlaramsReportRes.data.vehiclesAlarmData.map((item) => {
-              return item.alarms;
-            })
-          )
-        );
-      }
+      // const alarmsValues = {
+      //   dateFilter: {
+      //     start: fromDate ? fromDate : null,
+      //     end: toDate ? toDate : null,
+      //   },
+      //   timeFilter: {
+      //     start: getReportFromTime ? getReportFromTime : null,
+      //     end: getReportToTime ? getReportToTime : null,
+      //   },
+      //   speedFilter: {
+      //     min: null,
+      //     max: null,
+      //   },
+      //   groupFilter: [groupValue.value],
+      //   deviceFilter: vehicleValue?.map((item) => {
+      //     return item.value;
+      //   }),
+      // };
+      // console.log(alarmsValues);
+      // const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
+      // console.log(postAlaramsReportRes);
+      // if (postAlaramsReportRes.data.code === "200") {
+      // dispatch(
+      //   RsetGetReport(postAlaramsReportRes.data.vehiclesAlarmData)
+      // );
+      dispatch(RsetShowReportList(true));
+      dispatch(RsetGetReportList(fakeList));
+
+      // }
     }
   };
 
-  useEffect(() => {
-    getAlarmsReportList && setList(...getAlarmsReportList);
-  }, [getAlarmsReportList]);
-
-  console.log(list);
-
-  console.log(getAlarmsReport);
-
-  const handleGetAlarmsReport = (e) => {
-    e.preventDefault();
-    setShowList((prev) => !prev);
-  };
-
   return (
-    <div className="p-4">
-      <div className="lightGray-bg borderRadius-15 border border-white border-2 shadow-sm p-4">
-        <h1>گزارش‌گیری از وسایل نقلیه</h1>
-        <p className="mt-3 font12 text-secondary">
-          در این قسمت می‌توانید از موقعیت دستگاه‌ها یا هشدارها گزارش دریافت
-          کنید.
-        </p>
-      </div>
-      <Row className="mt-5">
-        <Col md="3">
-          <Reports />
-        </Col>
+    <div className="">
+      <Row className="mt-2">
         <Col md="3">
           <GetReportDevicesAndDrivers />
         </Col>
         <Col md="3">
           <GetReportDateForm />
         </Col>
-        {!getReportGPSLocations &&
-          !getReportVehiclesChanges &&
-          !getReportDriversConditions && (
-            <Col md="3">
-              <GetReportTime />
-            </Col>
-          )}
-        {!getReportAlarms &&
-          !getReportGPSLocations &&
-          !getReportVehiclesChanges &&
-          !getReportDriversConditions && (
-            <Col md="3" className="mt-2">
-              <GetReportSpeed />
-            </Col>
-          )}
-
         <Col md="3" className="d-flex align-items-end">
-          <Button onClick={handleReport}>جستوجو</Button>
+          <Button size="sm" onClick={handleReport}>
+            جستوجو
+          </Button>
         </Col>
       </Row>
       <div>
-        {/* {list && showList && list.length !== 0 ? (
-          
-        ) : null} */}
-        <div className="position-relative table-responsive mt-4">
-          {/* <DeviceTable
-                  requests={deviceList}
-                  columns={columns}
-                  data={data}
-                  onSort={handleSort}
-                  fetchData={fetchData}
-                  loading={load}
-                  pageCount={pageCount}
-                /> */}
-          <ConfigProvider
-            locale={faIR}
-            // theme={{
-            //   token: {
-            //     colorPrimary: "#00b96b",
-            //     colorBgContainer: "#f6ffed",
-            //   },
-            // }}
-          >
-            <Table
-              locale={{
-                emptyText: <Empty description="اطلاعات موجود نیست!" />,
-              }}
-              className="list"
-              bordered
-              dataSource={getAlarmsReport}
-              columns={columns}
-              pagination={paginationConfig}
-              scroll={{ x: "max-content" }}
-              size="middle"
-              expandable={{ expandedRowRender }}
-            />
-          </ConfigProvider>
-        </div>
+        {showReportList && (
+          <div className="position-relative table-responsive mt-4">
+            <ConfigProvider locale={faIR}>
+              <Table
+                locale={{
+                  emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                }}
+                className="list"
+                bordered
+                dataSource={getReport}
+                columns={columns}
+                pagination={paginationConfigList}
+                scroll={{ x: "max-content" }}
+                size="middle"
+                expandable={{ expandedRowRender }}
+              />
+            </ConfigProvider>
+          </div>
+        )}
       </div>
-      {/* <Row
-        className="mx-auto mt-5 lightGray-bg borderRadius-15 border border-white border-2 shadow p-3"
-        style={{ height: "500px", width: "100%" }}
-      >
-        <MapHeat />
-      </Row> */}
     </div>
   );
 };
 
-export default GetReport;
+export default GetVehicleChangeReport;

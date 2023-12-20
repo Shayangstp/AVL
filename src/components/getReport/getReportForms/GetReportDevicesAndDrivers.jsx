@@ -26,6 +26,7 @@ import {
   RsetGetReportVehicleValue,
 } from "../../../slices/getReportSlices";
 
+
 const GetReportDevicesAndDrivers = () => {
   //fill the options --> make it here for now
   const dispatch = useDispatch();
@@ -77,14 +78,6 @@ const GetReportDevicesAndDrivers = () => {
   const getReportVehiclesNumberOptions = useSelector(
     selectGetReportVehiclesNumberOptions
   );
-
-  // console.log(
-  //   vehicleValue?.map((item) => {
-  //     return item.value;
-  //   })
-  // );
-
-  console.log(vehicleValue);
 
   return (
     <Form className="border p-3 bg-light rounded">

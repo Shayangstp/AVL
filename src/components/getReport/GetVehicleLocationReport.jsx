@@ -39,8 +39,9 @@ import {
   selectGetReportList,
   selectGetReportGroupValue,
   selectGetReportVehicleValue,
-  RsetShowReportList,
+  selectGetReportVehiclesLocations,
   selectShowReportList,
+  RsetShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
 import { postAlarmsReport } from "../../services/getReportServices";
@@ -48,18 +49,19 @@ import { postAlarmsReport } from "../../services/getReportServices";
 const fakeList = [
   {
     _id: "5992786811dc0505f290f86b",
-    alarms: [
+    locations: [
       {
         date: "2021-11-06T07:10:22.000Z",
-        type: "Out of Zone",
-        desc: "vehicle location [35.1204183,50.3808883] is out of permissible zone",
+        address: "Markazi Province, Qeshlāq-e-chalablu, Unnamed Road, Iran",
+        cordinates: [35.1204183, 50.3808883],
+        speed: "8 KM/h",
       },
     ],
     driver: { name: "جعفر هنرمند", phoneNumber: "09127559751" },
   },
 ];
 
-const GetAlarmReport = () => {
+const GetVehicleLocationReport = () => {
   const dispatch = useDispatch();
   //table
   const [searchText, setSearchText] = useState("");
@@ -76,6 +78,10 @@ const GetAlarmReport = () => {
   const getReportToSpeed = useSelector(selectGetReportToSpeed);
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
+
+  const getReportVehiclesLocations = useSelector(
+    selectGetReportVehiclesLocations
+  );
 
   const getReportAlarms = useSelector(selectGetReportAlarms);
   const getReportGPSLocations = useSelector(selectGetReportGPSLocations);
@@ -331,31 +337,31 @@ const GetAlarmReport = () => {
         width: 200,
       },
       {
-        key: "type",
-        title: "نوع هشدار",
-        dataIndex: "type",
+        key: "cordinates",
+        title: "موقعیت جغرافیای",
+        dataIndex: "cordinates",
         sorter: (a, b) => {
-          if (!a.type && !b.type) {
+          if (!a.cordinates && !b.cordinates) {
             return 0;
           }
 
-          if (!a.type) {
+          if (!a.cordinates) {
             return 1;
           }
 
-          if (!b.type) {
+          if (!b.cordinates) {
             return -1;
           }
 
-          return a.type.localeCompare(b.type);
+          return a.cordinates.localeCompare(b.cordinates);
         },
-        ...getColumnSearchProps("type", "جستجو..."),
+        ...getColumnSearchProps("cordinates", "جستجو..."),
         width: 200,
       },
       {
-        key: "desc",
+        key: "speed",
         title: "توضیحات",
-        dataIndex: "desc",
+        dataIndex: "speed",
         sorter: (a, b) => {
           if (!a.desc && !b.desc) {
             return 0;
@@ -375,9 +381,32 @@ const GetAlarmReport = () => {
         width: 200,
         editable: true,
       },
+      {
+        key: "address",
+        title: "آدرس",
+        dataIndex: "address",
+        sorter: (a, b) => {
+          if (!a.address && !b.address) {
+            return 0;
+          }
+
+          if (!a.address) {
+            return 1;
+          }
+
+          if (!b.address) {
+            return -1;
+          }
+
+          return a.address.localeCompare(b.address);
+        },
+        ...getColumnSearchProps("address", "جستجو..."),
+        width: 200,
+        editable: true,
+      },
     ];
 
-    const expandedData = record.alarms.map((device) => ({
+    const expandedData = record.locations.map((device) => ({
       ...device,
       key: device.key,
     }));
@@ -418,7 +447,7 @@ const GetAlarmReport = () => {
   };
 
   const handleReport = async () => {
-    if (getReportAlarms) {
+    if (getReportVehiclesLocations) {
       const token = localStorage.getItem("token");
       // const alarmsValues = {
       //   dateFilter: {
@@ -464,7 +493,10 @@ const GetAlarmReport = () => {
         <Col md="3">
           <GetReportTime />
         </Col>
-        <Col md="3" className="d-flex align-items-end">
+        <Col md="3">
+          <GetReportSpeed />
+        </Col>
+        <Col md="3" className="d-flex align-items-end mt-2">
           <Button size="sm" onClick={handleReport}>
             جستوجو
           </Button>
@@ -495,4 +527,4 @@ const GetAlarmReport = () => {
   );
 };
 
-export default GetAlarmReport;
+export default GetVehicleLocationReport;

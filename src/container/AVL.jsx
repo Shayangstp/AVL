@@ -11,7 +11,7 @@ import CategoryList from "../components/category/CategoryList";
 import UserList from "../components/userManagement/UserList";
 import ViewPath from "../components/getReport/ViewPath";
 import ViewLastLocation from "../components/getReport/ViewLastLocation";
-import GetReport from "../components/getReport/GetReport";
+import GetReportPage from "../components/getReport/GetReportPage";
 import AddPhoneNumbers from "../components/userManagement/AddPhoneNumbers";
 import PhoneNumberList from "../components/userManagement/PhoneNumberList";
 import Test from "../components/test/Test";
@@ -52,7 +52,7 @@ const AVL = ({ props }) => {
           {/* category */}
           <Route path="/categoryList" element={<CategoryList />} />
           {/* report */}
-          <Route path="/getReport" element={<GetReport />} />
+          <Route path="/getReportPage" element={<GetReportPage />} />
           <Route path="/viewPath" element={<ViewPath />} />
           <Route
             path="/viewLastLocation"

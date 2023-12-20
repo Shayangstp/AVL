@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  Polyline,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -24,7 +30,7 @@ const Map = ({ height, width }) => {
 
   // Define your heatmap data
   const heatmapData = [
-    [35.7219, 51.3347, 0.5], // [latitude, longitude, intensity]
+    [[35.7219, 51.3347, 0.5]], // [latitude, longitude, intensity]
     [35.722, 51.335, 0.8],
     [35.7221, 52.336, 1.0],
     [35.7221, 53.336, 1.0],
@@ -34,6 +40,19 @@ const Map = ({ height, width }) => {
     // Add more data points as needed
   ];
 
+  const paths = [
+    [
+      [31.8319, 51.547],
+      [31.942, 51.655],
+      [31.521, 51.766],
+    ], // Path 1
+    [
+      [35.723, 51.337],
+      [35.724, 51.338],
+      [35.725, 51.339],
+    ], // Path 2
+    // Add more paths as needed
+  ];
   useEffect(() => {
     if (map) {
       const routingControl = L.Routing.control({
@@ -66,6 +85,9 @@ const Map = ({ height, width }) => {
         latitudeExtractor={(point) => point[0]}
         intensityExtractor={(point) => point[2]}
       />
+      {paths.map((path, index) => (
+        <Polyline key={index} positions={path} />
+      ))}
     </MapContainer>
   );
 };

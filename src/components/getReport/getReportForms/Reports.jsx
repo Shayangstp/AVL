@@ -12,6 +12,9 @@ import {
   selectGetReportVehiclesChanges,
   RsetGetReportDriversConditions,
   selectGetReportDriversConditions,
+  RsetGetReportList,
+  RsetShowReportList,
+  handleResetFormData,
 } from "../../../slices/getReportSlices";
 
 const Reports = () => {
@@ -52,63 +55,69 @@ const Reports = () => {
     dispatch(RsetGetReportGPSLocations(false));
     dispatch(RsetGetReportVehiclesChanges(false));
     dispatch(RsetGetReportDriversConditions(false));
+    dispatch(RsetGetReportList(""));
+    dispatch(RsetShowReportList(false));
+    //reset form
+    dispatch(handleResetFormData());
   };
 
   return (
     <Form>
-      <Form.Group className="border p-3 bg-light rounded">
-        <Form.Label className="mt-2">نوع گزارش</Form.Label>
-        <Form.Check
-          type="radio"
-          name="reports"
-          value="موقعیت ماشین ها"
-          label="موقعیت ماشین ها"
-          className="mt-2"
-          checked={selectedOption === "موقعیت ماشین ها"}
-          onChange={(e) => {
-            handleOptionChange(e);
-          }}
-        />
-        <Form.Check
-          type="radio"
-          name="reports"
-          value="هشدارها"
-          label="هشدارها"
-          checked={selectedOption === "هشدارها"}
-          onChange={(e) => {
-            handleOptionChange(e);
-          }}
-        />
-        <Form.Check
-          type="radio"
-          name="reports"
-          value="موقعیت GPS ها"
-          label="موقعیت GPS ها"
-          checked={selectedOption === "موقعیت GPS ها"}
-          onChange={(e) => {
-            handleOptionChange(e);
-          }}
-        />
-        <Form.Check
-          type="radio"
-          name="reports"
-          value="تغییرات ماشین ها"
-          label="تغییرات ماشین ها"
-          checked={selectedOption === "تغییرات ماشین ها"}
-          onChange={(e) => {
-            handleOptionChange(e);
-          }}
-        />
-        <Form.Check
-          type="radio"
-          name="reports"
-          value="وضعیت راننده ها"
-          label="وضعیت راننده ها"
-          checked={selectedOption === "وضعیت راننده ها"}
-          onChange={(e) => {
-            handleOptionChange(e);
-          }}
-        />
+      <Form.Group className="border p-3 bg-light rounded d-flex flex-column">
+        <div className="mt-2">نوع گزارش</div>
+        <div className="d-flex gap-5 m-3">
+          <Form.Check
+            type="radio"
+            name="reports"
+            value="موقعیت ماشین ها"
+            label="موقعیت ماشین ها"
+            className=""
+            checked={selectedOption === "موقعیت ماشین ها"}
+            onChange={(e) => {
+              handleOptionChange(e);
+            }}
+          />
+          <Form.Check
+            type="radio"
+            name="reports"
+            value="هشدارها"
+            label="هشدارها"
+            checked={selectedOption === "هشدارها"}
+            onChange={(e) => {
+              handleOptionChange(e);
+            }}
+          />
+          <Form.Check
+            type="radio"
+            name="reports"
+            value="موقعیت GPS ها"
+            label="موقعیت GPS ها"
+            checked={selectedOption === "موقعیت GPS ها"}
+            onChange={(e) => {
+              handleOptionChange(e);
+            }}
+          />
+          <Form.Check
+            type="radio"
+            name="reports"
+            value="تغییرات ماشین ها"
+            label="تغییرات ماشین ها"
+            checked={selectedOption === "تغییرات ماشین ها"}
+            onChange={(e) => {
+              handleOptionChange(e);
+            }}
+          />
+          <Form.Check
+            type="radio"
+            name="reports"
+            value="وضعیت راننده ها"
+            label="وضعیت راننده ها"
+            checked={selectedOption === "وضعیت راننده ها"}
+            onChange={(e) => {
+              handleOptionChange(e);
+            }}
+          />
+        </div>
       </Form.Group>
     </Form>
   );

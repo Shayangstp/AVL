@@ -32,8 +32,8 @@ const initialState = {
   getReportVehicleValue: "",
 
   //
-  getAlarmsReports: [],
-  getAlarmsReportsList: [],
+  getReportList: [],
+  showReportList: false,
 };
 
 export const handleGroupList = createAsyncThunk(
@@ -61,6 +61,7 @@ export const handleGroupList = createAsyncThunk(
     }
   }
 );
+
 export const handleViewPath = createAsyncThunk(
   "getReport/handleViewPath",
   async (obj, { dispatch, getState }) => {
@@ -90,6 +91,20 @@ export const handleViewPath = createAsyncThunk(
     } catch (ex) {
       console.log(ex);
     }
+  }
+);
+export const handleResetFormData = createAsyncThunk(
+  "getReport/handleResetFormData",
+  async (obj, { dispatch, getState }) => {
+    dispatch(RsetGetReportFromDate(null));
+    dispatch(RsetGetReportToDate(null));
+    dispatch(RsetGetReportVehicleValue(""));
+    dispatch(RsetGetReportVehiclesNumber(""));
+    dispatch(RsetGetReportGroupValue(""));
+    dispatch(RsetGetReportFromSpeed(""));
+    dispatch(RsetGetReportToSpeed(""));
+    dispatch(RsetGetReportFromTime(""));
+    dispatch(RsetGetReportToTime(""));
   }
 );
 
@@ -173,11 +188,11 @@ const getReportSlices = createSlice({
       return { ...state, getReportVehicleValue: payload };
     },
     //
-    RsetGetAlarmsReport: (state, { payload }) => {
-      return { ...state, getAlarmsReport: payload };
+    RsetGetReportList: (state, { payload }) => {
+      return { ...state, getReportList: payload };
     },
-    RsetGetAlarmsReportList: (state, { payload }) => {
-      return { ...state, getAlarmsReportList: payload };
+    RsetShowReportList: (state, { payload }) => {
+      return { ...state, showReportList: payload };
     },
   },
 });
@@ -209,8 +224,8 @@ export const {
   RsetGetReportGroupValue,
   RsetGetReportVehicleValue,
   //
-  RsetGetAlarmsReport,
-  RsetGetAlarmsReportList,
+  RsetGetReportList,
+  RsetShowReportList,
 } = getReportSlices.actions;
 
 export const selectGetReportFromDate = (state) =>
@@ -259,7 +274,7 @@ export const selectGetReportGroupValue = (state) =>
 export const selectGetReportVehicleValue = (state) =>
   state.getReport.getReportVehicleValue;
 //
-export const selectGetAlarmsReport = (state) => state.getReport.getAlarmsReport;
-export const selectGetAlarmsReportList = (state) =>
-  state.getReport.getAlarmsReportList;
+export const selectGetReportList = (state) => state.getReport.getReportList;
+export const selectShowReportList = (state) => state.getReport.showReportList;
+
 export default getReportSlices.reducer;

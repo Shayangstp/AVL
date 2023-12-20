@@ -47,15 +47,71 @@ import { postAlarmsReport } from "../../services/getReportServices";
 
 const fakeList = [
   {
-    _id: "5992786811dc0505f290f86b",
-    alarms: [
+    _id: "جعفر هنرمند",
+    vehicles: [
       {
-        date: "2021-11-06T07:10:22.000Z",
-        type: "Out of Zone",
-        desc: "vehicle location [35.1204183,50.3808883] is out of permissible zone",
+        plate: "14122",
+        date: "2022-11-13T05:46:49.532Z",
+        type: "KAMIOON",
+        group: "کاوه سیلیس",
+      },
+      {
+        plate: "18658",
+        date: "2023-07-05T06:00:45.828Z",
+        type: "KAMIOON",
+        group: "کاوه سیلیس",
       },
     ],
-    driver: { name: "جعفر هنرمند", phoneNumber: "09127559751" },
+    currentVehicle: {
+      _id: "5992786811dc0505f290f86b",
+      simNumber: "09363023698",
+      deviceIMEI: "357454074845130",
+      status: true,
+      createDate: "Tue Aug 15 2017 04:28:24 GMT+0000 (UTC)",
+      creator: "5774e37f0939adcc010d4e73",
+      vehicleName: "Scania G400",
+      plate: "93812",
+      type: "KAMIOON",
+      driverName: "جعفر هنرمند",
+      driverPhoneNumber: "09127559751",
+      GPSSettings: {
+        sos: "09128995907",
+        interval: "10",
+        APN: "mtnirancell",
+      },
+      regionAlarm: {
+        sendEmail: true,
+        sendSMS: true,
+        _id: "5e26e81d91cfca572aa5f55c",
+      },
+      pmAlarm: {
+        sendEmail: true,
+        sendSMS: true,
+        _id: "5e26e7c391cfca572aa5f4a9",
+      },
+      speedAlarm: {
+        sendSMS: true,
+        sendEmail: true,
+        _id: "633d2a984882e73b5291f5d4",
+        rcvSMSNumbers: "09138786510",
+        smsReceivers: [],
+      },
+      trackerModel: "FMXXXX",
+      pmCheckPoints: [],
+      maxPMDistance: "50000",
+      maxSpeed: "100",
+      gpsData: [],
+      __v: 24088,
+      gpsDataCount: 170421,
+      lastLocation: "6582be2151915f62f5abc18c",
+      zoneStatus: "IN",
+      vehicleStatus: "657bd65ab0145d4c63697160",
+      currentMonthDistance: 8101.33,
+      model: "64d090e418c0a53063969b96",
+      fuel: 41,
+      usage: "کمپرسی",
+      groups: "کاوه سیلیس",
+    },
   },
 ];
 
@@ -194,104 +250,74 @@ const GetAlarmReport = () => {
     {
       key: "name",
       title: "نام راننده",
-      dataIndex: ["driver", "name"],
+      dataIndex: "_id",
       sorter: (a, b) => {
-        if (!a.driver?.name && !b.driver?.name) {
+        if (!a._id && !b._id) {
           return 0;
         }
 
-        if (!a.driver?.name) {
+        if (!a._id) {
           return 1;
         }
 
-        if (!b.driver?.name) {
+        if (!b._id) {
           return -1;
         }
 
-        return a.driver.name.localeCompare(b.driver.name);
+        return a._id.localeCompare(b._id);
       },
-      ...getColumnSearchProps("driver.name", "جستجو..."),
-      width: 500,
-    },
-  ];
-
-  const itemColumns = [
-    {
-      key: "idx",
-      title: "ردیف",
-      dataIndex: "",
-      render: (text, record, index) => index + 1,
-      titleStyle: {
-        fontSize: "10px",
-        fontWeight: "bold",
-      },
-      width: 200,
+      ...getColumnSearchProps("_id", "جستجو..."),
+      width: 100,
     },
     {
-      key: "date",
-      title: "تاریخ",
-      dataIndex: "date",
+      key: "currentVehicle",
+      title: "زمان",
+      render: () => "درحال حاظر",
+      width: 100,
+    },
+    {
+      key: "plate",
+      title: "پلاک",
+      dataIndex: ["currentVehicle", "plate"],
       sorter: (a, b) => {
-        if (!a.date && !b.date) {
+        if (!a.currentVehicle.plate && !b.currentVehicle.plate) {
           return 0;
         }
 
-        if (!a.date) {
+        if (!a.currentVehicle.plate) {
           return 1;
         }
 
-        if (!b.date) {
+        if (!b.currentVehicle.plate) {
           return -1;
         }
 
-        return a.date.localeCompare(b.date);
+        return a.currentVehicle.plate.localeCompare(b.currentVehicle.plate);
       },
-      ...getColumnSearchProps("date", "جستجو..."),
-      width: 200,
+      ...getColumnSearchProps("currentVehicle.plate", "جستجو..."),
+      width: 100,
     },
     {
-      key: "type",
-      title: "نوع هشدار",
-      dataIndex: "type",
+      key: "groups",
+      title: "گروه",
+      dataIndex: ["currentVehicle", "groups"],
       sorter: (a, b) => {
-        if (!a.type && !b.type) {
+        if (!a.currentVehicle.groups && !b.currentVehicle.groups) {
           return 0;
         }
 
-        if (!a.type) {
+        if (!a.currentVehicle.groups) {
           return 1;
         }
 
-        if (!b.type) {
+        if (!b.currentVehicle.groups) {
           return -1;
         }
 
-        return a.type.localeCompare(b.type);
+        return a.currentVehicle.groups.localeCompare(b.currentVehicle.groups);
       },
-      ...getColumnSearchProps("type", "جستجو..."),
-      width: 200,
-    },
-    {
-      key: "desc",
-      title: "توضیحات",
-      dataIndex: "desc",
-      sorter: (a, b) => {
-        if (!a.desc && !b.desc) {
-          return 0;
-        }
-
-        if (!a.desc) {
-          return 1;
-        }
-
-        if (!b.desc) {
-          return -1;
-        }
-
-        return a.desc.localeCompare(b.desc);
-      },
-      ...getColumnSearchProps("desc", "جستجو..."),
-      width: 200,
+      ...getColumnSearchProps("currentVehicle.groups", "جستجو..."),
+      width: 100,
     },
   ];
 
@@ -328,58 +354,58 @@ const GetAlarmReport = () => {
           return a.date.localeCompare(b.date);
         },
         ...getColumnSearchProps("date", "جستجو..."),
-        width: 200,
+        width: 100,
       },
       {
-        key: "type",
-        title: "نوع هشدار",
-        dataIndex: "type",
+        key: "plate",
+        title: "پلاک",
+        dataIndex: "plate",
         sorter: (a, b) => {
-          if (!a.type && !b.type) {
+          if (!a.plate && !b.plate) {
             return 0;
           }
 
-          if (!a.type) {
+          if (!a.plate) {
             return 1;
           }
 
-          if (!b.type) {
+          if (!b.plate) {
             return -1;
           }
 
-          return a.type.localeCompare(b.type);
+          return a.plate.localeCompare(b.plate);
         },
-        ...getColumnSearchProps("type", "جستجو..."),
-        width: 200,
+        ...getColumnSearchProps("plate", "جستجو..."),
+        width: 100,
       },
       {
-        key: "desc",
-        title: "توضیحات",
-        dataIndex: "desc",
+        key: "group",
+        title: "گروه",
+        dataIndex: "group",
         sorter: (a, b) => {
-          if (!a.desc && !b.desc) {
+          if (!a.group && !b.group) {
             return 0;
           }
 
-          if (!a.desc) {
+          if (!a.group) {
             return 1;
           }
 
-          if (!b.desc) {
+          if (!b.group) {
             return -1;
           }
 
-          return a.desc.localeCompare(b.desc);
+          return a.group.localeCompare(b.group);
         },
-        ...getColumnSearchProps("desc", "جستجو..."),
+        ...getColumnSearchProps("group", "جستجو..."),
         width: 200,
         editable: true,
       },
     ];
 
-    const expandedData = record.alarms.map((device) => ({
-      ...device,
-      key: device.key,
+    const expandedData = record.vehicles.map((vehicles) => ({
+      ...vehicles,
+      key: vehicles.key,
     }));
 
     return (
@@ -418,7 +444,7 @@ const GetAlarmReport = () => {
   };
 
   const handleReport = async () => {
-    if (getReportAlarms) {
+    if (getReportDriversConditions) {
       const token = localStorage.getItem("token");
       // const alarmsValues = {
       //   dateFilter: {
@@ -460,9 +486,6 @@ const GetAlarmReport = () => {
         </Col>
         <Col md="3">
           <GetReportDateForm />
-        </Col>
-        <Col md="3">
-          <GetReportTime />
         </Col>
         <Col md="3" className="d-flex align-items-end">
           <Button size="sm" onClick={handleReport}>
