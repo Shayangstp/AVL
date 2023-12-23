@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import { Button, Nav, Navbar, DropdownButton, Dropdown } from "react-bootstrap";
 import {
   faHome,
   faLocationDot,
@@ -10,11 +10,21 @@ import {
   faChartSimple,
   faUser,
   faUserCircle,
+  faBars,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from "../../slices/mainSlices";
-import { handleLogout, selectLoggedIn } from "../../slices/authSlices";
+import {
+  selectUser,
+  selectSmallNav,
+  RsetSmallNav,
+} from "../../slices/mainSlices";
+import {
+  handleLogout,
+  selectLoggedIn,
+  RsetLoggedIn,
+} from "../../slices/authSlices";
 
 const Sidebar = () => {
   const [deviceDrop, setDeviceDrop] = useState(false);
@@ -24,6 +34,9 @@ const Sidebar = () => {
   const [profileDrop, setProfileDrop] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const smallNav = useSelector(selectSmallNav);
+  const loggedIn = useSelector(selectLoggedIn);
 
   const handleStatesFalse = () => {
     setDeviceDrop(false);
@@ -52,31 +65,204 @@ const Sidebar = () => {
 
   return (
     <div className="h-100">
-      <div className="sidebar shadow h-100">
-        <Navbar expand="lg" bg="dark" className="sidebarItems h-100">
-          {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
+      {/* <div className="sidebar shadow h-100 borderRadius-15"> */}
+      {!smallNav ? (
+        <Navbar expand="lg" bg="dark" className="borderRadius-15 h-100">
           <Navbar.Collapse
             id="basic-navbar-nav"
             className="w-100 h-100 d-flex flex-column justify-content-between"
           >
-            <div className="w-100 mt-5">
-              <Nav className="flex-column w-100">
-                <Navbar.Brand className="text-center mb-3">
-                  {/* <div className="text-center text-white">
-                    <img
-                      className="img-fluid invert w-25 mb-3"
-                      src="../../images/avlLogo.png"
+            <div className="mt-3 d-flex w-100">
+              <Nav className="d-flex flex-column align-items-center w-100">
+                <div className="mb-3">
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    className="fs-6 text-white cursorPointer"
+                    onClick={() => {
+                      dispatch(RsetSmallNav(!smallNav));
+                    }}
+                  />
+                </div>
+                <Nav.Link
+                  onClick={() => navigate("/home")}
+                  className="text-white "
+                >
+                  <span className="">
+                    <FontAwesomeIcon
+                      icon={faHome}
+                      id="dashboard"
+                      className="h4 navItem"
                     />
-                  </div> */}
+                  </span>
+                </Nav.Link>
+                {/* device dropDown */}
+                <div className="">
+                  <DropdownButton
+                    className="d-flex justify-content-between text-white "
+                    drop="end"
+                    variant="transparent"
+                    title={
+                      <span>
+                        <FontAwesomeIcon
+                          icon={faLocationDot}
+                          className="h4 navItem ms-1"
+                        />
+                      </span>
+                    }
+                  >
+                    <Dropdown.Header>دستگاه ها</Dropdown.Header>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => navigate("/addDevice")}>
+                      افزودن دستگاه
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/deviceList")}>
+                      مشاهده دستگاه ها
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/addVehicle")}>
+                      افزودن مدل دستگاه
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </div>
+                {/* categories dropDown */}
+                <div className="">
+                  <DropdownButton
+                    data-bs-theme="dark"
+                    className="d-flex justify-content-between text-white"
+                    drop="end"
+                    variant="transparent"
+                    title={
+                      <span>
+                        <FontAwesomeIcon
+                          icon={faClone}
+                          className="h4 navItem"
+                        />
+                      </span>
+                    }
+                  >
+                    <Dropdown.Header>دسته ها</Dropdown.Header>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => navigate("/categoryList")}>
+                      مشاهده
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </div>
+                {/* report */}
+                <div className="">
+                  <DropdownButton
+                    data-bs-theme="dark"
+                    className="d-flex justify-content-between text-white"
+                    drop="end"
+                    variant="transparent"
+                    title={
+                      <span>
+                        <FontAwesomeIcon
+                          icon={faChartSimple}
+                          className="navItem h4"
+                        />
+                      </span>
+                    }
+                  >
+                    <Dropdown.Header>گزارش ها</Dropdown.Header>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => navigate("/viewPath")}>
+                      مشاهده مسیر
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => navigate("/viewLastLocation")}
+                    >
+                      مشاهده آخرین موقعیت
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/getReportPage")}>
+                      گزارش گیری
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </div>
+                {/* user management */}
+                <div className="">
+                  <DropdownButton
+                    data-bs-theme="dark"
+                    className="d-flex justify-content-between text-white"
+                    drop="end"
+                    variant="transparent"
+                    title={
+                      <span>
+                        <FontAwesomeIcon icon={faUser} className="navItem h4" />
+                      </span>
+                    }
+                  >
+                    <Dropdown.Header>مدیریت کاربران</Dropdown.Header>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={() => navigate("/addUser")}>
+                      افزودن کاربر
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/userList")}>
+                      مشاهده کاربرها
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => navigate("/viewPhoneNumbers")}
+                    >
+                      مشاهده شماره تلفن ها
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/addPhoneNumber")}>
+                      افزودن شماره تلفن
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </div>
+              </Nav>
+            </div>
+            <div>
+              <span
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  dispatch(RsetLoggedIn(false));
+                  navigate("/");
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faRightFromBracket}
+                  className="me-2 h4 navItem cursorPointer"
+                />
+              </span>
+              <div style={{ height: "50px" }}></div>
+            </div>
+          </Navbar.Collapse>
+        </Navbar>
+      ) : (
+        <Navbar expand="lg" bg="dark" className="h-100 borderRadius-15">
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className="w-100 h-100 d-flex flex-column justify-content-between"
+          >
+            <div className="w-100 mt-3">
+              <Nav className="flex-column w-100">
+                <Navbar.Brand className="text-center mb-3 d-flex justify-content-between align-items-center">
+                  <div className="text-center text-white">
+                    <img
+                      className="img-fluid w-50 cursorPointer"
+                      src="../../images/avlLogoFinal.png"
+                      onClick={() => {
+                        navigate("/home");
+                      }}
+                    />
+                  </div>
+                  <div className="">
+                    <FontAwesomeIcon
+                      icon={faBars}
+                      className="fs-6 text-white cursorPointer"
+                      onClick={() => {
+                        dispatch(RsetSmallNav(!smallNav));
+                      }}
+                    />
+                  </div>
                 </Navbar.Brand>
                 <Nav.Link
                   onClick={() => navigate("/home")}
-                  className="sidebar-link text-white"
+                  className="sidebar-link text-white mt-2"
                 >
                   <span className="ms-3">
                     <FontAwesomeIcon icon={faHome} />
                   </span>
-                  <span className="ms-3 font12">داشبورد</span>
+                  <span className="ms-3">داشبورد</span>
                 </Nav.Link>
                 {/* device dropDown */}
                 <Nav.Link
@@ -84,18 +270,21 @@ const Sidebar = () => {
                   href="#about"
                   className="sidebar-link d-flex justify-content-between text-white"
                 >
-                  <span className="ms-3 font9">
-                    <FontAwesomeIcon
-                      icon={faLocationDot}
-                      className="me-3 font10"
-                    />
+                  <span className="ms-3 font12">
+                    <FontAwesomeIcon icon={faLocationDot} className="me-3" />
                     دستگاه ها
                   </span>
                   <span className="ms-3">
                     {deviceDrop ? (
-                      <FontAwesomeIcon icon={faChevronUp} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="me-3 font10"
+                      />
                     ) : (
-                      <FontAwesomeIcon icon={faChevronDown} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="me-3 font10"
+                      />
                     )}
                   </span>
                 </Nav.Link>
@@ -132,15 +321,21 @@ const Sidebar = () => {
                   onClick={handleCategoriesDropdown}
                   className="sidebar-link d-flex flex-row justify-content-between text-white"
                 >
-                  <span className="ms-3 font9">
+                  <span className="ms-3 font12">
                     <FontAwesomeIcon icon={faClone} className="me-3" />
                     دسته ها
                   </span>
                   <span className="ms-3">
                     {categoriesDrop ? (
-                      <FontAwesomeIcon icon={faChevronUp} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="me-3 font10"
+                      />
                     ) : (
-                      <FontAwesomeIcon icon={faChevronDown} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="me-3 font10"
+                      />
                     )}
                   </span>
                 </Nav.Link>
@@ -150,7 +345,7 @@ const Sidebar = () => {
                       onClick={() => navigate("/categoryList")}
                       className="sidebar-link"
                     >
-                      <span className="ms-4 lightGray font9">مشاهده</span>
+                      <span className="ms-4 lightGray font10">مشاهده</span>
                     </Nav.Link>
                   </div>
                 )}
@@ -159,15 +354,21 @@ const Sidebar = () => {
                   onClick={handleReportDropdown}
                   className="sidebar-link d-flex flex-row justify-content-between text-white"
                 >
-                  <span className="ms-3 font9">
+                  <span className="ms-3 font12">
                     <FontAwesomeIcon icon={faChartSimple} className="me-3" />
                     گزارش ها
                   </span>
                   <span className="ms-3">
                     {reportsDrop ? (
-                      <FontAwesomeIcon icon={faChevronUp} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="me-3 font10"
+                      />
                     ) : (
-                      <FontAwesomeIcon icon={faChevronDown} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="me-3 font10"
+                      />
                     )}
                   </span>
                 </Nav.Link>
@@ -200,15 +401,21 @@ const Sidebar = () => {
                   onClick={handleUserManagmentdropDown}
                   className="sidebar-link d-flex flex-row justify-content-between text-white"
                 >
-                  <span className="ms-3 font9">
+                  <span className="ms-3 font12">
                     <FontAwesomeIcon icon={faUser} className="me-3" />
                     مدیریت کاربران
                   </span>
                   <span className="ms-3">
                     {userManagmentDrop ? (
-                      <FontAwesomeIcon icon={faChevronUp} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronUp}
+                        className="me-3 font10"
+                      />
                     ) : (
-                      <FontAwesomeIcon icon={faChevronDown} className="me-3" />
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className="me-3 font10"
+                      />
                     )}
                   </span>
                 </Nav.Link>
@@ -248,10 +455,26 @@ const Sidebar = () => {
                 )}
               </Nav>
             </div>
+            <div>
+              <Button className="px-4 py-2 bg-transparent border-2 border-danger rounded-pill navItem">
+                <span
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    dispatch(RsetLoggedIn(false));
+                    navigate("/");
+                  }}
+                >
+                  <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
+                </span>
+                <span className="font12">خروج</span>
+              </Button>
+              <div style={{ height: "50px" }}></div>
+            </div>
           </Navbar.Collapse>
         </Navbar>
-      </div>
+      )}
     </div>
+    // </div>
   );
 };
 

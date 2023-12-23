@@ -1,31 +1,34 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Header from "../common/Header";
 import Sidebar from "../common/Sidebar";
 import { Container, Row, Col } from "react-bootstrap";
 import { selectUser } from "../../slices/mainSlices";
 import { useDispatch, useSelector } from "react-redux";
 import NavbarOff from "../common/NavbarOff";
+import { RsetSmallNav, selectSmallNav } from "../../slices/mainSlices";
 
 const MainLayout = (props) => {
   const user = useSelector(selectUser);
+  const smallNav = useSelector(selectSmallNav);
 
   return (
-    <div className="px-0">
+    <div className="bg-dark p-2">
       {user.id !== undefined && (
-        <div className="m-0 h-100">
+        <div className="m-0 h-100 bg-white p-1 borderRadius-15">
           <Row className="m-0">
-            <Col sm="12" className="p-0  d-none d-xl-inline">
-              <Header />
-            </Col>
-            <Col sm="12" className="p-0 d-inline d-xl-none">
-              <NavbarOff />
-            </Col>
-          </Row>
-          <Row className="d-flex m-0">
-            <Col sm="2" lg="3" xl="2" className="d-none d-xl-inline p-0">
+            <Col
+              sm="2"
+              xl={!smallNav ? "1" : "2"}
+              className="d-none d-xl-inline border p-0"
+            >
               <Sidebar />
             </Col>
-            <Col sm="12" xl="10" className="p-0 min-vh-100">
+            <Col
+              sm="12"
+              xl={!smallNav ? "11" : "10"}
+              className="p-0 min-vh-100"
+            >
+              <Header />
               {props.children}
             </Col>
           </Row>

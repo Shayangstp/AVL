@@ -9,6 +9,26 @@
   font-display: swap;
 }
 
+/* header line */
+.line {
+  width: 20px;
+  border: 1px solid rgba(99, 99, 99, 0.288);
+  rotate: 90deg;
+}
+
+/* header */
+.nav-header {
+  background-image: linear-gradient(to bottom, #ffffff, #a3a3a3);
+}
+
+/* smallNav */
+.navItem {
+  color: #fff;
+}
+.navItem:hover {
+  color: #ff2a2a;
+}
+
 /* 404 */
 .clearfix:before,
 .clearfix:after {
@@ -145,7 +165,7 @@ body {
   padding: 3px !important;
   font-size: 12px !important;
   font-weight: normal !important;
-} 
+}
 
 .list tbody.ant-table-tbody tr td {
   padding: 6px !important;
@@ -221,7 +241,7 @@ body * {
 
 /* colors */
 .lightGray {
-  color: #b3b3b3;
+  color: #dadada;
 }
 /* end of colors */
 
@@ -390,16 +410,6 @@ body * {
 /* end of login  */
 
 /* navBar */
-.sidebar {
-  /* position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0; */
-  /* height: 100vh; */
-  /* width: 300px; */
-  background-color: #343a40;
-  /* padding-top: 20px; */
-}
 
 .sidebar .nav-link:hover {
   color: #fff;
@@ -412,15 +422,14 @@ body * {
 }
 
 .sidebar-link {
-  padding: 10px;
-  margin: 0px 30px;
+  padding: 12px;
   color: #fff;
   border-radius: 15px;
   transition: background-color 0.3s;
 }
 
 .sidebar-link:hover {
-  background-color: #246bdd;
+  background-color: #a81f1f;
   border-radius: 15px;
 }
 
@@ -437,8 +446,8 @@ body * {
 }
 
 .navIconProfile {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 

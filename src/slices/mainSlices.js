@@ -13,6 +13,7 @@ const initialState = {
   // unit: "",
   unitsOption: [],
   // typesOption: [],
+  smallNav: false,
 };
 
 export const handleAllGpsesList = createAsyncThunk(
@@ -63,6 +64,9 @@ const mainSlices = createSlice({
     RsetUnitsOption: (state, { payload }) => {
       return { ...state, unitsOption: payload };
     },
+    RsetSmallNav: (state, { payload }) => {
+      return { ...state, smallNav: payload };
+    },
   },
 });
 
@@ -73,6 +77,7 @@ export const {
   RsetUploadFile,
   RsetAllGpses,
   RsetUnitsOption,
+  RsetSmallNav,
 } = mainSlices.actions;
 
 export const selectFormErrors = (state) => state.main.formErrors;
@@ -82,5 +87,6 @@ export const selectAvatar = (state) => state.main.avatar;
 export const selectUploadFile = (state) => state.main.uploadFile;
 export const selectAllGpses = (state) => state.main.allGpses;
 export const selectUnitsOption = (state) => state.main.unitsOption;
+export const selectSmallNav = (state) => state.main.smallNav;
 
 export default mainSlices.reducer;
