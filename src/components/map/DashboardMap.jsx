@@ -96,6 +96,7 @@ const DashboardMap = ({ height, width }) => {
         center={[35.7219, 51.3347]}
         zoom={5}
         style={{ height: height, width: width }}
+        className="borderRadius-15"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
@@ -107,7 +108,7 @@ const DashboardMap = ({ height, width }) => {
             icon={colorPicker(marker.group.color)}
           >
             <Popup>
-              <Button size="sm" className="font10">
+              <Button size="sm" className="font10" variant="dark">
                 مشاهده
               </Button>
               <ul className="list-group list-group-flush list-group-numbered">

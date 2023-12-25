@@ -14,7 +14,10 @@ const MainLayout = (props) => {
   return (
     <div className="bg-dark p-2">
       {user.id !== undefined && (
-        <div className="m-0 h-100 bg-white p-1 borderRadius-15">
+        <div
+          className="m-0 h-100 p-1 borderRadius-15"
+          style={{ background: "#f2f2f2" }}
+        >
           <Row className="m-0">
             <Col
               sm="2"

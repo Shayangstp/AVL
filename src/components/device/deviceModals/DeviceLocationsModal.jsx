@@ -35,7 +35,7 @@ const DeviceLocationsModal = () => {
       show={deviceLocationsModal}
       className="borderRadius-15"
     >
-      <Modal.Header className="bg-primary text-white">
+      <Modal.Header className="bg-danger text-white">
         <Modal.Title id="contained-modal-title-vcenter " className="fs-5">
           مشاهده مکان ها
         </Modal.Title>

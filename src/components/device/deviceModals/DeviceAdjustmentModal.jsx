@@ -48,6 +48,8 @@ import {
 import { useEffect } from "react";
 import { errorMessage, successMessage } from "../../../utils/msg";
 import { useNavigate } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
 
 const gpsValues = [
   {
@@ -447,8 +449,12 @@ const DeviceAdjustmentModal = () => {
       show={deviceAdjusmentModal}
       className="borderRadius-15"
     >
-      <Modal.Header className="bg-primary text-white">
+      <Modal.Header className="bg-dark text-white">
         <Modal.Title id="contained-modal-title-vcenter" className="fs-5">
+          <span className="me-2">
+            {" "}
+            <FontAwesomeIcon icon={faScrewdriverWrench} />
+          </span>
           تنضیمات
         </Modal.Title>
       </Modal.Header>

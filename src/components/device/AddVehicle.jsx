@@ -9,6 +9,8 @@ import {
 } from "../../slices/deviceSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAd, faAdd, faCar } from "@fortawesome/free-solid-svg-icons";
 
 const AddVehicle = () => {
   const dispatch = useDispatch();
@@ -46,17 +48,22 @@ const AddVehicle = () => {
   }, []);
 
   return (
-    <Container className="h-75 mt-5 d-flex flex-column flex-md-row justify-content-md-between">
+    <Container className="mt-5 d-flex flex-column flex-md-row justify-content-md-between">
       <Form>
-        <div className="lightGray-bg p-5 shadow borderRadius-15 border border-white border-2">
-          <Row className="">
-            <div className="mb-5 fs-5">-افزودن مدل دستگاه ﺟﺪﯾﺪ</div>
+        <Row className="shadow bg-white borderRadius-15 mx-auto">
+          <div className="deviceHeader p-3">
+            <span className="me-2">
+              <FontAwesomeIcon icon={faAdd} />
+            </span>
+            افزودن مدل دستگاه ﺟﺪﯾﺪ
+          </div>
+          <div className="p-4 bg-white borderRadius-15">
             <Form.Group as={Col} md="12">
               <Form.Label className="required-field">نام مدل: </Form.Label>
               <Form.Control
                 className={`${
                   !vehicleAddTypeIsValid ? formErrors.vehicleAddType : ""
-                }`}
+                } borderRadius-15`}
                 type="text"
                 name=""
                 value={vehicleAddType}
@@ -65,9 +72,7 @@ const AddVehicle = () => {
                 }}
               />
             </Form.Group>
-          </Row>
-          <Row className="mt-4 mb-5">
-            <Col className="d-flex flex-column flex-sm-row justify-content-center mt-4">
+            <Form.Group className="d-flex flex-column flex-sm-row justify-content-center mt-4">
               <Button
                 variant="success"
                 className="mb-3 me-sm-5 font12 px-4"
@@ -88,24 +93,26 @@ const AddVehicle = () => {
               >
                 انصراف
               </Button>
-            </Col>
-          </Row>
-        </div>
+            </Form.Group>
+          </div>
+        </Row>
       </Form>
-      <Col
-        md="7"
-        className="ms-0 ms-md-3 mt-3 mt-md-0 borderRadius-15 h-100 lightGray-bg shadow borderRadius-15 border border-white border-2"
-      >
-        <ul className="ms-5 mt-4">
-          {vehicleAdded.map((i, idx) => {
-            return (
-              <li key={idx} className="text-secondary mt-4">
-                {i.name}
-              </li>
-            );
-          })}
-        </ul>
-      </Col>
+      <Row>
+        <div
+          className="ms-0 ms-md-3 mt-3 mt-md-0 borderRadius-15 lightGray-bg shadow borderRadius-15 border border-white border-2"
+          style={{ right: "350px" }}
+        >
+          <ul className="ms-5 mt-4 d-flex flex-column flex-wrap">
+            {vehicleAdded.map((i, idx) => {
+              return (
+                <li key={idx} className="text-secondary mt-4">
+                  {i.name}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </Row>
     </Container>
   );
 };

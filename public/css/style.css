@@ -146,15 +146,27 @@ body {
 
 .list thead.ant-table-thead tr td,
 .list thead.ant-table-thead tr th {
-  background-color: #6c757d !important;
-  color: #fff !important;
+  background-color: #c1ff00 !important;
+  color: #000 !important;
   padding: 6px !important;
   font-size: 10px;
 }
 
+.custom-row-0 {
+  background-color: white; /* Set the background color for the first color index */
+}
+
+.custom-row-1 {
+  background-color: rgb(
+    219,
+    219,
+    219
+  ); /* Set the background color for the second color index */
+}
+
 .list thead.ant-table-thead tr td span,
 .list thead.ant-table-thead tr th span {
-  font-size: 12px !important;
+  font-size: 8px !important;
   margin-inline: 0px !important;
 }
 
@@ -205,6 +217,15 @@ body {
   margin: 30px !important;
 } */
 
+.deviceHeader {
+  background-color: #c1ff00;
+  color: #000;
+}
+.reportHeader {
+  background-color: #ff6f3d;
+  color: #000;
+}
+
 body * {
   font-family: iranSans;
   font-size: 14px;
@@ -254,6 +275,12 @@ body * {
 
 .borderRadius-15 {
   border-radius: 15px;
+}
+.borderRadius-top {
+  border-radius: 15px 15px 0px 0px;
+}
+.borderRadius-bottom {
+  border-radius: 0px 0px 15px 15px;
 }
 .borderRadius50 {
   border-radius: 50%;

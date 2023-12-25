@@ -25,7 +25,8 @@ import {
   RsetGetReportGroupValue,
   RsetGetReportVehicleValue,
 } from "../../../slices/getReportSlices";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDirections, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 const GetReportDevicesAndDrivers = () => {
   //fill the options --> make it here for now
@@ -80,55 +81,60 @@ const GetReportDevicesAndDrivers = () => {
   );
 
   return (
-    <Form className="border p-3 bg-light rounded">
+    <Form className="bg-light borderRadius-bottom shadow">
       <Form.Group>
-        <Form.Label>
+        <div className="reportHeader p-3" style={{ background: "#eab56f" }}>
+          <span className="me-2">
+            <FontAwesomeIcon icon={faLocationDot} />
+          </span>
           {!getReportDriversConditions ? "دستگاه ها" : "راننده ها"}
-        </Form.Label>
-        <Form.Group className="mt-2">
-          <Form.Label>گروه</Form.Label>
-          <Select
-            value={groupValue}
-            name="groups"
-            onChange={(e) => {
-              dispatch(RsetGetReportGroupValue(e));
-            }}
-            placeholder="انتخاب..."
-            options={groupListOptions}
-            isSearchable={true}
-            // isMulti
-          />
-        </Form.Group>
-        <Form.Group className="mt-2">
-          <Form.Label>
-            {!getReportVehiclesChanges ? "راننده" : "پلاک"}
-          </Form.Label>
-          {!getReportVehiclesChanges ? (
+        </div>
+        <div className="p-3 borderRadius-15">
+          <Form.Group className="mt-2 ">
+            <Form.Label>گروه</Form.Label>
             <Select
-              value={vehicleValue}
-              name="drivers"
+              value={groupValue}
+              name="groups"
               onChange={(e) => {
-                dispatch(RsetGetReportVehicleValue(e));
+                dispatch(RsetGetReportGroupValue(e));
               }}
               placeholder="انتخاب..."
-              options={vehicleListOptions}
+              options={groupListOptions}
               isSearchable={true}
-              isMulti
+              // isMulti
             />
-          ) : (
-            <Select
-              value={getReportVehiclesNumber}
-              name="drivers"
-              onChange={(e) => {
-                dispatch(RsetGetReportVehiclesNumber(e));
-              }}
-              placeholder="انتخاب..."
-              options={platesListOptions}
-              isSearchable={true}
-              isMulti
-            />
-          )}
-        </Form.Group>
+          </Form.Group>
+          <Form.Group className="mt-2 mb-3">
+            <Form.Label>
+              {!getReportVehiclesChanges ? "راننده" : "پلاک"}
+            </Form.Label>
+            {!getReportVehiclesChanges ? (
+              <Select
+                value={vehicleValue}
+                name="drivers"
+                onChange={(e) => {
+                  dispatch(RsetGetReportVehicleValue(e));
+                }}
+                placeholder="انتخاب..."
+                options={vehicleListOptions}
+                isSearchable={true}
+                isMulti
+              />
+            ) : (
+              <Select
+                value={getReportVehiclesNumber}
+                name="drivers"
+                onChange={(e) => {
+                  dispatch(RsetGetReportVehiclesNumber(e));
+                }}
+                placeholder="انتخاب..."
+                options={platesListOptions}
+                isSearchable={true}
+                isMulti
+              />
+            )}
+          </Form.Group>
+        </div>
       </Form.Group>
     </Form>
   );

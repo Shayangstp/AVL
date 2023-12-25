@@ -44,6 +44,8 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import moment from "moment-jalaali";
 import { getDeviceType } from "../../../services/deviceServices";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const DeviceEditeModal = () => {
   const dispatch = useDispatch();
@@ -138,10 +140,16 @@ const DeviceEditeModal = () => {
       //   dispatch(RsetDeviceEditModal(false));
       // }}
       show={deviceEditModal}
-      className="borderRadius-15"
     >
-      <Modal.Header className="bg-primary text-white">
+      <Modal.Header
+        className="text-dark"
+        style={{ backgroundColor: "#73c088", border: "none" }}
+      >
         <Modal.Title id="contained-modal-title-vcenter" className="fs-5">
+          <span className="me-2">
+            {" "}
+            <FontAwesomeIcon icon={faPen} />
+          </span>
           ویرایش
         </Modal.Title>
       </Modal.Header>
@@ -279,22 +287,22 @@ const DeviceEditeModal = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="4" className="mt-4">
-              <Button
-                variant="success"
-                className="mb-3 me-5 px-4"
-                onClick={(e) => {
-                  handleUpdateData(e);
-                }}
-              >
-                ثبت
-              </Button>
-            </Form.Group>
           </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button
+          variant="success"
+          className="px-4 font12"
+          onClick={(e) => {
+            handleUpdateData(e);
+          }}
+        >
+          ثبت
+        </Button>
+        <Button
+          variant="danger"
+          className="px-4 font12"
           onClick={() => {
             dispatch(RsetDeviceEditModal(false));
             dispatch(RsetVehicleNumber(""));

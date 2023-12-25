@@ -63,15 +63,16 @@ const Reports = () => {
 
   return (
     <Form>
-      <Form.Group className="border p-3 bg-light rounded d-flex flex-column">
-        <div className="mt-2">نوع گزارش</div>
-        <div className="d-flex gap-5 m-3">
+      <Form.Group className="p-3 d-flex flex-column bg-white borderRadius-bottom">
+        <div className="d-flex justify-content-between m-3">
           <Form.Check
             type="radio"
-            name="reports"
+            name="locations"
+            id="locations"
             value="موقعیت ماشین ها"
             label="موقعیت ماشین ها"
-            className=""
+            className="px-5 py-3 borderRadius-15 shadow"
+            style={{ background: "#EFEFEF" }}
             checked={selectedOption === "موقعیت ماشین ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -79,9 +80,12 @@ const Reports = () => {
           />
           <Form.Check
             type="radio"
-            name="reports"
+            name="alarms"
+            id="alarms"
             value="هشدارها"
             label="هشدارها"
+            className="px-5 py-3 borderRadius-15 shadow"
+            style={{ background: "#EFEFEF" }}
             checked={selectedOption === "هشدارها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -89,9 +93,12 @@ const Reports = () => {
           />
           <Form.Check
             type="radio"
-            name="reports"
+            name="gps"
+            id="gps"
             value="موقعیت GPS ها"
             label="موقعیت GPS ها"
+            className="px-5 py-3 borderRadius-15 shadow"
+            style={{ background: "#EFEFEF" }}
             checked={selectedOption === "موقعیت GPS ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -99,9 +106,12 @@ const Reports = () => {
           />
           <Form.Check
             type="radio"
-            name="reports"
+            name="vehicle"
+            id="vehicle"
             value="تغییرات ماشین ها"
             label="تغییرات ماشین ها"
+            className="px-5 py-3 borderRadius-15 shadow"
+            style={{ background: "#EFEFEF" }}
             checked={selectedOption === "تغییرات ماشین ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -109,9 +119,12 @@ const Reports = () => {
           />
           <Form.Check
             type="radio"
-            name="reports"
+            name="driver"
+            id="driver"
             value="وضعیت راننده ها"
             label="وضعیت راننده ها"
+            className="px-5 py-3 borderRadius-15 shadow"
+            style={{ background: "#EFEFEF" }}
             checked={selectedOption === "وضعیت راننده ها"}
             onChange={(e) => {
               handleOptionChange(e);

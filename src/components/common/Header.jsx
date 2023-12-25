@@ -35,6 +35,7 @@ import ChangeProfilePicModal from "./modals/ChangeProfilePicModal";
 import { useEffect } from "react";
 import { handleUserData } from "../../slices/authSlices";
 import { selectUser } from "../../slices/mainSlices";
+import { selectSmallNav } from "../../slices/mainSlices";
 
 const Header = () => {
   const [deviceDrop, setDeviceDrop] = useState(false);
@@ -53,6 +54,7 @@ const Header = () => {
   const avatar = useSelector(selectAvatar);
   const profilePicModal = useSelector(selectChangeProfilePicModal);
   const user = useSelector(selectUser);
+  const smallNav = useSelector(selectSmallNav);
 
   const handleStatesFalse = () => {
     setDeviceDrop(false);
@@ -89,15 +91,21 @@ const Header = () => {
   const handleShow = () => setShow(true);
 
   return (
-    <div className="">
-      <Nav className="d-flex justify-content-end">
-        {/* <div className="text-center ms-5">
+    <div className="w-100">
+      <Nav className="d-flex justify-content-end w-100">
+        <div
+          className={`d-flex ${
+            !smallNav ? "justify-content-between" : "justify-content-end"
+          } bg-dark borderRadius-15 p-1 border w-100`}
+        >
+          {!smallNav && (
+            <div className="mt-3 text-center">
               <img
-                className="img-fluid invert w-50 mt-3 ms-3"
-                src="../../images/avlLogo.png"
+                className="img-fluid w-25"
+                src="../../images/avlLogoFinal.png"
               />
-            </div> */}
-        <div className="d-flex justify-content-end bg-dark borderRadius-15 p-1 border">
+            </div>
+          )}
           <div className="d-flex justify-content-end align-items-center">
             <div className="me-3 ms-3 d-inline d-xl-none" id="offCanvas-btn">
               <FontAwesomeIcon
@@ -106,7 +114,7 @@ const Header = () => {
                 onClick={handleShow}
               />
             </div>
-            <div className="line me-2" id="line-break"></div>
+            <div className="line me-4" id="line-break"></div>
             <div id="time" className="d-flex ">
               <span>
                 {isAM ? (
@@ -130,7 +138,10 @@ const Header = () => {
                 // onChange={(date) => console.log(date)}
               />
             </div>
-            <div className="line me-2 d-none d-md-inline" id="line-break"></div>
+            <div
+              className="line me-4 d-none d-md-inline ms-4"
+              id="line-break"
+            ></div>
             <div className="" id="profile-name">
               <Nav.Link className="d-flex flex-column justify-content-center align-items-end text-light">
                 <div className="">{user.id.username}</div>

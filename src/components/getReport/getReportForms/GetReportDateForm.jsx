@@ -17,6 +17,8 @@ import {
   convertUnixTimeStampToDate,
   convertUnixTimeStampToDateZz,
 } from "../../common/ConvertUnixStamp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
 const GetReportDateForm = () => {
   const dispatch = useDispatch();
@@ -35,38 +37,45 @@ const GetReportDateForm = () => {
   };
 
   return (
-    <Form className="border p-3 bg-light rounded">
+    <Form className="bg-light borderRadius-bottom shadow">
       <Form.Group>
-        <Form.Label>تاریخ</Form.Label>
-        <Form.Group className="mt-2">
-          <Form.Label>از</Form.Label>
-          <DatePicker
-            inputComponent={DatePickerInput}
-            placeholder="...انتخاب"
-            format="jYYYY/jMM/jDD"
-            // className="bg-primary"
-            onChange={(e) => {
-              dispatch(RsetGetReportFromDate(e));
-            }}
-            value={fromDate}
-            id="datePicker"
-            // preSelected="1396/05/15"
-          />
-        </Form.Group>
-        <Form.Group className="mt-2">
-          <Form.Label>تا</Form.Label>
-          <DatePicker
-            inputComponent={DatePickerInput}
-            placeholder="...انتخاب"
-            format="jYYYY/jMM/jDD"
-            onChange={(e) => {
-              dispatch(RsetGetReportToDate(e));
-            }}
-            value={toDate}
-            id="datePicker"
-            // preSelected="1396/05/15"
-          />
-        </Form.Group>
+        <div className="reportHeader p-3" style={{ background: "#eab56f" }}>
+          <span className="me-2">
+            <FontAwesomeIcon icon={faCalendar} />
+          </span>
+          تاریخ
+        </div>
+        <div className="p-3 borderRadius-15">
+          <Form.Group className="mt-2">
+            <Form.Label>از</Form.Label>
+            <DatePicker
+              inputComponent={DatePickerInput}
+              placeholder="...انتخاب"
+              format="jYYYY/jMM/jDD"
+              // className="bg-primary"
+              onChange={(e) => {
+                dispatch(RsetGetReportFromDate(e));
+              }}
+              value={fromDate}
+              id="datePicker"
+              // preSelected="1396/05/15"
+            />
+          </Form.Group>
+          <Form.Group className="mt-2 mb-4">
+            <Form.Label>تا</Form.Label>
+            <DatePicker
+              inputComponent={DatePickerInput}
+              placeholder="...انتخاب"
+              format="jYYYY/jMM/jDD"
+              onChange={(e) => {
+                dispatch(RsetGetReportToDate(e));
+              }}
+              value={toDate}
+              id="datePicker"
+              // preSelected="1396/05/15"
+            />
+          </Form.Group>
+        </div>
       </Form.Group>
     </Form>
   );

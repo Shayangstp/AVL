@@ -37,6 +37,7 @@ import {
   faScrewdriverWrench,
   faLocation,
   faLocationDot,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
 import moment from "moment-jalaali";
@@ -234,7 +235,7 @@ const DeviceList = () => {
         return a.simNumber.localeCompare(b.simNumber);
       },
       ...getColumnSearchProps("simNumber", "جستجو..."),
-      width: 200,
+      width: 900,
     },
     {
       key: "driverName",
@@ -367,7 +368,7 @@ const DeviceList = () => {
         return a.company.localeCompare(b.company);
       },
       ...getColumnSearchProps("company", "جستجو..."),
-      width: 200,
+      width: 600,
     },
     {
       key: "usage",
@@ -411,7 +412,7 @@ const DeviceList = () => {
         return a.maxPMDistance.localeCompare(b.maxPMDistance);
       },
       ...getColumnSearchProps("maxPMDistance", "جستجو..."),
-      width: 220,
+      width: 1000,
     },
     {
       key: "gasUsage",
@@ -433,7 +434,7 @@ const DeviceList = () => {
         return a.gasUsage.localeCompare(b.gasUsage);
       },
       ...getColumnSearchProps("gasUsage", "جستجو..."),
-      width: 220,
+      width: 1000,
     },
     {
       key: "conditions",
@@ -469,12 +470,12 @@ const DeviceList = () => {
   const paginationConfig = {
     position: ["bottomCenter"],
     showTotal: (total) => (
-      <span className="font12">مجموع وسیله ها: {total}</span>
+      <span className="font12"> مجموع دستگاه ها : {total}</span>
     ),
     pageSize: 10,
     showSizeChanger: false,
     pageSizeOptions: [],
-    size: "small",
+    size: "middle",
   };
 
   const operation = (request) => {
@@ -483,7 +484,7 @@ const DeviceList = () => {
         <div>
           <Button
             title="ویرایش"
-            className="btn btn-success d-flex align-items-center mb-2 mb-md-1 me-2"
+            className="d-flex align-items-center mb-2 mb-md-1 me-2 text-dark"
             size="sm"
             active
             onClick={() => {
@@ -491,6 +492,7 @@ const DeviceList = () => {
               dispatch(RsetCurrentDevice(request));
               console.log(request);
             }}
+            style={{ backgroundColor: "#73c088", border: "none" }}
           >
             <FontAwesomeIcon icon={faPen} />
           </Button>
@@ -498,7 +500,7 @@ const DeviceList = () => {
         <div>
           <Button
             title="تنظیمات"
-            className="btn btn-danger d-flex align-items-center mb-2 mb-md-1 me-2"
+            className="btn btn-dark d-flex align-items-center mb-2 mb-md-1 me-2"
             size="sm"
             active
             onClick={() => {
@@ -512,7 +514,7 @@ const DeviceList = () => {
         <div>
           <Button
             title="مشاهده مکان ها"
-            className="btn btn-info d-flex align-items-center  mb-2 mb-md-1"
+            className="btn btn-danger d-flex align-items-center  mb-2 mb-md-1"
             size="sm"
             active
             onClick={() => {
@@ -576,81 +578,63 @@ const DeviceList = () => {
   //   }
   // };
 
+  const getRowClassName = (record, index) => {
+    const colors = ["white", "gray"]; // Define an array of colors
+    const colorIndex = index % colors.length; // Calculate the index of the color
+
+    return `custom-row custom-row-${colorIndex}`; // Apply the custom CSS class with the color index
+  };
+
   return (
     <Container fluid className="py-3">
       {/* {menuPermission ? */}
       <Fragment>
         {showFilter ? <DeviceFilter /> : null}
-        <section className="position-relative">
-          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow mt-3">
-            <div className="d-flex align-items-center justify-content-between">
-              <div>
-                <Button
-                  size="sm"
-                  variant="warning"
-                  className="mb-2 ms-2 font12"
-                  onClick={() => {
-                    setShowFilter(!showFilter);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFilter} className="me-2" />
-                  فیلتر
-                </Button>
-              </div>
-              <Button
-                size="sm"
-                variant="primary"
-                className="mb-2 font12"
-                onClick={async () => {}}
-              >
-                <FontAwesomeIcon icon={faArrowsRotate} className="me-2" />
-                به روزرسانی
-              </Button>
-            </div>
-            <div className="position-relative">
-              <div className="font10 mt-2 mb-2">
-                مجموع وسیله ها : {deviceList.length}
-              </div>
-              <Fragment>
-                <div className="position-relative table-responsive">
-                  {/* <DeviceTable
-                  requests={deviceList}
-                  columns={columns}
-                  data={data}
-                  onSort={handleSort}
-                  fetchData={fetchData}
-                  loading={load}
-                  pageCount={pageCount}
-                /> */}
-                  <ConfigProvider
-                    locale={faIR}
-                    // theme={{
-                    //   token: {
-                    //     colorPrimary: "#00b96b",
-                    //     colorBgContainer: "#f6ffed",
-                    //   },
-                    // }}
-                  >
-                    <Table
-                      locale={{
-                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
-                      }}
-                      className="list"
-                      bordered
-                      dataSource={deviceList}
-                      columns={columns}
-                      pagination={paginationConfig}
-                      scroll={{ x: "max-content" }}
-                      size="middle"
-                    />
-                  </ConfigProvider>
-                </div>
-                {deviceEditModal && <DeviceEditeModal />}
-                {deviceAdjusmentModal && <DeviceAdjustmentModal />}
-                {deviceLocationsModal && <DeviceLocationsModal />}
-              </Fragment>
-            </div>
+        <section className="mt-4">
+          {/* <div className="bg-white shadow mt-3 borderRadius-15"> */}
+          <div
+            className="text-white py-3 font12 text-center borderRadius-top"
+            style={{ background: "#485550" }}
+          >
+            <span className="me-2">
+              <FontAwesomeIcon icon={faList} />
+            </span>
+            لیست دستگاه ها{" "}
           </div>
+          <div className="position-relative">
+            <Fragment>
+              <div className="position-relative table-responsive">
+                <ConfigProvider
+                  locale={faIR}
+                  // theme={{
+                  //   components: {
+                  //     Table: {
+                  //       rowSelectedBg: "#000",
+                  //     },
+                  //   },
+                  // }}
+                >
+                  <Table
+                    locale={{
+                      emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                    }}
+                    className="list"
+                    bordered
+                    dataSource={deviceList}
+                    columns={columns}
+                    rowClassName={getRowClassName}
+                    pagination={paginationConfig}
+                    scroll={{ x: "max-content" }}
+                    size="middle"
+                  />
+                </ConfigProvider>
+              </div>
+              {deviceEditModal && <DeviceEditeModal />}
+              {deviceAdjusmentModal && <DeviceAdjustmentModal />}
+              {deviceLocationsModal && <DeviceLocationsModal />}
+            </Fragment>
+          </div>
+          {/* </div> */}
         </section>
       </Fragment>
     </Container>
