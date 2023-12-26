@@ -64,15 +64,15 @@ const Reports = () => {
   return (
     <Form>
       <Form.Group className="p-3 d-flex flex-column bg-white borderRadius-bottom">
-        <div className="d-flex justify-content-between m-3">
+        <div className="d-flex justify-content-start gap-5 m-3">
           <Form.Check
             type="radio"
             name="locations"
             id="locations"
             value="موقعیت ماشین ها"
             label="موقعیت ماشین ها"
-            className="px-5 py-3 borderRadius-15 shadow"
-            style={{ background: "#EFEFEF" }}
+            // className="px-5 py-3 borderRadius-15 shadow"
+            // style={{ background: "#EFEFEF" }}
             checked={selectedOption === "موقعیت ماشین ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -84,8 +84,8 @@ const Reports = () => {
             id="alarms"
             value="هشدارها"
             label="هشدارها"
-            className="px-5 py-3 borderRadius-15 shadow"
-            style={{ background: "#EFEFEF" }}
+            // className="px-5 py-3 borderRadius-15 shadow"
+            // style={{ background: "#EFEFEF" }}
             checked={selectedOption === "هشدارها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -97,8 +97,8 @@ const Reports = () => {
             id="gps"
             value="موقعیت GPS ها"
             label="موقعیت GPS ها"
-            className="px-5 py-3 borderRadius-15 shadow"
-            style={{ background: "#EFEFEF" }}
+            // className="px-5 py-3 borderRadius-15 shadow"
+            // style={{ background: "#EFEFEF" }}
             checked={selectedOption === "موقعیت GPS ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -110,8 +110,8 @@ const Reports = () => {
             id="vehicle"
             value="تغییرات ماشین ها"
             label="تغییرات ماشین ها"
-            className="px-5 py-3 borderRadius-15 shadow"
-            style={{ background: "#EFEFEF" }}
+            // className="px-5 py-3 borderRadius-15 shadow"
+            // style={{ background: "#EFEFEF" }}
             checked={selectedOption === "تغییرات ماشین ها"}
             onChange={(e) => {
               handleOptionChange(e);
@@ -123,8 +123,8 @@ const Reports = () => {
             id="driver"
             value="وضعیت راننده ها"
             label="وضعیت راننده ها"
-            className="px-5 py-3 borderRadius-15 shadow"
-            style={{ background: "#EFEFEF" }}
+            // className="px-5 py-3 borderRadius-15 shadow"
+            // style={{ background: "#EFEFEF" }}
             checked={selectedOption === "وضعیت راننده ها"}
             onChange={(e) => {
               handleOptionChange(e);

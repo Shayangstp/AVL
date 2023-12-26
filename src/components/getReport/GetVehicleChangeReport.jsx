@@ -43,7 +43,11 @@ import {
   selectShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
-import { postAlarmsReport } from "../../services/getReportServices";
+import { postVehiclesChanges } from "../../services/getReportServices";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
 
 const fakeList = [
   {
@@ -184,41 +188,41 @@ const GetVehicleChangeReport = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const columns = [
-    {
-      key: "idx",
-      title: "ردیف",
-      dataIndex: "",
-      render: (text, record, index) => index + 1,
-      titleStyle: {
-        fontSize: "10px",
-        fontWeight: "bold",
-      },
-      width: 10,
-    },
-    {
-      key: "name",
-      title: "نام راننده",
-      dataIndex: ["driver", "name"],
-      sorter: (a, b) => {
-        if (!a.driver?.name && !b.driver?.name) {
-          return 0;
-        }
+  // const columns = [
+  //   {
+  //     key: "idx",
+  //     title: "ردیف",
+  //     dataIndex: "",
+  //     render: (text, record, index) => index + 1,
+  //     titleStyle: {
+  //       fontSize: "10px",
+  //       fontWeight: "bold",
+  //     },
+  //     width: 10,
+  //   },
+  //   {
+  //     key: "name",
+  //     title: "نام راننده",
+  //     dataIndex: ["driver", "name"],
+  //     sorter: (a, b) => {
+  //       if (!a.driver?.name && !b.driver?.name) {
+  //         return 0;
+  //       }
 
-        if (!a.driver?.name) {
-          return 1;
-        }
+  //       if (!a.driver?.name) {
+  //         return 1;
+  //       }
 
-        if (!b.driver?.name) {
-          return -1;
-        }
+  //       if (!b.driver?.name) {
+  //         return -1;
+  //       }
 
-        return a.driver.name.localeCompare(b.driver.name);
-      },
-      ...getColumnSearchProps("driver.name", "جستجو..."),
-      width: 500,
-    },
-  ];
+  //       return a.driver.name.localeCompare(b.driver.name);
+  //     },
+  //     ...getColumnSearchProps("driver.name", "جستجو..."),
+  //     width: 500,
+  //   },
+  // ];
 
   const itemColumns = [
     {
@@ -300,6 +304,94 @@ const GetVehicleChangeReport = () => {
     },
   ];
 
+
+
+  const columns = [
+    {
+      key: "idx",
+      title: "ردیف",
+      dataIndex: "",
+      render: (text, record, index) => index + 1,
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 10,
+    },
+    {
+      key: "name",
+      title: "نام راننده",
+      dataIndex: "_id",
+      sorter: (a, b) => {
+        if (!a._id && !b._id) {
+          return 0;
+        }
+
+        if (!a._id) {
+          return 1;
+        }
+
+        if (!b._id) {
+          return -1;
+        }
+
+        return a._id.localeCompare(b._id);
+      },
+      ...getColumnSearchProps("_id", "جستجو..."),
+      width: 100,
+    },
+    {
+      key: "currentVehicle",
+      title: "زمان",
+      render: () => "درحال حاظر",
+      width: 100,
+    },
+    {
+      key: "plate",
+      title: "پلاک",
+      dataIndex: ["currentVehicle", "plate"],
+      sorter: (a, b) => {
+        if (!a.currentVehicle.plate && !b.currentVehicle.plate) {
+          return 0;
+        }
+
+        if (!a.currentVehicle.plate) {
+          return 1;
+        }
+
+        if (!b.currentVehicle.plate) {
+          return -1;
+        }
+
+        return a.currentVehicle.plate.localeCompare(b.currentVehicle.plate);
+      },
+      ...getColumnSearchProps("currentVehicle.plate", "جستجو..."),
+      width: 100,
+    },
+    {
+      key: "groups",
+      title: "گروه",
+      dataIndex: ["currentVehicle", "groups"],
+      sorter: (a, b) => {
+        if (!a.currentVehicle.groups && !b.currentVehicle.groups) {
+          return 0;
+        }
+
+        if (!a.currentVehicle.groups) {
+          return 1;
+        }
+
+        if (!b.currentVehicle.groups) {
+          return -1;
+        }
+
+        return a.currentVehicle.groups.localeCompare(b.currentVehicle.groups);
+      },
+      ...getColumnSearchProps("currentVehicle.groups", "جستجو..."),
+      width: 100,
+    },
+  ];
+
   const expandedRowRender = (record) => {
     const expandedColumns = [
       {
@@ -312,28 +404,6 @@ const GetVehicleChangeReport = () => {
           fontWeight: "bold",
         },
         width: 10,
-      },
-      {
-        key: "actionType",
-        title: "نوع رویداد",
-        dataIndex: "actionType",
-        sorter: (a, b) => {
-          if (!a.actionType && !b.actionType) {
-            return 0;
-          }
-
-          if (!a.actionType) {
-            return 1;
-          }
-
-          if (!b.actionType) {
-            return -1;
-          }
-
-          return a.actionType.localeCompare(b.actionType);
-        },
-        ...getColumnSearchProps("actionType", "جستجو..."),
-        width: 200,
       },
       {
         key: "date",
@@ -355,105 +425,57 @@ const GetVehicleChangeReport = () => {
           return a.date.localeCompare(b.date);
         },
         ...getColumnSearchProps("date", "جستجو..."),
-        width: 200,
+        width: 100,
       },
       {
-        key: "fieldName",
-        title: "فیلد تغییریافته",
-        dataIndex: "fieldName",
+        key: "plate",
+        title: "پلاک",
+        dataIndex: "plate",
         sorter: (a, b) => {
-          if (!a.fieldName && !b.fieldName) {
+          if (!a.plate && !b.plate) {
             return 0;
           }
 
-          if (!a.fieldName) {
+          if (!a.plate) {
             return 1;
           }
 
-          if (!b.fieldName) {
+          if (!b.plate) {
             return -1;
           }
 
-          return a.fieldName.localeCompare(b.fieldName);
+          return a.plate.localeCompare(b.plate);
         },
-        ...getColumnSearchProps("fieldName", "جستجو..."),
-        width: 200,
-        editable: true,
+        ...getColumnSearchProps("plate", "جستجو..."),
+        width: 100,
       },
       {
-        key: "oldValue",
-        title: "مقدار قبلی",
-        dataIndex: "oldValue",
+        key: "group",
+        title: "گروه",
+        dataIndex: "group",
         sorter: (a, b) => {
-          if (!a.oldValue && !b.oldValue) {
+          if (!a.group && !b.group) {
             return 0;
           }
 
-          if (!a.oldValue) {
+          if (!a.group) {
             return 1;
           }
 
-          if (!b.oldValue) {
+          if (!b.group) {
             return -1;
           }
 
-          return a.oldValue.localeCompare(b.oldValue);
+          return a.group.localeCompare(b.group);
         },
-        ...getColumnSearchProps("oldValue", "جستجو..."),
-        width: 200,
-        editable: true,
-      },
-      {
-        key: "newValue",
-        title: "مقدار جدید",
-        dataIndex: "newValue",
-        sorter: (a, b) => {
-          if (!a.newValue && !b.newValue) {
-            return 0;
-          }
-
-          if (!a.newValue) {
-            return 1;
-          }
-
-          if (!b.newValue) {
-            return -1;
-          }
-
-          return a.newValue.localeCompare(b.newValue);
-        },
-        ...getColumnSearchProps("newValue", "جستجو..."),
-        width: 200,
-        editable: true,
-      },
-      {
-        key: "user",
-        title: "مقدار جدید",
-        dataIndex: ["user", "username"],
-        sorter: (a, b) => {
-          if (!a.user.username && !b.user.username) {
-            return 0;
-          }
-
-          if (!a.user.username) {
-            return 1;
-          }
-
-          if (!b.user.username) {
-            return -1;
-          }
-
-          return a.user.username.localeCompare(b.user.username);
-        },
-        ...getColumnSearchProps("user.username", "جستجو..."),
+        ...getColumnSearchProps("group", "جستجو..."),
         width: 200,
         editable: true,
       },
     ];
-
-    const expandedData = record.changes.map((device) => ({
-      ...device,
-      key: device.key,
+    const expandedData = record.vehicles.map((vehicles) => ({
+      ...vehicles,
+      key: vehicles.key,
     }));
 
     return (
@@ -494,37 +516,41 @@ const GetVehicleChangeReport = () => {
   const handleReport = async () => {
     if (getReportVehiclesChanges) {
       const token = localStorage.getItem("token");
-      // const alarmsValues = {
-      //   dateFilter: {
-      //     start: fromDate ? fromDate : null,
-      //     end: toDate ? toDate : null,
-      //   },
-      //   timeFilter: {
-      //     start: getReportFromTime ? getReportFromTime : null,
-      //     end: getReportToTime ? getReportToTime : null,
-      //   },
-      //   speedFilter: {
-      //     min: null,
-      //     max: null,
-      //   },
-      //   groupFilter: [groupValue.value],
-      //   deviceFilter: vehicleValue?.map((item) => {
-      //     return item.value;
-      //   }),
-      // };
-      // console.log(alarmsValues);
-      // const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
-      // console.log(postAlaramsReportRes);
-      // if (postAlaramsReportRes.data.code === "200") {
-      // dispatch(
-      //   RsetGetReport(postAlaramsReportRes.data.vehiclesAlarmData)
-      // );
-      dispatch(RsetShowReportList(true));
-      dispatch(RsetGetReportList(fakeList));
-
-      // }
+      const vehiclesChangesValues = {
+        dateFilter: {
+          start: fromDate ? convertUnixTimeStampToDateZz(fromDate) : null,
+          end: toDate ? convertUnixTimeStampToDateZz(toDate) : null,
+        },
+        timeFilter: {
+          start: getReportFromTime ? getReportFromTime : null,
+          end: getReportToTime ? getReportToTime : null,
+        },
+        speedFilter: {
+          min: null,
+          max: null,
+        },
+        groupFilter: [groupValue.value],
+        deviceFilter: getReportVehiclesNumber?.map((item) => {
+          return item.value;
+        }),
+      };
+      console.log(vehiclesChangesValues);
+      const postVehiclesChangesRes = await postVehiclesChanges(
+        vehiclesChangesValues,
+        token
+      );
+      console.log(postVehiclesChangesRes);
+      if (postVehiclesChangesRes.status === 200) {
+        dispatch(
+          RsetGetReportList(postVehiclesChangesRes.data.driverVehiclesData)
+        );
+        dispatch(RsetShowReportList(true));
+        // dispatch(RsetGetReportList(fakeList));
+      }
     }
   };
+
+  console.log(getReport);
 
   return (
     <div className="">

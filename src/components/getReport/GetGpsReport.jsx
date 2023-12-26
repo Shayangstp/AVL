@@ -43,7 +43,11 @@ import {
   selectShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
-import { postAlarmsReport } from "../../services/getReportServices";
+import { postGpsReport } from "../../services/getReportServices";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
 
 const fakeList = [
   {
@@ -442,35 +446,31 @@ const GetAlarmReport = () => {
   const handleReport = async () => {
     if (getReportGPSLocations) {
       const token = localStorage.getItem("token");
-      // const alarmsValues = {
-      //   dateFilter: {
-      //     start: fromDate ? fromDate : null,
-      //     end: toDate ? toDate : null,
-      //   },
-      //   timeFilter: {
-      //     start: getReportFromTime ? getReportFromTime : null,
-      //     end: getReportToTime ? getReportToTime : null,
-      //   },
-      //   speedFilter: {
-      //     min: null,
-      //     max: null,
-      //   },
-      //   groupFilter: [groupValue.value],
-      //   deviceFilter: vehicleValue?.map((item) => {
-      //     return item.value;
-      //   }),
-      // };
-      // console.log(alarmsValues);
-      // const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
-      // console.log(postAlaramsReportRes);
-      // if (postAlaramsReportRes.data.code === "200") {
-      // dispatch(
-      //   RsetGetReport(postAlaramsReportRes.data.vehiclesAlarmData)
-      // );
-      dispatch(RsetShowReportList(true));
-      dispatch(RsetGetReportList(fakeList));
-
-      // }
+      const gpsValues = {
+        dateFilter: {
+          start: fromDate ? convertUnixTimeStampToDateZz(fromDate) : null,
+          end: toDate ? convertUnixTimeStampToDateZz(toDate) : null,
+        },
+        timeFilter: {
+          start: getReportFromTime ? getReportFromTime : null,
+          end: getReportToTime ? getReportToTime : null,
+        },
+        speedFilter: {
+          min: null,
+          max: null,
+        },
+        groupFilter: [groupValue.value],
+        deviceFilter: vehicleValue?.map((item) => {
+          return item.value;
+        }),
+      };
+      console.log(gpsValues);
+      const postGpsReportRes = await postGpsReport(gpsValues, token);
+      console.log(postGpsReportRes);
+      if (postGpsReportRes.status === 200) {
+        dispatch(RsetGetReportList(postGpsReportRes.data.vehicleStatus));
+        dispatch(RsetShowReportList(true));
+      }
     }
   };
 

@@ -43,7 +43,14 @@ import {
   selectShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
-import { postAlarmsReport } from "../../services/getReportServices";
+import {
+  postAlarmsReport,
+  postAlarmsReportPdf,
+} from "../../services/getReportServices";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
 
 const fakeList = [
   {
@@ -64,6 +71,7 @@ const GetAlarmReport = () => {
   //table
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [showPdf, setShowPdf] = useState(false);
 
   const getReportGroups = useSelector(selectGetReportGroups);
   const getReportDrivers = useSelector(selectGetReportDrivers);
@@ -420,37 +428,52 @@ const GetAlarmReport = () => {
   const handleReport = async () => {
     if (getReportAlarms) {
       const token = localStorage.getItem("token");
-      // const alarmsValues = {
-      //   dateFilter: {
-      //     start: fromDate ? fromDate : null,
-      //     end: toDate ? toDate : null,
-      //   },
-      //   timeFilter: {
-      //     start: getReportFromTime ? getReportFromTime : null,
-      //     end: getReportToTime ? getReportToTime : null,
-      //   },
-      //   speedFilter: {
-      //     min: null,
-      //     max: null,
-      //   },
-      //   groupFilter: [groupValue.value],
-      //   deviceFilter: vehicleValue?.map((item) => {
-      //     return item.value;
-      //   }),
-      // };
-      // console.log(alarmsValues);
-      // const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
-      // console.log(postAlaramsReportRes);
-      // if (postAlaramsReportRes.data.code === "200") {
-      // dispatch(
-      //   RsetGetReport(postAlaramsReportRes.data.vehiclesAlarmData)
-      // );
+      const alarmsValues = {
+        dateFilter: {
+          start: fromDate ? convertUnixTimeStampToDateZz(fromDate) : null,
+          end: toDate ? convertUnixTimeStampToDateZz(toDate) : null,
+        },
+        timeFilter: {
+          start: getReportFromTime ? getReportFromTime : null,
+          end: getReportToTime ? getReportToTime : null,
+        },
+        speedFilter: {
+          min: null,
+          max: null,
+        },
+        groupFilter: [groupValue.value],
+        deviceFilter: vehicleValue?.map((item) => {
+          return item.value;
+        }),
+      };
+      console.log(alarmsValues);
+      const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
+      console.log(postAlaramsReportRes);
+      if (postAlaramsReportRes.status === 200) {
+        dispatch(
+          RsetGetReportList(postAlaramsReportRes.data.vehiclesAlarmData)
+        );
+        setShowPdf(true);
+      }
       dispatch(RsetShowReportList(true));
-      dispatch(RsetGetReportList(fakeList));
+      // dispatch(RsetGetReportList(fakeList));
 
       // }
     }
   };
+
+  const handlePDf = async () => {
+    const token = localStorage.getItem("token");
+    const values = {
+      reportData: getReport,
+    };
+    console.log("hi");
+    const postAlarmsReportPdfRes = await postAlarmsReportPdf(values, token);
+    console.log(postAlarmsReportPdfRes);
+    console.log("h2i");
+  };
+
+  console.log(getReport);
 
   return (
     <div className="">
@@ -468,6 +491,11 @@ const GetAlarmReport = () => {
           <Button size="sm" onClick={handleReport}>
             جستوجو
           </Button>
+          {showPdf && (
+            <Button size="sm" onClick={handlePDf}>
+              pdf
+            </Button>
+          )}
         </Col>
       </Row>
       <div>

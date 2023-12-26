@@ -44,7 +44,11 @@ import {
   RsetShowReportList,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
-import { postAlarmsReport } from "../../services/getReportServices";
+import { postVehicleLocation } from "../../services/getReportServices";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
 
 const fakeList = [
   {
@@ -53,7 +57,8 @@ const fakeList = [
       {
         date: "2021-11-06T07:10:22.000Z",
         address: "Markazi Province, Qeshlāq-e-chalablu, Unnamed Road, Iran",
-        cordinates: [35.1204183, 50.3808883],
+        latitude: 34.984145,
+        longitude: 50.302895,
         speed: "8 KM/h",
       },
     ],
@@ -337,26 +342,31 @@ const GetVehicleLocationReport = () => {
         width: 200,
       },
       {
-        key: "cordinates",
+        key: "latitude",
         title: "موقعیت جغرافیای",
-        dataIndex: "cordinates",
+        dataIndex: "latitude",
         sorter: (a, b) => {
-          if (!a.cordinates && !b.cordinates) {
+          if (!a.latitude && !b.latitude) {
             return 0;
           }
 
-          if (!a.cordinates) {
+          if (!a.latitude) {
             return 1;
           }
 
-          if (!b.cordinates) {
+          if (!b.latitude) {
             return -1;
           }
 
-          return a.cordinates.localeCompare(b.cordinates);
+          return a.latitude.localeCompare(b.latitude);
         },
-        ...getColumnSearchProps("cordinates", "جستجو..."),
+        ...getColumnSearchProps("latitude", "جستجو..."),
         width: 200,
+        render: (text, record) => {
+          const latitude = record.latitude;
+          const longitude = record.longitude;
+          return latitude && longitude ? `${latitude}, ${longitude}` : "";
+        },
       },
       {
         key: "speed",
@@ -449,33 +459,35 @@ const GetVehicleLocationReport = () => {
   const handleReport = async () => {
     if (getReportVehiclesLocations) {
       const token = localStorage.getItem("token");
-      // const alarmsValues = {
-      //   dateFilter: {
-      //     start: fromDate ? fromDate : null,
-      //     end: toDate ? toDate : null,
-      //   },
-      //   timeFilter: {
-      //     start: getReportFromTime ? getReportFromTime : null,
-      //     end: getReportToTime ? getReportToTime : null,
-      //   },
-      //   speedFilter: {
-      //     min: null,
-      //     max: null,
-      //   },
-      //   groupFilter: [groupValue.value],
-      //   deviceFilter: vehicleValue?.map((item) => {
-      //     return item.value;
-      //   }),
-      // };
-      // console.log(alarmsValues);
-      // const postAlaramsReportRes = await postAlarmsReport(alarmsValues, token);
-      // console.log(postAlaramsReportRes);
-      // if (postAlaramsReportRes.data.code === "200") {
-      // dispatch(
-      //   RsetGetReport(postAlaramsReportRes.data.vehiclesAlarmData)
-      // );
+      const alarmsValues = {
+        dateFilter: {
+          start: fromDate ? convertUnixTimeStampToDateZz(fromDate) : null,
+          end: toDate ? convertUnixTimeStampToDateZz(toDate) : null,
+        },
+        timeFilter: {
+          start: getReportFromTime ? getReportFromTime : null,
+          end: getReportToTime ? getReportToTime : null,
+        },
+        speedFilter: {
+          min: null,
+          max: null,
+        },
+        groupFilter: [groupValue.value],
+        deviceFilter: vehicleValue?.map((item) => {
+          return item.value;
+        }),
+      };
+      console.log(alarmsValues);
+      const postVehicleLocationRes = await postVehicleLocation(
+        alarmsValues,
+        token
+      );
+      console.log(postVehicleLocationRes);
+      if (postVehicleLocationRes.status === 200) {
+        dispatch(RsetGetReportList(postVehicleLocationRes.data));
+      }
       dispatch(RsetShowReportList(true));
-      dispatch(RsetGetReportList(fakeList));
+      // dispatch(RsetGetReportList(fakeList));
 
       // }
     }
@@ -502,7 +514,7 @@ const GetVehicleLocationReport = () => {
           </Button>
         </Col>
       </Row>
-      <div>
+      <div className="">
         {showReportList && (
           <div className="position-relative table-responsive mt-4">
             <ConfigProvider locale={faIR}>

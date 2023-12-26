@@ -25,10 +25,10 @@ const GetReportDateForm = () => {
   const fromDate = useSelector(selectGetReportFromDate);
   const toDate = useSelector(selectGetReportToDate);
 
-  console.log({
-    fromDate: convertUnixTimeStampToDateZz(fromDate),
-    toDate: convertUnixTimeStampToDateZz(toDate),
-  });
+  // console.log({
+  //   fromDate: convertUnixTimeStampToDateZz(fromDate),
+  //   toDate: convertUnixTimeStampToDateZz(toDate),
+  // });
 
   const DatePickerInput = (props) => {
     return (

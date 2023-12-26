@@ -91,7 +91,7 @@ const Sidebar = () => {
                     <FontAwesomeIcon
                       icon={faHome}
                       id="dashboard"
-                      className="h4 navItem"
+                      className="h4 navItem me-1"
                     />
                   </span>
                 </Nav.Link>
