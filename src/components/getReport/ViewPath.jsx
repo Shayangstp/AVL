@@ -123,7 +123,7 @@ const ViewPath = () => {
     <Container fluid className="p-3">
       <div className="d-flex flex-md-row flex-column gap-2">
         <Col md="3" className=" borderRadius-15 shadow bg-white">
-          <div className="reportHeader p-3">
+          <div className="deviceHeader p-3 borderRadius-top">
             <span className="me-2">
               <FontAwesomeIcon icon={faDirections} />
             </span>
@@ -201,7 +201,7 @@ const ViewPath = () => {
                     handleDateSearch(e);
                   }}
                 >
-                  جستوجو
+                  جستجو
                 </Button>
                 <Button
                   variant="danger"
@@ -224,14 +224,14 @@ const ViewPath = () => {
           </div>
         </Col>
         <Col className="borderRadius-15  shadow" style={{ height: "500px" }}>
-          <div className="reportHeader p-3">
+          <div className="deviceHeader p-3 borderRadius-top">
             <span className="me-2">
               <FontAwesomeIcon icon={faMap} />
             </span>
             نقشه مسیر
           </div>
           <div className="w-100" style={{ height: "88vh" }}>
-            <MapHeat height={"95%"} width={"100%"} />
+            <MapHeat height={"80%"} width={"100%"} />
           </div>
         </Col>
       </div>

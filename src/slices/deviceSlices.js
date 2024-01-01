@@ -7,7 +7,7 @@ import {
   getDeviceList,
   editDeviceList,
 } from "../services/deviceServices";
-import { RsetFormErrors } from "./mainSlices";
+import { RsetFormErrors, RsetLoading } from "./mainSlices";
 import { RsetDeviceEditModal } from "../slices/modalSlices";
 import { successMessage, errorMessage } from "../utils/msg";
 
@@ -67,7 +67,10 @@ export const handleVehicleTypeOptions = createAsyncThunk(
             value: index + 1,
           };
         });
-        dispatch(RsetVehicleTypeOptions(itemsModified));
+        const itemsModifiedDecendingOrder = itemsModified.sort(
+          (a, b) => b.value - a.value
+        );
+        dispatch(RsetVehicleTypeOptions(itemsModifiedDecendingOrder));
       }
     } catch (ex) {
       console.log(ex);
@@ -98,14 +101,17 @@ export const handleAddDevice = createAsyncThunk(
   "device/handleAddDevice",
   async (values, { dispatch, getState }) => {
     const token = localStorage.getItem("token");
+    dispatch(RsetLoading(true));
     try {
       const postAddDeviceRes = await postAddDevice(values, token);
       console.log(postAddDeviceRes);
       if (postAddDeviceRes.data.code === 201) {
         successMessage("دستگاه مورد نظر با موفقیت اضافه شد");
         dispatch(handleAddDeviceReset());
+        dispatch(RsetLoading(false));
       } else {
         errorMessage("خطا!");
+        dispatch(RsetLoading(false));
       }
     } catch (ex) {
       console.log(ex);
@@ -159,6 +165,8 @@ export const handleAddVehicleType = createAsyncThunk(
         successMessage("مدل دستگاه با موفقیت اضافه شد");
         dispatch(RsetVehicleAddType(""));
         dispatch(handleVehicleModlesList());
+      } else if (postAddVehicleRes.data.code === 400) {
+        errorMessage("این مدل ثبت شده است!");
       } else {
         errorMessage("خطا!");
       }
@@ -172,12 +180,15 @@ export const handleDeviceList = createAsyncThunk(
   async (values, { dispatch, getState }) => {
     const token = localStorage.getItem("token");
     try {
+      dispatch(RsetLoading(true));
       const getDeviceListRes = await getDeviceList(token);
       console.log(getDeviceListRes);
       if (getDeviceListRes.data.allVehicles !== null) {
         dispatch(RsetDeviceList(getDeviceListRes.data.allVehicles));
+        dispatch(RsetLoading(false));
       } else {
         errorMessage("خطا");
+        dispatch(RsetLoading(false));
       }
     } catch (ex) {
       console.log(ex);

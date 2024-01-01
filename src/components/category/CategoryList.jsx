@@ -16,6 +16,7 @@ import {
   faPlus,
   faCar,
   faUser,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   handleCategoryList,
@@ -39,6 +40,8 @@ import CategoryAddVehicleModal from "./modals/CategoryAddVehicleModal";
 import CategoryCommonUserModal from "./modals/CategoryCommonUserModal";
 import CategoryManageVehicleModal from "./modals/CategoryManageVehicleModal";
 import CategoryAddModal from "./modals/CategoryAddModal";
+import Loading from "../common/Loading";
+import { RsetLoading, selectLoading } from "../../slices/mainSlices";
 
 const dataList = [
   {
@@ -95,6 +98,7 @@ const CategoryList = () => {
     selectCategoryManageVehicleModal
   );
   const categoryAddModal = useSelector(selectCategoryAddModal);
+  const loading = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(handleCategoryList());
@@ -198,6 +202,19 @@ const CategoryList = () => {
     {
       key: "idx",
       title: "ردیف",
+      dataIndex: "idx",
+      render: (text, record, index) => (
+        <div className="text-center">{index + 1}</div>
+      ),
+      titleStyle: {
+        fontSize: "10px",
+        fontWeight: "bold",
+      },
+      width: 200,
+    },
+    {
+      key: "idx",
+      title: "رنگ",
       dataIndex: "",
       render: (text, record, index) => handleBackgroundColor(index, record),
       titleStyle: {
@@ -295,10 +312,10 @@ const CategoryList = () => {
 
   const operation = (request) => {
     return (
-      <div className="d-flex justify-content-between flex-wrap">
+      <div className="d-flex justify-content-center gap-1 ms-2 flex-wrap">
         <Button
           title="ویرایش"
-          className="btn btn-primary d-flex align-items-center me-2 mb-2 mb-md-2"
+          className="btn btn-primary d-flex align-items-center  mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -310,7 +327,7 @@ const CategoryList = () => {
         </Button>
         <Button
           title="افزودن وسیله نقلیه"
-          className="btn btn-success d-flex align-items-center me-2 mb-2 mb-md-2"
+          className="btn btn-success d-flex align-items-center  mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -322,7 +339,7 @@ const CategoryList = () => {
         </Button>
         <Button
           title="مدیریت وسیله نقلیه"
-          className="btn btn-danger d-flex align-items-center me-2 mb-2 mb-md-2"
+          className="btn btn-danger d-flex align-items-center  mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -333,7 +350,7 @@ const CategoryList = () => {
         </Button>
         <Button
           title="کاربر های مشابه"
-          className="btn btn-info d-flex align-items-center me-2 mb-2 mb-md-2"
+          className="btn btn-info d-flex align-items-center  mb-2 mb-md-2"
           size="sm"
           active
           onClick={() => {
@@ -352,15 +369,13 @@ const CategoryList = () => {
     return (
       <div className="d-flex justify-content-center rounded-circle">
         <div
-          className="rounded-circle d-flex align-items-center justify-content-center"
+          className="rounded-circle d-flex align-items-center justify-content-center border"
           style={{
             background: `${request.color && request.color}`,
             width: "30px",
             height: "30px",
           }}
-        >
-          {i + 1}
-        </div>
+        ></div>
       </div>
     );
   };
@@ -372,35 +387,32 @@ const CategoryList = () => {
         {/* {showFilter ? <SoftwareReqFilter /> : null} */}
         <section className="position-relative">
           <div
-            // className="lightGray2-bg p-4 borderRadius border border-white border-2 shadow "
-            className="mt-5"
+            className="d-flex justify-content-between text-white py-3  borderRadius-top"
+            style={{ background: "#485550" }}
           >
-            <div className="d-flex align-items-center justify-content-between">
-              <Button
-                size="sm"
-                variant="success"
-                className="mb-2 px-4"
-                onClick={() => {
-                  dispatch(RsetCategoryAddModal(true));
-                }}
-              >
-                + افزودن
-              </Button>
+            <div className="ms-4 mt-1">
+              <span className="me-2">
+                <FontAwesomeIcon icon={faList} />
+              </span>
+              لیست گروه ها{" "}
             </div>
+            <Button
+              size="sm"
+              variant="success"
+              className="px-4 me-4 shadow"
+              onClick={() => {
+                dispatch(RsetCategoryAddModal(true));
+              }}
+            >
+              + افزودن
+            </Button>
+          </div>
+          <div>
+            <div className="d-flex align-items-center justify-content-between"></div>
             <div className="position-relative">
-              {/* {loading ? <Loading /> : null} */}
-              <Fragment>
-                {/* {reqsList !== undefined ? ( */}
+              {!loading ? (
                 <Fragment>
-                  <ConfigProvider
-                    locale={faIR}
-                    // theme={{
-                    //   token: {
-                    //     colorPrimary: "#00b96b",
-                    //     colorBgContainer: "#f6ffed",
-                    //   },
-                    // }}
-                  >
+                  <ConfigProvider locale={faIR}>
                     <Table
                       locale={{
                         emptyText: <Empty description="اطلاعات موجود نیست!" />,
@@ -415,14 +427,17 @@ const CategoryList = () => {
                     />
                   </ConfigProvider>
                 </Fragment>
-                {/* ) : null} */}
-              </Fragment>
+              ) : (
+                <div
+                  className="d-flex justify-content-center"
+                  style={{ marginTop: "200px" }}
+                >
+                  <Loading height={"60px"} width={"60px"} />
+                </div>
+              )}
             </div>
           </div>
         </section>
-        {/* :
-        <Redirect to="/" />
-      } */}
         {categoryEditModal && <CategoryEditModal />}
         {categoryAddVehicleModal && <CategoryAddVehicleModal />}
         {categoryCommonUsermodal && <CategoryCommonUserModal />}

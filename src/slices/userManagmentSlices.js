@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
 import { getUsersList } from "../services/userServices";
-import { RsetUser } from "./mainSlices";
+import { RsetLoading, RsetUser } from "./mainSlices";
 import { postAddUser } from "../services/userServices";
 import { RsetFormErrors } from "./mainSlices";
 import {
@@ -27,12 +27,17 @@ const initialState = {
 export const handleUserLists = createAsyncThunk(
   "userManagment/handleUserLists",
   async (obj, { dispatch, getState }) => {
+    dispatch(RsetLoading(true));
     try {
       const token = localStorage.getItem("token");
       const getUsersListRes = await getUsersList(token);
       console.log(getUsersListRes);
       if (getUsersListRes.status === 200) {
         dispatch(RsetUserLists(getUsersListRes.data.allUser));
+        dispatch(RsetLoading(false));
+      } else {
+        dispatch(RsetLoading(false));
+        errorMessage("خطا!");
       }
     } catch (ex) {
       console.log(ex);
@@ -42,6 +47,7 @@ export const handleUserLists = createAsyncThunk(
 export const handleAllUserPhoneNumberList = createAsyncThunk(
   "userManagment/handleAllUserPhoneNumberList",
   async (obj, { dispatch, getState }) => {
+    dispatch(RsetLoading(true));
     try {
       const token = localStorage.getItem("token");
       const getAllUserPhoneNumbersRes = await getAllUserPhoneNumbers(token);
@@ -49,6 +55,10 @@ export const handleAllUserPhoneNumberList = createAsyncThunk(
         dispatch(
           RsetUserPhoneNumberList(getAllUserPhoneNumbersRes.data.Allusers)
         );
+        dispatch(RsetLoading(false));
+      } else {
+        errorMessage("خطا!");
+        dispatch(RsetLoading(false));
       }
     } catch (ex) {
       console.log(ex);

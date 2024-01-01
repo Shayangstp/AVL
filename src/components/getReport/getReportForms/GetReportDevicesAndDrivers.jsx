@@ -83,7 +83,7 @@ const GetReportDevicesAndDrivers = () => {
   return (
     <Form className="bg-light borderRadius-bottom shadow">
       <Form.Group>
-        <div className="reportHeader p-3" style={{ background: "#eab56f" }}>
+        <div className="deviceHeader p-3 borderRadius-top">
           <span className="me-2">
             <FontAwesomeIcon icon={faLocationDot} />
           </span>

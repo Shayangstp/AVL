@@ -83,7 +83,7 @@ const CategoryAddVehicleModal = () => {
         return vehicleImei;
       }),
       vehicleType: categoryCurrentRequest.devices.map((item) => {
-        const vehicleImei = item.model.name;
+        const vehicleImei = item.type;
         return vehicleImei;
       }),
       vehicleNumber: categoryCurrentRequest.devices.map((item) => {
@@ -97,7 +97,7 @@ const CategoryAddVehicleModal = () => {
     },
   ];
 
-  const options = categoryCurrentRequest.map((item) => {
+  const options = categoryCurrentRequest.devices.map((item) => {
     const vehicle = item.driverName + " " + item.deviceIMEI;
     const vehicleImei = item.deviceIMEI;
     return {

@@ -4,6 +4,7 @@ import {
   getCategoryList,
   getVehicleManageList,
 } from "../services/categoryServices";
+import { RsetLoading } from "./mainSlices";
 
 const initialState = {
   categoryList: [],
@@ -23,13 +24,16 @@ const initialState = {
 export const handleCategoryList = createAsyncThunk(
   "category/handleCategoryList",
   async (obj, { dispatch, getState }) => {
+    dispatch(RsetLoading(true));
     try {
       const token = localStorage.getItem("token");
       const getCategoryListRes = await getCategoryList(token);
       if (getCategoryListRes.data.code === 200) {
         dispatch(RsetCategoryList(getCategoryListRes.data.populateUser));
+        dispatch(RsetLoading(false));
       } else {
         console.log("error");
+        dispatch(RsetLoading(false));
       }
     } catch (ex) {
       console.log(ex);

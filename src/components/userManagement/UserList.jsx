@@ -11,6 +11,7 @@ import {
   faStamp,
   faPen,
   faLock,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, Link } from "react-router-dom";
 import {
@@ -34,6 +35,8 @@ import UserManagmentRoleModal from "./modals/UserManagmentRoleModal";
 
 import { getUserLocked, getUserUnLocked } from "../../services/userServices";
 import { successMessage } from "../../utils/msg";
+import Loading from "../common/Loading";
+import { RsetLoading, selectLoading } from "../../slices/mainSlices";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -47,6 +50,7 @@ const UserList = () => {
   const userManagmentChangePasswordModal = useSelector(
     selectUserManagmentChangePasswordModal
   );
+  const loading = useSelector(selectLoading);
   const userManagmentRoleModal = useSelector(selectUserManagmentRoleModal);
   const currentUser = useSelector(selectCurrentUser);
 
@@ -337,42 +341,50 @@ const UserList = () => {
   return (
     <Container fluid className="py-4">
       <Fragment>
-        <section className="position-relative">
-          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow ">
-            <div className="d-flex align-items-center justify-content-between"></div>
-            <div className="position-relative">
+        <section className="mt-4">
+          <div
+            className="d-flex justify-content-start text-white py-3  borderRadius-top"
+            style={{ background: "#485550" }}
+          >
+            <div className="ms-4 mt-1">
+              <span className="me-2">
+                <FontAwesomeIcon icon={faList} />
+              </span>
+              لیست کاربران{" "}
+            </div>{" "}
+          </div>
+          <div className="d-flex align-items-center justify-content-between"></div>
+          <div className="position-relative">
+            {!loading ? (
               <Fragment>
-                <Fragment>
-                  <ConfigProvider
-                    locale={faIR}
-                    // theme={{
-                    //   token: {
-                    //     colorPrimary: "#00b96b",
-                    //     colorBgContainer: "#f6ffed",
-                    //   },
-                    // }}
-                  >
-                    <Table
-                      locale={{
-                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
-                      }}
-                      className="list"
-                      bordered
-                      dataSource={userLists}
-                      columns={columns}
-                      pagination={paginationConfig}
-                      scroll={{ x: "max-content" }}
-                      size="middle"
-                    />
-                  </ConfigProvider>
-                  {userManagmentEditModal && <UserManagmentEditModal />}
-                  {userManagmentRoleModal && <UserManagmentRoleModal />}
-                  {userManagmentChangePasswordModal && (
-                    <UserManagmentChangePasswordModal />
-                  )}
-                </Fragment>
+                <ConfigProvider locale={faIR}>
+                  <Table
+                    locale={{
+                      emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                    }}
+                    className="list"
+                    bordered
+                    dataSource={userLists}
+                    columns={columns}
+                    pagination={paginationConfig}
+                    scroll={{ x: "max-content" }}
+                    size="middle"
+                  />
+                </ConfigProvider>
+                {userManagmentEditModal && <UserManagmentEditModal />}
+                {userManagmentRoleModal && <UserManagmentRoleModal />}
+                {userManagmentChangePasswordModal && (
+                  <UserManagmentChangePasswordModal />
+                )}
               </Fragment>
-            </div>
+            ) : (
+              <div
+                className="d-flex justify-content-center"
+                style={{ marginTop: "200px" }}
+              >
+                <Loading height={"60px"} width={"60px"} />
+              </div>
+            )}
           </div>
         </section>
       </Fragment>

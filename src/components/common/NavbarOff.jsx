@@ -155,7 +155,7 @@ const NavbarOff = () => {
                     }}
                     className="sidebar-link"
                   >
-                    <span className="ms-4 lightGray">افزودن مدل دستگاه</span>
+                    {/* <span className="ms-4 lightGray">افزودن مدل دستگاه</span> */}
                   </Nav.Link>
                 </div>
               )}

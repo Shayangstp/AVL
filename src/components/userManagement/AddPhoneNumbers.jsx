@@ -15,6 +15,8 @@ import {
   handleResetAddPhoneNumber,
 } from "../../slices/userManagmentSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
+import { faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AddPhoneNumbers = () => {
   const dispatch = useDispatch();
@@ -73,17 +75,21 @@ const AddPhoneNumbers = () => {
 
   return (
     <Container fluid className="mt-4 mb-5">
-      <section className="lightGray-bg p-3 shadow borderRadius-15 border border-white border-2 ">
-        <div className="mb-5 mt-5 fs-4">افزودن </div>
-        <Form>
-          <div className="mb-4 fs-6">-اطلاعات را وارد کنید</div>
-          <Row>
-            <Form.Group as={Col} md="4">
+      <Form>
+        <Row className="bg-white borderRadius-15 shadow p-0">
+          <div className="deviceHeader p-3 borderRadius-top">
+            <span className="me-2">
+              <FontAwesomeIcon icon={faPhone} />
+            </span>
+            افزودن شماره تلفن
+          </div>
+          <Row className="mt-5 px-4">
+            <Form.Group as={Col} md="3">
               <Form.Label className="required-field">نام: </Form.Label>
               <Form.Control
                 className={`${
                   !firstNameIsValid ? `${formErrors.firstName} ` : ""
-                }`}
+                } borderRadius-15`}
                 type="text"
                 name="deviceImei"
                 value={firstName}
@@ -92,14 +98,14 @@ const AddPhoneNumbers = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="4">
+            <Form.Group as={Col} md="3">
               <Form.Label className="required-field">نام خانوادگی: </Form.Label>
               <Form.Control
                 className={`${
                   !lastNameIsValid
                     ? `${formErrors.lastName} borderRaduis-15`
                     : ""
-                }`}
+                }  borderRadius-15`}
                 type="text"
                 name="deviceImei"
                 value={lastName}
@@ -108,13 +114,13 @@ const AddPhoneNumbers = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="4">
+            <Form.Group as={Col} md="3">
               <Form.Label className="required-field">شماره تلفن: </Form.Label>
               <NumericFormat
                 className={`form-control ${
                   !phoneNumberIsValid ? formErrors.phoneNumber : ""
                 }
-              `}
+                borderRadius-15`}
                 type="text"
                 name="deviceNumber"
                 maxLength={11}
@@ -124,14 +130,14 @@ const AddPhoneNumbers = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="4" className="mt-3">
+            <Form.Group as={Col} md="3">
               <Form.Label className="required-field">
                 پست الکترونیکی :
               </Form.Label>
               <Form.Control
                 className={`${
-                  !gmailIsValid ? `${formErrors.gmail} borderRaduis-15` : ""
-                }`}
+                  !gmailIsValid ? `${formErrors.gmail} ` : ""
+                }  borderRadius-15`}
                 type="text"
                 name="deviceImei"
                 value={gmail}
@@ -140,11 +146,17 @@ const AddPhoneNumbers = () => {
                 }}
               />
             </Form.Group>
-          </Row>
-          <Row>
-            <Col md="5" xl="4" className="mx-auto d-flex mt-5">
+            <div className="px-5 mt-5">
+              <hr />
+            </div>
+            <Form.Group
+              md="5"
+              xl="4"
+              className="d-flex justify-content-center mt-5 mb-3"
+            >
               <Button
                 variant="success"
+                size="sm"
                 className="mb-3 me-5 px-3"
                 onClick={(e) => {
                   handleAddPhoneNumberSubmit(e);
@@ -155,6 +167,7 @@ const AddPhoneNumbers = () => {
               <Button
                 variant="secondary"
                 type="reset"
+                size="sm"
                 className="mb-3 px-4"
                 onClick={() => {
                   dispatch(handleResetAddPhoneNumber());
@@ -162,10 +175,11 @@ const AddPhoneNumbers = () => {
               >
                 انصراف
               </Button>
-            </Col>
+            </Form.Group>
           </Row>
-        </Form>
-      </section>
+        </Row>
+        <Row></Row>
+      </Form>
     </Container>
   );
 };

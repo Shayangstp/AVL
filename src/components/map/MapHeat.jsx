@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -6,20 +6,19 @@ import {
   useMap,
   Polyline,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import { useSelector } from "react-redux";
 import { selectDeviceCordinate } from "../../slices/deviceSlices";
-import "leaflet-routing-machine";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3";
+import "leaflet/dist/leaflet.css";
+import "leaflet.heat/dist/leaflet-heat.js";
 
 const Map = ({ height, width }) => {
   const [map, setMap] = useState(null);
   const [routing, setRouting] = useState(null);
   const deviceCordinate = useSelector(selectDeviceCordinate);
+  const mapRef = useRef(null);
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -30,7 +29,7 @@ const Map = ({ height, width }) => {
 
   // Define your heatmap data
   const heatmapData = [
-    [[35.7219, 51.3347, 0.5]], // [latitude, longitude, intensity]
+    [35.7219, 51.3347, 0.5], // [latitude, longitude, intensity]
     [35.722, 51.335, 0.8],
     [35.7221, 52.336, 1.0],
     [35.7221, 53.336, 1.0],
@@ -39,6 +38,25 @@ const Map = ({ height, width }) => {
     [35.7221, 56.336, 1.0],
     // Add more data points as needed
   ];
+
+  // const heatmapData = [
+  //   [35.722, 51.335, 0.8],
+  //   [35.7221, 53.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   [35.7221, 56.336, 1.0],
+  //   // Add more data points as needed
+  // ];
 
   const paths = [
     [
@@ -53,18 +71,44 @@ const Map = ({ height, width }) => {
     ], // Path 2
     // Add more paths as needed
   ];
-  useEffect(() => {
-    if (map) {
-      const routingControl = L.Routing.control({
-        waypoints: [
-          L.latLng([35.7219, 51.3347, 0.5]), // start coordinates
-          L.latLng([35.722, 51.335, 0.8]), // end coordinates
-        ],
-      }).addTo(map);
+  // useEffect(() => {
+  //   if (map) {
+  //     const routingControl = L.Routing.control({
+  //       waypoints: [
+  //         L.latLng([35.7219, 51.3347, 0.5]), // start coordinates
+  //         L.latLng([35.722, 51.335, 0.8]), // end coordinates
+  //       ],
+  //     }).addTo(map);
 
-      setRouting(routingControl);
-    }
-  }, [map]);
+  //     setRouting(routingControl);
+  //   }
+  // }, [map]);
+
+  const HeatmapLayer = L.heatLayer(heatmapData);
+
+  // useEffect(() => {
+  //   const map = mapRef.current.leafletElement;
+
+  //   const heatLayer = L.heatLayer(heatmapData).addTo(map);
+
+  //   return () => {
+  //     heatLayer.remove(); // Clean up the heatmap layer
+  //   };
+  // }, []);
+
+  const MapWrapper = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      HeatmapLayer.addTo(map);
+
+      // return () => {
+      //   map.removeLayer(HeatmapLayer); // Clean up the heatmap layer
+      // };
+    }, [map]);
+
+    return null;
+  };
 
   return (
     <MapContainer
@@ -79,16 +123,19 @@ const Map = ({ height, width }) => {
           deviceCordinate.length !== 0 ? deviceCordinate : [35.7219, 51.3347]
         }
       />
-      <HeatmapLayer
-        points={heatmapData}
-        longitudeExtractor={(point) => point[1]}
-        latitudeExtractor={(point) => point[0]}
-        intensityExtractor={(point) => point[2]}
-      />
+      <MapWrapper />
       {paths.map((path, index) => (
         <Polyline key={index} positions={path} />
       ))}
     </MapContainer>
+    // <MapContainer
+    //   center={[35.722, 51.335]}
+    //   zoom={13}
+    //   style={{ height: "400px", width: "100%" }}
+    //   ref={mapRef}
+    // >
+    //   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    // </MapContainer>
   );
 };
 

@@ -24,7 +24,7 @@ import {
   handleResetAddUser,
 } from "../../slices/userManagmentSlices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const AddUser = () => {
   const [showPass, setShowPass] = useState(false);
@@ -120,13 +120,17 @@ const AddUser = () => {
   };
 
   return (
-    <Container fluid className="mt-4 mb-5">
-      <section className="lightGray-bg p-3 shadow borderRadius-15 border border-white border-2">
-        <div className="mb-5 mt-5 fs-4">افزودن کاربر</div>
-        <Form>
-          <div className="mb-5 fs-5"> - ﺛﺒﺖ ﻧﺎﻡ</div>
-          <Row>
-            <div>
+    <Container className="mt-4 mb-5">
+      <Form>
+        <Row className="bg-white borderRadius-15 shadow p-0">
+          <div className="deviceHeader p-3 borderRadius-top">
+            <span className="me-2">
+              <FontAwesomeIcon icon={faUser} />
+            </span>
+            افزودن کاربر
+          </div>
+          <Row className="px-4 mt-4">
+            <Form.Group as={Col} md="3" id="gender">
               <Form.Label className="me-2 required-field">جنسیت: </Form.Label>
               <Form.Check
                 inline
@@ -155,13 +159,15 @@ const AddUser = () => {
               {!genderIsValid && (
                 <p className="text-danger font12">{formErrors.gender}</p>
               )}
-            </div>
+            </Form.Group>
           </Row>
-          <Row className="mt-3">
-            <Form.Group as={Col} md="3">
+          <Row className="p-4">
+            <Form.Group as={Col} md="4">
               <Form.Label className="required-field"> نام کاربری: </Form.Label>
               <Form.Control
-                className={`${!userNameIsValid ? formErrors.userName : ""}`}
+                className={`${
+                  !userNameIsValid ? formErrors.userName : ""
+                } borderRadius-15`}
                 value={userName}
                 type="text"
                 name="userName"
@@ -170,10 +176,12 @@ const AddUser = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="3">
+            <Form.Group as={Col} md="4">
               <Form.Label className="required-field">نام: </Form.Label>
               <Form.Control
-                className={`${!firstNameIsValid ? formErrors.firstName : ""}`}
+                className={`${
+                  !firstNameIsValid ? formErrors.firstName : ""
+                } borderRadius-15`}
                 value={firstName}
                 type="text"
                 name="userName"
@@ -182,10 +190,12 @@ const AddUser = () => {
                 }}
               />
             </Form.Group>
-            <Form.Group as={Col} md="3">
+            <Form.Group as={Col} md="4">
               <Form.Label className="required-field">نام خانوادگی: </Form.Label>
               <Form.Control
-                className={`${!lastNameIsValid ? formErrors.lastName : ""}`}
+                className={`${
+                  !lastNameIsValid ? formErrors.lastName : ""
+                } borderRadius-15`}
                 type="text"
                 name="lastName"
                 value={lastName}
@@ -194,6 +204,8 @@ const AddUser = () => {
                 }}
               />
             </Form.Group>
+          </Row>
+          <Row className="px-4">
             <Form.Group as={Col} md="3">
               <Form.Label className="required-field">
                 شماره تلفن همراه:{" "}
@@ -201,7 +213,7 @@ const AddUser = () => {
               <NumericFormat
                 className={`form-control ${
                   !phoneNumberIsValid ? formErrors.phoneNumber : ""
-                }`}
+                } borderRadius-15 `}
                 type="text"
                 maxLength={11}
                 name="phoneNumber"
@@ -211,14 +223,14 @@ const AddUser = () => {
                 }}
               />
             </Form.Group>
-          </Row>
-          <Row className="mt-3">
             <Form.Group as={Col} md="3">
               <Form.Label className="required-field">
                 پست الکترنیکی:{" "}
               </Form.Label>
               <Form.Control
-                className={`${!gmailIsValid ? formErrors.gmail : ""}`}
+                className={`${
+                  !gmailIsValid ? formErrors.gmail : ""
+                } borderRadius-15`}
                 type="text"
                 name="gmail"
                 value={gmail}
@@ -230,7 +242,9 @@ const AddUser = () => {
             <Form.Group as={Col} md="3" className="position-relative">
               <Form.Label className="required-field">رمز عبور: </Form.Label>
               <Form.Control
-                className={`${!passwordIsValid ? formErrors.password : ""}`}
+                className={`${
+                  !passwordIsValid ? formErrors.password : ""
+                } borderRadius-15`}
                 type={showPass ? "text" : "password"}
                 name="password"
                 value={password}
@@ -255,7 +269,7 @@ const AddUser = () => {
                   !passwordConfirmationIsValid
                     ? formErrors.passwordConfirmation
                     : ""
-                }`}
+                } borderRadius-15`}
                 type={showPassConfirm ? "text" : "password"}
                 name="passwordConfirmation"
                 value={passwordConfirmation}
@@ -265,17 +279,26 @@ const AddUser = () => {
               />
               <FontAwesomeIcon
                 icon={showPassConfirm ? faEye : faEyeSlash}
-                className="position-absolute top-50 end-0 mt-2 me-4 text-secondary font10"
+                className="position-absolute  end-0 me-4 text-secondary font10"
+                style={{ top: "40px" }}
                 onClick={() => {
                   setShowPassConfirm(!showPassConfirm);
                 }}
               />
             </Form.Group>
           </Row>
-          <Row className="mt-3">
-            <Col md="5" xl="4" className="mx-auto d-flex mt-5">
+          <div className="px-5 mt-5">
+            <hr />
+          </div>
+          <Row className="px-4 mt-3">
+            <Form.Group
+              as={Col}
+              md="12"
+              className=" mt-4 d-flex justify-content-center"
+            >
               <Button
                 variant="success"
+                size="sm"
                 className="mb-3 me-5 px-4"
                 onClick={(e) => {
                   handleAdduserFormSubmit(e);
@@ -286,6 +309,7 @@ const AddUser = () => {
               <Button
                 variant="secondary"
                 type="reset"
+                size="sm"
                 className="mb-3 px-4"
                 onClick={() => {
                   handleResetAddUser();
@@ -293,10 +317,10 @@ const AddUser = () => {
               >
                 انصراف
               </Button>
-            </Col>
+            </Form.Group>
           </Row>
-        </Form>
-      </section>
+        </Row>
+      </Form>
     </Container>
   );
 };

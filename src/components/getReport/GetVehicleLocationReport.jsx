@@ -510,7 +510,7 @@ const GetVehicleLocationReport = () => {
         </Col>
         <Col md="3" className="d-flex align-items-end mt-2">
           <Button size="sm" onClick={handleReport}>
-            جستوجو
+            جستجو
           </Button>
         </Col>
       </Row>

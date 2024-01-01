@@ -118,9 +118,6 @@ const Sidebar = () => {
                     <Dropdown.Item onClick={() => navigate("/deviceList")}>
                       مشاهده دستگاه ها
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => navigate("/addVehicle")}>
-                      افزودن مدل دستگاه
-                    </Dropdown.Item>
                   </DropdownButton>
                 </div>
                 {/* categories dropDown */}
@@ -304,14 +301,6 @@ const Sidebar = () => {
                     >
                       <span className="ms-4 lightGray font10">
                         مشاهده دستگاه ها
-                      </span>
-                    </Nav.Link>
-                    <Nav.Link
-                      onClick={() => navigate("/addVehicle")}
-                      className="sidebar-link"
-                    >
-                      <span className="ms-4 lightGray font10">
-                        افزودن مدل دستگاه
                       </span>
                     </Nav.Link>
                   </div>

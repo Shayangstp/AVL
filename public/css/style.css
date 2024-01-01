@@ -146,10 +146,10 @@ body {
 
 .list thead.ant-table-thead tr td,
 .list thead.ant-table-thead tr th {
-  background-color: #c1ff00 !important;
+  background-color: #f6bd60 !important;
   color: #000 !important;
   padding: 6px !important;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .custom-row-0 {
@@ -166,7 +166,7 @@ body {
 
 .list thead.ant-table-thead tr td span,
 .list thead.ant-table-thead tr th span {
-  font-size: 8px !important;
+  font-size: 13px;
   margin-inline: 0px !important;
 }
 
@@ -218,7 +218,7 @@ body {
 } */
 
 .deviceHeader {
-  background-color: #c1ff00;
+  background-color: #f6bd60;
   color: #000;
 }
 .reportHeader {

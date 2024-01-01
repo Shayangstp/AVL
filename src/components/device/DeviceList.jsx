@@ -64,6 +64,8 @@ import DeviceAdjustmentModal from "./deviceModals/DeviceAdjustmentModal";
 import DeviceLocationsModal from "./deviceModals/DeviceLocationsModal";
 import { NumericFormat } from "react-number-format";
 import { selectUnitsOption } from "../../slices/mainSlices";
+import Loading from "../common/Loading";
+import { RsetLoading, selectLoading } from "../../slices/mainSlices";
 
 const DeviceList = () => {
   const dispatch = useDispatch();
@@ -83,6 +85,7 @@ const DeviceList = () => {
   const currentDevice = useSelector(selectCurrentDevice);
   const deviceAdjusmentModal = useSelector(selectDeviceAdjusmentModal);
   const deviceLocationsModal = useSelector(selectDeviceLocationsModal);
+  const loading = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(handleDeviceList());
@@ -217,7 +220,9 @@ const DeviceList = () => {
     },
     {
       key: "deviceNumber",
-      title: "شماره تلفن سیم کارت",
+      title: () => (
+        <span style={{ fontSize: "10px" }}>شماره تلفن سیم کارت</span>
+      ),
       dataIndex: "simNumber",
       sorter: (a, b) => {
         if (!a.simNumber && !b.simNumber) {
@@ -235,11 +240,11 @@ const DeviceList = () => {
         return a.simNumber.localeCompare(b.simNumber);
       },
       ...getColumnSearchProps("simNumber", "جستجو..."),
-      width: 900,
+      width: 2000,
     },
     {
       key: "driverName",
-      title: "نام راننده",
+      title: () => <span style={{ fontSize: "12px" }}>نام راننده</span>,
       dataIndex: "driverName",
       sorter: (a, b) => {
         if (!a.driverName && !b.driverName) {
@@ -257,11 +262,11 @@ const DeviceList = () => {
         return a.driverName.localeCompare(b.driverName);
       },
       ...getColumnSearchProps("driverName", "جستجو..."),
-      width: 200,
+      width: 900,
     },
     {
       key: "driverNumber",
-      title: "تلفن راننده",
+      title: () => <span style={{ fontSize: "12px" }}>تلفن راننده</span>,
       dataIndex: "driverPhoneNumber",
       sorter: (a, b) => {
         if (!a.driverPhoneNumber && !b.driverPhoneNumber) {
@@ -279,7 +284,7 @@ const DeviceList = () => {
         return a.driverPhoneNumber.localeCompare(b.driverPhoneNumber);
       },
       ...getColumnSearchProps("driverPhoneNumber", "جستجو..."),
-      width: 200,
+      width: 900,
     },
     {
       key: "vehicleNumber",
@@ -301,7 +306,7 @@ const DeviceList = () => {
         return a.plate.localeCompare(b.plate);
       },
       ...getColumnSearchProps("plate", "جستجو..."),
-      width: 200,
+      width: 300,
     },
     {
       key: "group",
@@ -323,7 +328,7 @@ const DeviceList = () => {
         return a.group.localeCompare(b.group);
       },
       ...getColumnSearchProps("group", "جستجو..."),
-      width: 200,
+      width: 300,
     },
     {
       key: "model",
@@ -346,11 +351,11 @@ const DeviceList = () => {
       },
       render: (model) => model?.name,
       ...getColumnSearchProps("model", "جستجو..."),
-      width: 200,
+      width: 300,
     },
     {
       key: "company",
-      title: "شرکت سازنده",
+      title: () => <span style={{ fontSize: "12px" }}>شرکت سازنده</span>,
       dataIndex: "company",
       sorter: (a, b) => {
         if (!a.company && !b.company) {
@@ -368,7 +373,7 @@ const DeviceList = () => {
         return a.company.localeCompare(b.company);
       },
       ...getColumnSearchProps("company", "جستجو..."),
-      width: 600,
+      width: 1200,
     },
     {
       key: "usage",
@@ -390,11 +395,13 @@ const DeviceList = () => {
         return a.usage.localeCompare(b.usage);
       },
       ...getColumnSearchProps("usage", "جستجو..."),
-      width: 200,
+      width: 300,
     },
     {
       key: "distance",
-      title: "مسافت طی شده در ماه جاری",
+      title: () => (
+        <span style={{ fontSize: "9px" }}>مسافت طی شده در ماه جاری</span>
+      ),
       dataIndex: "maxPMDistance",
       sorter: (a, b) => {
         if (!a.maxPMDistance && !b.maxPMDistance) {
@@ -412,11 +419,13 @@ const DeviceList = () => {
         return a.maxPMDistance.localeCompare(b.maxPMDistance);
       },
       ...getColumnSearchProps("maxPMDistance", "جستجو..."),
-      width: 1000,
+      width: 2000,
     },
     {
       key: "gasUsage",
-      title: "میزان تقریبی سوخت در ماه جاری",
+      title: () => (
+        <span style={{ fontSize: "9px" }}>میزان تقریبی سوخت در ماه جاری</span>
+      ),
       dataIndex: "gasUsage",
       sorter: (a, b) => {
         if (!a.gasUsage && !b.gasUsage) {
@@ -434,7 +443,7 @@ const DeviceList = () => {
         return a.gasUsage.localeCompare(b.gasUsage);
       },
       ...getColumnSearchProps("gasUsage", "جستجو..."),
-      width: 1000,
+      width: 2000,
     },
     {
       key: "conditions",
@@ -456,7 +465,7 @@ const DeviceList = () => {
         return a.conditions.localeCompare(b.conditions);
       },
       ...getColumnSearchProps("conditions", "Search conditions"),
-      width: 100,
+      width: 300,
     },
     {
       key: "operation",
@@ -579,7 +588,7 @@ const DeviceList = () => {
   // };
 
   const getRowClassName = (record, index) => {
-    const colors = ["white", "gray"]; // Define an array of colors
+    const colors = ["gray", "white"]; // Define an array of colors
     const colorIndex = index % colors.length; // Calculate the index of the color
 
     return `custom-row custom-row-${colorIndex}`; // Apply the custom CSS class with the color index
@@ -587,54 +596,117 @@ const DeviceList = () => {
 
   return (
     <Container fluid className="py-3">
-      {/* {menuPermission ? */}
       <Fragment>
-        {showFilter ? <DeviceFilter /> : null}
         <section className="mt-4">
-          {/* <div className="bg-white shadow mt-3 borderRadius-15"> */}
           <div
-            className="text-white py-3 font12 text-center borderRadius-top"
+            className="d-flex justify-content-start text-white py-3  borderRadius-top"
             style={{ background: "#485550" }}
           >
-            <span className="me-2">
-              <FontAwesomeIcon icon={faList} />
-            </span>
-            لیست دستگاه ها{" "}
+            <div className="ms-4 mt-1">
+              <span className="me-2">
+                <FontAwesomeIcon icon={faList} />
+              </span>
+              لیست دستگاه ها{" "}
+            </div>
           </div>
-          <div className="position-relative">
-            <Fragment>
-              <div className="position-relative table-responsive">
-                <ConfigProvider
-                  locale={faIR}
-                  // theme={{
-                  //   components: {
-                  //     Table: {
-                  //       rowSelectedBg: "#000",
-                  //     },
-                  //   },
-                  // }}
-                >
-                  <Table
-                    locale={{
-                      emptyText: <Empty description="اطلاعات موجود نیست!" />,
-                    }}
-                    className="list"
-                    bordered
-                    dataSource={deviceList}
-                    columns={columns}
-                    rowClassName={getRowClassName}
-                    pagination={paginationConfig}
-                    scroll={{ x: "max-content" }}
-                    size="middle"
-                  />
-                </ConfigProvider>
+          <div className="">
+            {!loading ? (
+              <Fragment>
+                <div className="position-relative table-responsive">
+                  <ConfigProvider locale={faIR}>
+                    <Table
+                      locale={{
+                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                      }}
+                      className="list"
+                      bordered
+                      dataSource={deviceList}
+                      columns={columns}
+                      rowClassName={getRowClassName}
+                      pagination={paginationConfig}
+                      scroll={{ x: "max-content" }}
+                      size="middle"
+                    />
+                  </ConfigProvider>
+                </div>
+                <div>
+                  <div className="d-flex ">
+                    <h4 className="font12"> راهنمای رنگ وضعیت :</h4>
+                    <div className="d-flex ms-3">
+                      <div
+                        className="border  cursorPointer bg-success"
+                        title="ارسال آخرین اطلاعات برای امروز است"
+                        style={{ width: "20px", height: "15px" }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer"
+                        title="ارسال آخرین اطلاعات برای 1 تا 7 روز پیش است"
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                          background: "yellow",
+                        }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer"
+                        title="ارسال آخرین اطلاعات برای 7 تا 30 روز پیش است"
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                          background: "orange",
+                        }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer"
+                        title="ارسال آخرین اطلاعات برای  بیشتر از 30 روز پیش است"
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                          background: "red",
+                        }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer bg-secondary"
+                        title=" اطلاعاتی ارسال نشده "
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                        }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer bg-dark"
+                        title="دستگاه تصادفی است"
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                          background: "",
+                        }}
+                      ></div>
+                      <div
+                        className="border  cursorPointer"
+                        title="دستگاه در تعمیرگاه است"
+                        style={{
+                          width: "20px",
+                          height: "15px",
+                          background: "purple",
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                {deviceEditModal && <DeviceEditeModal />}
+                {deviceAdjusmentModal && <DeviceAdjustmentModal />}
+                {deviceLocationsModal && <DeviceLocationsModal />}
+              </Fragment>
+            ) : (
+              <div
+                className="d-flex justify-content-center"
+                style={{ marginTop: "200px" }}
+              >
+                <Loading height={"60px"} width={"60px"} />
               </div>
-              {deviceEditModal && <DeviceEditeModal />}
-              {deviceAdjusmentModal && <DeviceAdjustmentModal />}
-              {deviceLocationsModal && <DeviceLocationsModal />}
-            </Fragment>
+            )}
           </div>
-          {/* </div> */}
         </section>
       </Fragment>
     </Container>

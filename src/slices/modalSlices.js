@@ -5,6 +5,7 @@ const initialState = {
   deviceEditModal: false,
   deviceAdjusmentModal: false,
   deviceLocationsModal: false,
+  deviceAddModelModal: false,
   //user
   userManagmentEditModal: false,
   userManagmentRoleModal: false,
@@ -32,6 +33,9 @@ const modalsSlices = createSlice({
     },
     RsetDeviceLocationsModal: (state, action) => {
       return { ...state, deviceLocationsModal: action.payload };
+    },
+    RsetDeviceAddModelModal: (state, action) => {
+      return { ...state, deviceAddModelModal: action.payload };
     },
     //user
     RsetUserManagmentEditModal: (state, action) => {
@@ -67,6 +71,7 @@ export const {
   RsetDeviceEditModal,
   RsetDeviceAdjusmentModal,
   RsetDeviceLocationsModal,
+  RsetDeviceAddModelModal,
   //user
   RsetUserManagmentEditModal,
   RsetUserManagmentRoleModal,
@@ -86,6 +91,8 @@ export const selectDeviceAdjusmentModal = (state) =>
   state.modals.deviceAdjusmentModal;
 export const selectDeviceLocationsModal = (state) =>
   state.modals.deviceLocationsModal;
+export const selectDeviceAddModelModal = (state) =>
+  state.modals.deviceAddModelModal;
 //user
 export const selectUserManagmentEditModal = (state) =>
   state.modals.userManagmentEditModal;

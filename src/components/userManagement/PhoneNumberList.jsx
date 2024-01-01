@@ -8,6 +8,10 @@ import {
   handleAllUserPhoneNumberList,
   selectUserPhoneNumberList,
 } from "../../slices/userManagmentSlices";
+import { faList } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loading from "../common/Loading";
+import { RsetLoading, selectLoading } from "../../slices/mainSlices";
 
 const PhoneNumberList = () => {
   const dispatch = useDispatch();
@@ -16,6 +20,7 @@ const PhoneNumberList = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
 
   const userPhoneNumberList = useSelector(selectUserPhoneNumberList);
+  const loading = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(handleAllUserPhoneNumberList());
@@ -207,36 +212,44 @@ const PhoneNumberList = () => {
   return (
     <Container fluid className="py-4">
       <Fragment>
-        <section className="position-relative">
-          <div className="lightGray-bg p-4 borderRadius-15 border border-white border-2 shadow mt-3">
-            <div className="mt-3">
-              <div className="position-relative">
-                <Fragment>
-                  <ConfigProvider
-                    locale={faIR}
-                    // theme={{
-                    //   token: {
-                    //     colorPrimary: "#00b96b",
-                    //     colorBgContainer: "#f6ffed",
-                    //   },
-                    // }}
-                  >
-                    <Table
-                      locale={{
-                        emptyText: <Empty description="اطلاعات موجود نیست!" />,
-                      }}
-                      className="list"
-                      bordered
-                      dataSource={userPhoneNumberList}
-                      columns={columns}
-                      pagination={paginationConfig}
-                      scroll={{ x: "max-content" }}
-                      size="middle"
-                    />
-                  </ConfigProvider>
-                </Fragment>
+        <section className="mt-4">
+          <div
+            className="d-flex justify-content-start text-white py-3  borderRadius-top"
+            style={{ background: "#485550" }}
+          >
+            <div className="ms-4 mt-1">
+              <span className="me-2">
+                <FontAwesomeIcon icon={faList} />
+              </span>
+              لیست شماره تلفن ها{" "}
+            </div>{" "}
+          </div>
+          <div className="position-relative">
+            {!loading ? (
+              <Fragment>
+                <ConfigProvider locale={faIR}>
+                  <Table
+                    locale={{
+                      emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                    }}
+                    className="list"
+                    bordered
+                    dataSource={userPhoneNumberList}
+                    columns={columns}
+                    pagination={paginationConfig}
+                    scroll={{ x: "max-content" }}
+                    size="middle"
+                  />
+                </ConfigProvider>
+              </Fragment>
+            ) : (
+              <div
+                className="d-flex justify-content-center"
+                style={{ marginTop: "200px" }}
+              >
+                <Loading height={"60px"} width={"60px"} />
               </div>
-            </div>
+            )}
           </div>
         </section>
       </Fragment>

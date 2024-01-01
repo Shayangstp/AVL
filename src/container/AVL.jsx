@@ -5,7 +5,6 @@ import Home from "../components/Home";
 import AddUser from "../components/userManagement/AddUser";
 import MainLayout from "../components/layout/MainLayout";
 import AddDevice from "../components/device/AddDevice";
-import AddVehicle from "../components/device/AddVehicle";
 import DeviceList from "../components/device/DeviceList";
 import CategoryList from "../components/category/CategoryList";
 import UserList from "../components/userManagement/UserList";
@@ -48,7 +47,6 @@ const AVL = ({ props }) => {
           {/* devices */}
           <Route path="/addDevice" element={<AddDevice />} />
           <Route path="/deviceList" element={<DeviceList />} />
-          <Route path="/addVehicle" element={<AddVehicle />} />
           {/* category */}
           <Route path="/categoryList" element={<CategoryList />} />
           {/* report */}

@@ -98,7 +98,7 @@ const GetReportPage = () => {
 
   return (
     <div className="p-4">
-      <div className="reportHeader p-3">
+      <div className="deviceHeader borderRadius-top p-3">
         <h1>گزارش‌گیری از وسایل نقلیه</h1>
         <p className="mt-3 font12 text-dark">
           در این قسمت می‌توانید از موقعیت دستگاه‌ها یا هشدارها گزارش دریافت

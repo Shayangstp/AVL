@@ -261,15 +261,6 @@ const Header = () => {
                   >
                     <span className="ms-4 lightGray">مشاهده دستگاه ها</span>
                   </Nav.Link>
-                  <Nav.Link
-                    onClick={() => {
-                      navigate("/addVehicle");
-                      handleClose();
-                    }}
-                    className="sidebar-link"
-                  >
-                    <span className="ms-4 lightGray">افزودن مدل دستگاه</span>
-                  </Nav.Link>
                 </div>
               )}
               {/* categories dropDown */}

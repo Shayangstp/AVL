@@ -514,7 +514,7 @@ const GetAlarmReport = () => {
         </Col>
         <Col md="3" className="d-flex align-items-end">
           <Button size="sm" onClick={handleReport}>
-            جستوجو
+            جستجو
           </Button>
         </Col>
       </Row>
