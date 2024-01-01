@@ -41,6 +41,7 @@ import {
   selectGetReportVehicleValue,
   RsetShowReportList,
   selectShowReportList,
+  handleResetFormData,
 } from "../../slices/getReportSlices";
 import MapHeat from "../map/MapHeat";
 import { postDriversChanges } from "../../services/getReportServices";
@@ -48,6 +49,11 @@ import {
   convertUnixTimeStampToDate,
   convertUnixTimeStampToDateZz,
 } from "../common/ConvertUnixStamp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { selectLoading, RsetLoading } from "../../slices/mainSlices";
+import Loading from "../common/Loading";
+import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 
 const fakeList = [
   {
@@ -124,6 +130,7 @@ const GetAlarmReport = () => {
   //table
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [showPdf, setShowPdf] = useState(false);
 
   const getReportGroups = useSelector(selectGetReportGroups);
   const getReportDrivers = useSelector(selectGetReportDrivers);
@@ -136,15 +143,26 @@ const GetAlarmReport = () => {
   const getReportToSpeed = useSelector(selectGetReportToSpeed);
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
+  const formErrors = useSelector(selectFormErrors);
+  const loading = useSelector(selectLoading);
 
-  const getReportAlarms = useSelector(selectGetReportAlarms);
-  const getReportGPSLocations = useSelector(selectGetReportGPSLocations);
-  const getReportVehiclesChanges = useSelector(selectGetReportVehiclesChanges);
-  const getReportDriversConditions = useSelector(
-    selectGetReportDriversConditions
-  );
   const getReport = useSelector(selectGetReportList);
   const showReportList = useSelector(selectShowReportList);
+
+  const groupValueIsValid = groupValue.length !== 0;
+  const vehicleValueIsValid = vehicleValue.length !== 0;
+  const formIsValid = groupValueIsValid && vehicleValueIsValid;
+
+  const validation = () => {
+    let errors = {};
+    if (!groupValueIsValid) {
+      errors.groupValue = "انتخاب گروه الزامی است!";
+    }
+    if (!vehicleValueIsValid) {
+      errors.vehicleValue = "انتخاب راننده الزامی است!";
+    }
+    return errors;
+  };
 
   const getColumnSearchProps = (dataIndex, placeholder) => ({
     filterDropdown: ({
@@ -467,7 +485,7 @@ const GetAlarmReport = () => {
   };
 
   const handleReport = async () => {
-    if (getReportDriversConditions) {
+    if (formIsValid) {
       const token = localStorage.getItem("token");
       const driversChangesValues = {
         dateFilter: {
@@ -498,24 +516,93 @@ const GetAlarmReport = () => {
           RsetGetReportList(postDriversChangesRes.data.vehiclesChangesData)
         );
         dispatch(RsetShowReportList(true));
+        setShowPdf(true);
+        dispatch(RsetLoading(false));
         // dispatch(RsetGetReportList(fakeList));
       }
+    } else {
+      dispatch(
+        RsetFormErrors(
+          validation({
+            groupValue,
+            vehicleValue,
+          })
+        )
+      );
+      dispatch(RsetLoading(false));
     }
+  };
+
+  const handlePDf = async () => {
+    const token = localStorage.getItem("token");
+    const values = {
+      reportData: getReport,
+    };
+    console.log("hi");
+    // const postAlarmsReportPdfRes = await postAlarmsReportPdf(values, token);
+    // console.log(postAlarmsReportPdfRes);
+    console.log("h2i");
   };
 
   return (
     <div className="">
-      <Row className="mt-2">
+      <Row className="mt-2 d-flex justify-content-center">
         <Col md="3">
           <GetReportDevicesAndDrivers />
         </Col>
         <Col md="3">
           <GetReportDateForm />
         </Col>
-        <Col md="3" className="d-flex align-items-end">
-          <Button size="sm" onClick={handleReport}>
-            جستجو
+      </Row>
+      {!groupValueIsValid && (
+        <p className="mt-3 font12 text-danger">{formErrors.groupValue}</p>
+      )}
+      {!vehicleValueIsValid && (
+        <p className="mt-2 font12 text-danger">{formErrors.vehicleValue}</p>
+      )}
+      <div className="mt-4 mb-4">
+        <hr />
+      </div>
+      <Row>
+        <Col
+          md="12"
+          className="d-flex justify-content-end align-items-end gap-2"
+        >
+          <Button
+            size="sm"
+            variant="dark"
+            className="px-4 py-2"
+            onClick={() => {
+              dispatch(RsetLoading(true));
+              handleReport();
+            }}
+          >
+            {!loading ? "جستجو" : <Loading height={"20px"} width={"20px"} />}
           </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            className="px-4 py-2"
+            onClick={() => {
+              dispatch(handleResetFormData());
+              dispatch(RsetGetReportList([]));
+              dispatch(RsetShowReportList(false));
+              setShowPdf(false);
+            }}
+          >
+            انصراف
+          </Button>
+          {showPdf && getReport.length !== 0 && (
+            <Button
+              size="sm"
+              className="text-dark border-2 border-dark  py-1"
+              onClick={handlePDf}
+              style={{ background: "#f6bd60" }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+              <span> دانلود PDF</span>
+            </Button>
+          )}
         </Col>
       </Row>
       <div>

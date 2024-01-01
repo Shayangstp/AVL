@@ -27,6 +27,7 @@ import {
 } from "../../../slices/getReportSlices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDirections, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { selectFormErrors } from "../../../slices/mainSlices";
 
 const GetReportDevicesAndDrivers = () => {
   //fill the options --> make it here for now
@@ -37,6 +38,7 @@ const GetReportDevicesAndDrivers = () => {
   const groupList = useSelector(selectGetReportGroupList);
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
+  const FormErrors = useSelector(selectFormErrors);
 
   useEffect(() => {
     dispatch(handleGroupList());
@@ -81,7 +83,7 @@ const GetReportDevicesAndDrivers = () => {
   );
 
   return (
-    <Form className="bg-light borderRadius-bottom shadow">
+    <Form className="bg-light borderRadius-15 shadow">
       <Form.Group>
         <div className="deviceHeader p-3 borderRadius-top">
           <span className="me-2">

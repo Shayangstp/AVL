@@ -90,6 +90,7 @@ const DeviceList = () => {
   useEffect(() => {
     dispatch(handleDeviceList());
   }, [currentDevice]);
+  console.log(deviceList);
 
   const getColumnSearchProps = (dataIndex, placeholder) => ({
     filterDropdown: ({

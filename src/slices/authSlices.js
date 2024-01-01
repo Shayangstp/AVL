@@ -57,6 +57,7 @@ export const handleLogin = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );
@@ -95,6 +96,7 @@ export const handleForgetPassword = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );

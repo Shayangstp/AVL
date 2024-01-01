@@ -41,6 +41,7 @@ export const handleUserLists = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );

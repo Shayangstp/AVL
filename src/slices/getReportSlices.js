@@ -4,6 +4,7 @@ import {
   getGroupList,
   postReportLastLocation,
 } from "../services/reportServices";
+import { RsetFormErrors } from "./mainSlices";
 
 const initialState = {
   getReportFromDate: null,
@@ -105,6 +106,7 @@ export const handleResetFormData = createAsyncThunk(
     dispatch(RsetGetReportToSpeed(""));
     dispatch(RsetGetReportFromTime(""));
     dispatch(RsetGetReportToTime(""));
+    dispatch(RsetFormErrors(""));
   }
 );
 

@@ -74,7 +74,7 @@ const AddPhoneNumbers = () => {
   };
 
   return (
-    <Container fluid className="mt-4 mb-5">
+    <Container className="mt-4 mb-5">
       <Form>
         <Row className="bg-white borderRadius-15 shadow p-0">
           <div className="deviceHeader p-3 borderRadius-top">

@@ -39,8 +39,13 @@ const ViewLastLocation = () => {
 
   const fromDateIsValid = fromDate !== null;
   const toDateIsValid = toDate !== null;
-  const selectedItemsIsValid = selectedItems.length > 0;
-  const formIsValid = fromDateIsValid && toDateIsValid && selectedItemsIsValid;
+  const groupValueIsValid = groupValue.length !== 0;
+  const vehicleValueIsValid = vehicleValue.length !== 0;
+  const formIsValid =
+    fromDateIsValid &&
+    toDateIsValid &&
+    groupValueIsValid &&
+    vehicleValueIsValid;
 
   const groupListOptions = groupList.map((item, idx) => {
     return { label: item?.name, value: idx };
@@ -72,8 +77,11 @@ const ViewLastLocation = () => {
     if (!toDateIsValid) {
       errors.toDate = borderValidation;
     }
-    if (!selectedItemsIsValid) {
-      errors.selectedItems = "از داخل لیست وسیله نقلیه مورد نظر را انتخاب کنید";
+    if (!groupValueIsValid) {
+      errors.groupValue = borderValidation;
+    }
+    if (!vehicleValueIsValid) {
+      errors.vehicleValue = borderValidation;
     }
     return errors;
   };
@@ -150,7 +158,9 @@ const ViewLastLocation = () => {
               <Form.Group className="me-md-2 me-0">
                 <Form.Label>نام دسته</Form.Label>
                 <Select
-                  // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                  className={`${
+                    !groupValueIsValid ? formErrors.groupValue : ""
+                  }`}
                   value={groupValue}
                   name="deviceType"
                   onChange={(e) => {
@@ -165,7 +175,9 @@ const ViewLastLocation = () => {
               <Form.Group className="">
                 <Form.Label>انتخاب وسیله نقلیه</Form.Label>
                 <Select
-                  // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                  className={`${
+                    !vehicleValueIsValid ? formErrors.vehicleValue : ""
+                  }`}
                   value={vehicleValue}
                   name="deviceType"
                   onChange={(e) => {

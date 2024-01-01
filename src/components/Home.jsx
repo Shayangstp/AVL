@@ -31,9 +31,9 @@ const chartOne = [
 const Home = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(handleAllGpsesList());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(handleAllGpsesList());
+  // }, []);
   return (
     <div className="d-flex flex-column mt-3">
       <Row>

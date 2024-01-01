@@ -115,6 +115,7 @@ export const handleAddDevice = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );
@@ -192,6 +193,7 @@ export const handleDeviceList = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );

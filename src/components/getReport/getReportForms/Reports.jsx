@@ -16,6 +16,7 @@ import {
   RsetShowReportList,
   handleResetFormData,
 } from "../../../slices/getReportSlices";
+import { RsetFormErrors } from "../../../slices/mainSlices";
 
 const Reports = () => {
   const [selectedOption, setSelectedOption] = useState("موقعیت ماشین ها");
@@ -59,6 +60,7 @@ const Reports = () => {
     dispatch(RsetShowReportList(false));
     //reset form
     dispatch(handleResetFormData());
+    dispatch(RsetFormErrors(""));
   };
 
   return (

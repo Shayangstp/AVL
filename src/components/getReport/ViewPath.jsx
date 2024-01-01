@@ -38,8 +38,6 @@ const ViewPath = () => {
   const groupValue = useSelector(selectGetReportGroupValue);
   const vehicleValue = useSelector(selectGetReportVehicleValue);
 
-  console.log(groupList);
-
   const groupListOptions = groupList.map((item, idx) => {
     return { label: item?.name, value: idx };
   });
@@ -58,12 +56,17 @@ const ViewPath = () => {
     };
   });
 
-  console.log(vehicleListOptions);
-
   const fromDateIsValid = fromDate !== null;
   const toDateIsValid = toDate !== null;
-  const selectedItemsIsValid = selectedItems.length > 0;
-  const formIsValid = fromDateIsValid && toDateIsValid && selectedItemsIsValid;
+  const groupValueIsValid = groupValue.length !== 0;
+  const vehicleValueIsValid = vehicleValue.length !== 0;
+  const formIsValid =
+    fromDateIsValid &&
+    toDateIsValid &&
+    groupValueIsValid &&
+    vehicleValueIsValid;
+
+  console.log(groupValueIsValid);
 
   useEffect(() => {
     dispatch(handleGroupList());
@@ -78,8 +81,14 @@ const ViewPath = () => {
     if (!toDateIsValid) {
       errors.toDate = borderValidation;
     }
-    if (!selectedItemsIsValid) {
-      errors.selectedItems = "از داخل لیست وسیله نقلیه مورد نظر را انتخاب کنید";
+    // if (!selectedItemsIsValid) {
+    //   errors.selectedItems = "از داخل لیست وسیله نقلیه مورد نظر را انتخاب کنید";
+    // }
+    if (!groupValueIsValid) {
+      errors.groupValue = borderValidation;
+    }
+    if (!vehicleValueIsValid) {
+      errors.vehicleValue = borderValidation;
     }
     return errors;
   };
@@ -91,6 +100,8 @@ const ViewPath = () => {
       const values = {
         bTime: String(fromDate),
         eTime: String(toDate),
+        //groupValue == the group name
+        //vehicleValue == the vehicle is array
       };
     } else {
       dispatch(
@@ -98,6 +109,7 @@ const ViewPath = () => {
           validation({
             fromDate,
             toDate,
+            vehicleValue,
           })
         )
       );
@@ -118,6 +130,7 @@ const ViewPath = () => {
 
   // report should be fix in data
   console.log(vehicleValue);
+  console.log(groupValue);
 
   return (
     <Container fluid className="p-3">
@@ -138,7 +151,9 @@ const ViewPath = () => {
               <Form.Group as={Col} className="">
                 <Form.Label>نام دسته</Form.Label>
                 <Select
-                  // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                  className={`${
+                    !groupValueIsValid ? formErrors.groupValue : ""
+                  }`}
                   value={groupValue}
                   name="deviceType"
                   onChange={(e) => {
@@ -153,7 +168,9 @@ const ViewPath = () => {
               <Form.Group as={Col} className="mt-2">
                 <Form.Label>انتخاب وسیله نقلیه</Form.Label>
                 <Select
-                  // className={`${!deviceTypeIsValid ? formErrors.deviceType : ""}`}
+                  className={`${
+                    !vehicleValueIsValid ? formErrors.vehicleValue : ""
+                  }`}
                   value={vehicleValue}
                   name="deviceType"
                   onChange={(e) => {
@@ -216,11 +233,11 @@ const ViewPath = () => {
                 </Button>
               </Form.Group>
             </Form>
-            {!formIsValid && (
+            {/* {!formIsValid && (
               <p className="text-danger mt-3 font10">
                 {formErrors.selectedItems}
               </p>
-            )}
+            )} */}
           </div>
         </Col>
         <Col className="borderRadius-15  shadow" style={{ height: "500px" }}>

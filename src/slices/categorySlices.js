@@ -37,6 +37,7 @@ export const handleCategoryList = createAsyncThunk(
       }
     } catch (ex) {
       console.log(ex);
+      dispatch(RsetLoading(false));
     }
   }
 );

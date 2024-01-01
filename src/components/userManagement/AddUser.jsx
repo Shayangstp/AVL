@@ -312,7 +312,7 @@ const AddUser = () => {
                 size="sm"
                 className="mb-3 px-4"
                 onClick={() => {
-                  handleResetAddUser();
+                  dispatch(handleResetAddUser());
                 }}
               >
                 انصراف
