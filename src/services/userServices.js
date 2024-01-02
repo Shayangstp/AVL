@@ -113,3 +113,14 @@ export const postAddRoleToUser = (values, token) => {
     }
   );
 };
+export const getCommonUser = (token) => {
+  return http.get(
+    `${config.R}/api/v1/user/berif`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};

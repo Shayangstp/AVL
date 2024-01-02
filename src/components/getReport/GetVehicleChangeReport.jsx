@@ -567,7 +567,7 @@ const GetVehicleChangeReport = () => {
           >
             انصراف
           </Button>
-          {showPdf && getReport.length !== 0 && (
+          {showPdf && getReport && getReport.length !== 0 && (
             <Button
               size="sm"
               className="text-dark border-2 border-dark  py-1"

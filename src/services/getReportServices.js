@@ -63,12 +63,12 @@ export const postDriversChanges = (values, token) => {
   );
 };
 export const postAlarmsReportPdf = (values, token) => {
-  return http.post(
-    `${config.R}/api/v1/device/report/alarms/pdf`,
-    values,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    },
-   
-  );
+  return http.post(`${config.R}/api/v1/device/report/alarms/pdf`, values, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
+export const getReportLastViewLocations = (values, token) => {
+  return http.post(`${config.R}/api/v1/device/lastlocationsinp`, values, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 };

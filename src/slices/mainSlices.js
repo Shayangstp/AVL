@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { errorMessage, successMessage } from "../utils/msg";
 import { getAllGpses } from "../services/dashboardServices";
+import { getCommonUser } from "../services/userServices";
+import { RsetCategoryCommonUserOptions } from "./categorySlices";
 
 const initialState = {
   formErrors: {},
@@ -29,6 +31,22 @@ export const handleAllGpsesList = createAsyncThunk(
       // });
       console.log(allGpesesRes);
       dispatch(RsetAllGpses(allGpesesRes.data));
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleCommonUserList = createAsyncThunk(
+  "main/handleCommonUserList",
+  async (obj, { dispatch, getState }) => {
+    // const { allGpeses } = getState().main;
+    const token = localStorage.getItem("token");
+
+    try {
+      const getCommonUserRes = await getCommonUser(token);
+      console.log(getCommonUserRes);
+      // if()
+      dispatch(RsetCategoryCommonUserOptions(getCommonUserRes.data.allUser))
     } catch (ex) {
       console.log(ex);
     }
@@ -78,6 +96,7 @@ export const {
   RsetAllGpses,
   RsetUnitsOption,
   RsetSmallNav,
+  RsetCommonUserOptions,
 } = mainSlices.actions;
 
 export const selectFormErrors = (state) => state.main.formErrors;

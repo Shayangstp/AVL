@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MapHeat from "../map/MapHeat";
 import Select from "react-select";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
@@ -8,7 +8,10 @@ import {
   DateRangePicker,
   DateTimeRangePicker,
 } from "react-advance-jalaali-datepicker";
-import { convertUnixTimeStampToDate } from "../common/ConvertUnixStamp";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
 import { useDispatch, useSelector } from "react-redux";
 import {
   RsetGetReportFromDate,
@@ -22,10 +25,14 @@ import {
   selectGetReportGroupValue,
   RsetGetReportVehicleValue,
   selectGetReportVehicleValue,
+  handleGroupList,
 } from "../../slices/getReportSlices";
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDirections, faMap } from "@fortawesome/free-solid-svg-icons";
+import { getReportLastViewLocations } from "../../services/getReportServices";
+import { RsetDeviceCordinate } from "../../slices/deviceSlices";
+import MapLastLocation from "../map/MapLastLocation";
 
 const ViewLastLocation = () => {
   const dispatch = useDispatch();
@@ -47,6 +54,16 @@ const ViewLastLocation = () => {
     groupValueIsValid &&
     vehicleValueIsValid;
 
+  useEffect(() => {
+    dispatch(RsetGetReportToDate(null));
+    dispatch(RsetGetReportFromDate(null));
+    dispatch(RsetGetReportGroupValue(""));
+    dispatch(RsetGetReportVehicleValue(""));
+    dispatch(RsetDeviceCordinate([]));
+    dispatch(RsetFormErrors(""));
+
+  }, []);
+
   const groupListOptions = groupList.map((item, idx) => {
     return { label: item?.name, value: idx };
   });
@@ -57,14 +74,17 @@ const ViewLastLocation = () => {
       : item.name === groupValue.label;
   });
 
-  const fakeVehiclesList = [{ name: "shayan" }, { name: "amir" }];
-  //vehicleList
-  // const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
-  //   return { lable: "shayan", value: 1 };
-  // });
-  const vehicleListOptions = fakeVehiclesList.map((item, idx) => {
-    return { label: item.name, value: idx };
+  const vehicleListOptions = vehicleList?.devices.map((item, idx) => {
+    return {
+      label:
+        "نام راننده: " + item.driverName + " , " + "شماره پلاک : " + item.plate,
+      value: item.deviceIMEI,
+    };
   });
+
+  useEffect(() => {
+    dispatch(handleGroupList());
+  }, []);
 
   console.log(vehicleListOptions);
 
@@ -86,10 +106,31 @@ const ViewLastLocation = () => {
     return errors;
   };
 
-  const handleDateSearch = (e) => {
+  const handleDateSearch = async (e) => {
     if (formIsValid) {
       //change this data and value based on the data
-      dispatch(handleViewPath());
+      const token = localStorage.getItem("token");
+      const values = {
+        bTime: convertUnixTimeStampToDateZz(fromDate),
+        eTime: convertUnixTimeStampToDateZz(toDate),
+        // devices: vehicleImei,
+        devices: [vehicleValue.value],
+      };
+      console.log(values);
+      const getReportLastViewLocationsRes = await getReportLastViewLocations(
+        values,
+        token
+      );
+      console.log(getReportLastViewLocationsRes);
+      if (getReportLastViewLocationsRes.data.code === 200) {
+        dispatch(
+          RsetDeviceCordinate(
+            getReportLastViewLocationsRes.data.gpsfounded.map((item) => {
+              return item.locations.slice(-1)[0];
+            })
+          )
+        );
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -128,33 +169,6 @@ const ViewLastLocation = () => {
               در این قسمت مشاهده آخرین موقعیت دستگاه ها انجام می شود
             </p>
             <Form className="mt-5 d-flex flex-column gap-3">
-              <Form.Group className="me-md-2 me-0 mb-3 mb-md-0">
-                <Form.Label>از تاریخ</Form.Label>
-                <DatePicker
-                  inputComponent={DatePickerInput}
-                  placeholder="...انتخاب"
-                  format="jYYYY/jMM/jDD"
-                  className=""
-                  onChange={(e) => {
-                    dispatch(RsetGetReportFromDate(e));
-                  }}
-                  value={fromDate}
-                  id="datePicker"
-                />
-              </Form.Group>
-              <Form.Group className="">
-                <Form.Label>تا تاریخ</Form.Label>
-                <DatePicker
-                  inputComponent={DatePickerInput}
-                  placeholder="...انتخاب"
-                  format="jYYYY/jMM/jDD"
-                  onChange={(e) => {
-                    dispatch(RsetGetReportToDate(e));
-                  }}
-                  value={toDate}
-                  id="datePicker"
-                />
-              </Form.Group>
               <Form.Group className="me-md-2 me-0">
                 <Form.Label>نام دسته</Form.Label>
                 <Select
@@ -189,6 +203,34 @@ const ViewLastLocation = () => {
                   isMulti
                 />
               </Form.Group>
+              <Form.Group className="me-md-2 me-0 mb-3 mb-md-0">
+                <Form.Label>از تاریخ</Form.Label>
+                <DatePicker
+                  inputComponent={DatePickerInput}
+                  placeholder="...انتخاب"
+                  format="jYYYY/jMM/jDD"
+                  className=""
+                  onChange={(e) => {
+                    dispatch(RsetGetReportFromDate(e));
+                  }}
+                  value={fromDate}
+                  id="datePicker"
+                />
+              </Form.Group>
+              <Form.Group className="">
+                <Form.Label>تا تاریخ</Form.Label>
+                <DatePicker
+                  inputComponent={DatePickerInput}
+                  placeholder="...انتخاب"
+                  format="jYYYY/jMM/jDD"
+                  onChange={(e) => {
+                    dispatch(RsetGetReportToDate(e));
+                  }}
+                  value={toDate}
+                  id="datePicker"
+                />
+              </Form.Group>
+
               <Form.Group>
                 <Form.Group className="d-flex justify-content-end mt-2">
                   <Button
@@ -208,7 +250,12 @@ const ViewLastLocation = () => {
                     style={{ marginTop: "30px" }}
                     className="ms-2 font12"
                     onClick={(e) => {
-                      handleDateSearch(e);
+                      dispatch(RsetGetReportToDate(null));
+                      dispatch(RsetGetReportFromDate(null));
+                      dispatch(RsetGetReportGroupValue(""));
+                      dispatch(RsetGetReportVehicleValue(""));
+                      dispatch(RsetDeviceCordinate([]));
+                      dispatch(RsetFormErrors(""));
                     }}
                   >
                     انصراف
@@ -231,7 +278,7 @@ const ViewLastLocation = () => {
             نقشه مسیر
           </div>
           <div className="w-100" style={{ height: "88vh" }}>
-            <MapHeat height={"95%"} width={"100%"} />
+            <MapLastLocation height={"80%"} width={"100%"} />
           </div>
         </Col>
       </div>

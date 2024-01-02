@@ -507,7 +507,7 @@ const GetVehicleLocationReport = () => {
           >
             انصراف
           </Button>
-          {showPdf && getReport.length !== 0 && (
+          {showPdf && getReport && getReport.length !== 0 && (
             <Button
               size="sm"
               className="text-dark border-2 border-dark  py-1"
@@ -522,23 +522,28 @@ const GetVehicleLocationReport = () => {
       </Row>
       <div className="">
         {showReportList && (
-          <div className="position-relative table-responsive mt-4">
-            <ConfigProvider locale={faIR}>
-              <Table
-                locale={{
-                  emptyText: <Empty description="اطلاعات موجود نیست!" />,
-                }}
-                className="list"
-                bordered
-                dataSource={getReport}
-                // dataSource={fakeList}
-                columns={columns}
-                pagination={paginationConfigList}
-                scroll={{ x: "max-content" }}
-                size="middle"
-                expandable={{ expandedRowRender }}
-              />
-            </ConfigProvider>
+          <div className="d-flex">
+            <div className="position-relative table-responsive mt-4">
+              <ConfigProvider locale={faIR}>
+                <Table
+                  locale={{
+                    emptyText: <Empty description="اطلاعات موجود نیست!" />,
+                  }}
+                  className="list"
+                  bordered
+                  dataSource={getReport}
+                  // dataSource={fakeList}
+                  columns={columns}
+                  pagination={paginationConfigList}
+                  scroll={{ x: "max-content" }}
+                  size="middle"
+                  expandable={{ expandedRowRender }}
+                />
+              </ConfigProvider>
+            </div>
+            <div className="w-100" style={{ height: "88vh" }}>
+              <MapHeat height={"80%"} width={"100%"} />
+            </div>
           </div>
         )}
       </div>

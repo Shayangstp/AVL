@@ -8,7 +8,6 @@ import {
   DateTimeRangePicker,
 } from "react-advance-jalaali-datepicker";
 import Select from "react-select";
-import { convertUnixTimeStampToDate } from "../common/ConvertUnixStamp";
 import { useDispatch, useSelector } from "react-redux";
 import {
   RsetGetReportFromDate,
@@ -27,6 +26,12 @@ import {
 import { RsetFormErrors, selectFormErrors } from "../../slices/mainSlices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDirections, faMap, faUser } from "@fortawesome/free-solid-svg-icons";
+import { getReportLastViewLocations } from "../../services/getReportServices";
+import {
+  convertUnixTimeStampToDate,
+  convertUnixTimeStampToDateZz,
+} from "../common/ConvertUnixStamp";
+import { RsetDeviceCordinate } from "../../slices/deviceSlices";
 
 const ViewPath = () => {
   const dispatch = useDispatch();
@@ -55,6 +60,15 @@ const ViewPath = () => {
       value: item.deviceIMEI,
     };
   });
+
+  useEffect(() => {
+    dispatch(RsetGetReportToDate(null));
+    dispatch(RsetGetReportFromDate(null));
+    dispatch(RsetGetReportGroupValue(""));
+    dispatch(RsetGetReportVehicleValue(""));
+    dispatch(RsetDeviceCordinate([]));
+    dispatch(RsetFormErrors(""));
+  }, []);
 
   const fromDateIsValid = fromDate !== null;
   const toDateIsValid = toDate !== null;
@@ -93,16 +107,34 @@ const ViewPath = () => {
     return errors;
   };
 
-  const handleDateSearch = (e) => {
+  const handleDateSearch = async (e) => {
+    // const vehicleImei = vehicleValue.map((item) => {
+    //   return item.value;
+    // });
     if (formIsValid) {
       // dispatch(handleViewPath());
       const token = localStorage.getItem("token");
       const values = {
-        bTime: String(fromDate),
-        eTime: String(toDate),
-        //groupValue == the group name
-        //vehicleValue == the vehicle is array
+        bTime: convertUnixTimeStampToDateZz(fromDate),
+        eTime: convertUnixTimeStampToDateZz(toDate),
+        // devices: vehicleImei,
+        devices: [vehicleValue.value],
       };
+      console.log(values);
+      const getReportLastViewLocationsRes = await getReportLastViewLocations(
+        values,
+        token
+      );
+      console.log(getReportLastViewLocationsRes);
+      if (getReportLastViewLocationsRes.data.code === 200) {
+        dispatch(
+          RsetDeviceCordinate(
+            getReportLastViewLocationsRes.data.gpsfounded.map((item) => {
+              return item.locations;
+            })
+          )
+        );
+      }
     } else {
       dispatch(
         RsetFormErrors(
@@ -179,7 +211,7 @@ const ViewPath = () => {
                   placeholder="انتخاب..."
                   options={vehicleListOptions}
                   isSearchable={true}
-                  isMulti
+                  // isMulti
                 />
               </Form.Group>
               <Form.Group as={Col} className="mb-3 mb-md-0 mt-2">
@@ -226,7 +258,12 @@ const ViewPath = () => {
                   style={{ marginTop: "30px" }}
                   className="ms-2 font12"
                   onClick={(e) => {
-                    handleDateSearch(e);
+                    dispatch(RsetGetReportToDate(null));
+                    dispatch(RsetGetReportFromDate(null));
+                    dispatch(RsetGetReportGroupValue(""));
+                    dispatch(RsetGetReportVehicleValue(""));
+                    dispatch(RsetDeviceCordinate([]));
+                    dispatch(RsetFormErrors(""));
                   }}
                 >
                   انصراف

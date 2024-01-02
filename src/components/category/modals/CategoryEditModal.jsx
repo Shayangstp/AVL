@@ -16,6 +16,7 @@ import {
   selectCategoryGroupColorOptions,
   RsetCategoryGroupColor,
   selectCategoryGroupColor,
+  RsetCategoryCurrentRequest,
 } from "../../../slices/categorySlices";
 import { RsetFormErrors, selectFormErrors } from "../../../slices/mainSlices";
 import { putCategoryEdit } from "../../../services/categoryServices";
@@ -161,12 +162,14 @@ const CategoryEditModal = () => {
         desc: categoryGroupDescription,
         color: categoryGroupColor.value,
       };
+      console.log(values);
       const putCategoryEditRes = await putCategoryEdit(values, token);
       console.log(putCategoryEditRes);
       if (putCategoryEditRes.data.code === 200) {
         successMessage("تغییرات با موفقیت انجام شد");
         dispatch(RsetCategoryEditModal(false));
-        navigate(0);
+        dispatch(RsetCategoryCurrentRequest(""))
+        // navigate(0);
       } else {
         errorMessage("خظا");
       }

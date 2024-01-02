@@ -14,11 +14,13 @@ import { selectDeviceCordinate } from "../../slices/deviceSlices";
 import "leaflet/dist/leaflet.css";
 import "leaflet.heat/dist/leaflet-heat.js";
 
-const Map = ({ height, width }) => {
+const MapLastLocation = ({ height, width }) => {
   const [map, setMap] = useState(null);
   const [routing, setRouting] = useState(null);
   const deviceCordinate = useSelector(selectDeviceCordinate);
   const mapRef = useRef(null);
+
+  console.log(deviceCordinate);
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -28,16 +30,16 @@ const Map = ({ height, width }) => {
   L.Marker.prototype.options.icon = DefaultIcon;
 
   // Define your heatmap data
-  const heatmapData = [
-    [35.7219, 51.3347, 0.5], // [latitude, longitude, intensity]
-    [35.722, 51.335, 0.8],
-    [35.7221, 52.336, 1.0],
-    [35.7221, 53.336, 1.0],
-    [35.7221, 54.336, 1.0],
-    [35.7221, 55.336, 1.0],
-    [35.7221, 56.336, 1.0],
-    // Add more data points as needed
-  ];
+  //   const heatmapData = [
+  //     [35.7219, 51.3347, 0.5], // [latitude, longitude, intensity]
+  //     [35.722, 51.335, 0.8],
+  //     [35.7221, 52.336, 1.0],
+  //     [35.7221, 53.336, 1.0],
+  //     [35.7221, 54.336, 1.0],
+  //     [35.7221, 55.336, 1.0],
+  //     [35.7221, 56.336, 1.0],
+  //     // Add more data points as needed
+  //   ];
 
   // const heatmapData = [
   //   [35.722, 51.335, 0.8],
@@ -58,19 +60,19 @@ const Map = ({ height, width }) => {
   //   // Add more data points as needed
   // ];
 
-  const paths = [
-    [
-      [31.8319, 51.547],
-      [31.942, 51.655],
-      [31.521, 51.766],
-    ], // Path 1
-    [
-      [35.723, 51.337],
-      [35.724, 51.338],
-      [35.725, 51.339],
-    ], // Path 2
-    // Add more paths as needed
-  ];
+  //   const paths = [
+  //     [
+  //       [31.8319, 51.547],
+  //       [31.942, 51.655],
+  //       [31.521, 51.766],
+  //     ], // Path 1
+  //     [
+  //       [35.723, 51.337],
+  //       [35.724, 51.338],
+  //       [35.725, 51.339],
+  //     ], // Path 2
+  //     // Add more paths as needed
+  //   ];
   // useEffect(() => {
   //   if (map) {
   //     const routingControl = L.Routing.control({
@@ -84,7 +86,7 @@ const Map = ({ height, width }) => {
   //   }
   // }, [map]);
 
-  const HeatmapLayer = L.heatLayer(heatmapData);
+  //   const HeatmapLayer = L.heatLayer(heatmapData);
 
   // useEffect(() => {
   //   const map = mapRef.current.leafletElement;
@@ -96,19 +98,19 @@ const Map = ({ height, width }) => {
   //   };
   // }, []);
 
-  const MapWrapper = () => {
-    const map = useMap();
+  //   const MapWrapper = () => {
+  //     const map = useMap();
 
-    useEffect(() => {
-      HeatmapLayer.addTo(map);
+  //     useEffect(() => {
+  //       HeatmapLayer.addTo(map);
 
-      // return () => {
-      //   map.removeLayer(HeatmapLayer); // Clean up the heatmap layer
-      // };
-    }, [map]);
+  //       // return () => {
+  //       //   map.removeLayer(HeatmapLayer); // Clean up the heatmap layer
+  //       // };
+  //     }, [map]);
 
-    return null;
-  };
+  //     return null;
+  //   };
 
   return (
     <MapContainer
@@ -118,15 +120,33 @@ const Map = ({ height, width }) => {
       whenCreated={map}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {deviceCordinate &&
+        deviceCordinate.map((item) => {
+          return (
+            <Marker
+              position={
+                deviceCordinate.length !== 0
+                  ? deviceCordinate.flatMap((item) => {
+                      return item;
+                    })
+                  : [51.7219, 31.3347]
+              }
+            />
+          );
+        })}
       {/* <Marker
         position={
-          deviceCordinate.length !== 0 ? deviceCordinate : [35.7219, 51.3347]
+          deviceCordinate.length !== 0
+            ? deviceCordinate.flatMap((item) => {
+                return item;
+              })
+            : [51.7219, 31.3347]
         }
       /> */}
       {/* <MapWrapper /> */}
-      {deviceCordinate.map((path, index) => (
+      {/* {deviceCordinate.map((path, index) => (
         <Polyline key={index} positions={path} />
-      ))}
+      ))} */}
     </MapContainer>
     // <MapContainer
     //   center={[35.722, 51.335]}
@@ -139,4 +159,4 @@ const Map = ({ height, width }) => {
   );
 };
 
-export default Map;
+export default MapLastLocation;

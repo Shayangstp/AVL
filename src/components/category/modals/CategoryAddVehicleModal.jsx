@@ -97,20 +97,22 @@ const CategoryAddVehicleModal = () => {
     },
   ];
 
-  const options = categoryCurrentRequest.devices.map((item) => {
-    const vehicle = item.driverName + " " + item.deviceIMEI;
-    const vehicleImei = item.deviceIMEI;
-    return {
-      label: vehicle.map((item) => {
-        return item;
-      }),
-      value: vehicleImei.map((item) => {
-        return item;
-      }),
-    };
-  });
+  // console.log(categoryCurrentRequest);
 
-  console.log(options);
+  // const options = categoryCurrentRequest.devices.map((item) => {
+  //   const vehicle = item.driverName + " " + item.deviceIMEI;
+  //   const vehicleImei = item.deviceIMEI;
+  //   return {
+  //     label: vehicle.map((item) => {
+  //       return item;
+  //     }),
+  //     value: vehicleImei.map((item) => {
+  //       return item;
+  //     }),
+  //   };
+  // });
+
+  // console.log(options);
 
   console.log(vehicleId);
   console.log(categoryCurrentRequest._id);
@@ -251,7 +253,7 @@ const CategoryAddVehicleModal = () => {
                   }
                 }}
                 placeholder="انتخاب..."
-                options={options}
+                // options={options}
                 isSearchable={true}
               />
             </Form.Group>

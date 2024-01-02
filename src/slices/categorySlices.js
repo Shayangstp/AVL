@@ -3,8 +3,10 @@ import { errorMessage, successMessage } from "../utils/msg";
 import {
   getCategoryList,
   getVehicleManageList,
+  getVehiclesTypeList,
 } from "../services/categoryServices";
 import { RsetLoading } from "./mainSlices";
+import { RsetVehicleTypeOptions } from "./deviceSlices";
 
 const initialState = {
   categoryList: [],
@@ -29,7 +31,7 @@ export const handleCategoryList = createAsyncThunk(
       const token = localStorage.getItem("token");
       const getCategoryListRes = await getCategoryList(token);
       if (getCategoryListRes.data.code === 200) {
-        dispatch(RsetCategoryList(getCategoryListRes.data.populateUser));
+        dispatch(RsetCategoryList(getCategoryListRes.data.devicegrp));
         dispatch(RsetLoading(false));
       } else {
         console.log("error");
@@ -50,12 +52,29 @@ export const handleCategoryManageVehicleList = createAsyncThunk(
       const getVehicleManageListRes = await getVehicleManageList(token);
       if (getVehicleManageListRes.data.code === 200) {
         dispatch(
-          RsetCategoryManageVehicleList(
-            getVehicleManageListRes.data.populateUser
-          )
+          RsetCategoryManageVehicleList(getVehicleManageListRes.data.devicegrp)
         );
       } else {
         console.log("error");
+      }
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+);
+export const handleVehicleTypeList = createAsyncThunk(
+  "category/handleVehicleTypeList",
+  async (obj, { dispatch, getState }) => {
+    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
+      const getVehiclesTypeListRes = await getVehiclesTypeList(token);
+      console.log(getVehiclesTypeListRes);
+
+      if (getVehiclesTypeListRes.data.code == 200) {
+        dispatch(
+          RsetVehicleTypeOptions(getVehiclesTypeListRes.data.foundedItem)
+        );
       }
     } catch (ex) {
       console.log(ex);
@@ -141,7 +160,6 @@ export const selectCategoryCommonUser = (state) =>
 export const selectCategoryCommonUserOptions = (state) =>
   state.category.categoryCommonUserOptions;
 export const selectCategoryName = (state) => state.category.categoryName;
-export const selectCategoryManageVehicleList = (state) =>
-  state.category.categoryManageVehicleList;
+export const selectCategoryManageVehicleList = (state) => state.category.f;
 
 export default categorySlices.reducer;

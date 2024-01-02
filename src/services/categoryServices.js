@@ -16,7 +16,7 @@ export const getCategoryList = (token) => {
 
 export const putCategoryEdit = (values, token) => {
   return http.put(
-    `${config.R}/api/v1/devicegroup`,
+    `${config.R}/api/v1/devicegroup/update`,
     values,
 
     {
@@ -67,6 +67,18 @@ export const deleteVehicleManage = (vehicleId, groupId, token) => {
 export const getVehicleAddOptions = (token) => {
   return http.get(
     `${config.R}/api/v1/device`,
+
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+    {
+      timeout: 30000,
+    }
+  );
+};
+export const getVehiclesTypeList = (token) => {
+  return http.get(
+    `${config.R}/api/v1/device/models/getberif`,
 
     {
       headers: { Authorization: `Bearer ${token}` },

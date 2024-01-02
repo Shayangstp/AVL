@@ -46,13 +46,13 @@ export const handleGroupList = createAsyncThunk(
       console.log(getGroupListRes);
       dispatch(
         RsetGetReportGroupList(
-          getGroupListRes.data.populateUser.map((group) => {
+          getGroupListRes.data.devicegrp.map((group) => {
             return group;
           })
         )
       );
 
-      const vehicleList = getGroupListRes.data.populateUser.map((group) => {
+      const vehicleList = getGroupListRes.data.devicegrp.map((group) => {
         return group.devices;
       });
 

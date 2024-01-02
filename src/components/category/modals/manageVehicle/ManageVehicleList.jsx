@@ -10,10 +10,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Row, Col, Button, Tabs, Tab, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { selectCategoryManageVehicleList } from "../../../../slices/categorySlices";
+import {
+  RsetCategoryCurrentRequest,
+  selectCategoryCurrentRequest,
+  selectCategoryManageVehicleList,
+} from "../../../../slices/categorySlices";
 import { deleteVehicleManage } from "../../../../services/categoryServices";
 
 import ManageVehicleTable from "./ManageVehicleTable";
+import { errorMessage, successMessage } from "../../../../utils/msg";
+import { RsetCurrnetCategoryReport } from "../../../../slices/getReportSlices";
+import { RsetCategoryManageVehicleModal } from "../../../../slices/modalSlices";
 
 // const dataList = [
 //   {
@@ -56,6 +63,10 @@ const ManageVehicleList = () => {
   const categoryManageVehicleList = useSelector(
     selectCategoryManageVehicleList
   );
+
+  const categoryCurrentRequest = useSelector(selectCategoryCurrentRequest);
+  console.log(categoryCurrentRequest._id);
+  const dataList = categoryCurrentRequest.devices;
 
   const columns = useMemo(() => [
     {
@@ -100,7 +111,7 @@ const ManageVehicleList = () => {
     },
   ]);
 
-  const operation = (groupId, vehicleId) => {
+  const operation = (vehicleId, groupId) => {
     return (
       <div className="d-flex justify-content-center flex-wrap">
         <Button
@@ -117,6 +128,13 @@ const ManageVehicleList = () => {
               token
             );
             console.log(deleteVehicleManageRes);
+            if (deleteVehicleManageRes.data.code === 200) {
+              dispatch(RsetCategoryManageVehicleModal(false));
+              successMessage("حذف با موفقیت انجام شد !");
+              dispatch(RsetCategoryCurrentRequest(""));
+            } else {
+              errorMessage("خطا");
+            }
           }}
         >
           <FontAwesomeIcon icon={faTrash} />
@@ -129,18 +147,18 @@ const ManageVehicleList = () => {
     var tableItems = [];
     if (requests.length !== 0) {
       for (var i = 0; i < requests.length; i++) {
-        const devices = requests.flatMap((obj) =>
-          obj.devices.map((item) => item)
-        );
+        // const devices = requests.flatMap((obj) =>
+        //   obj.devices.map((item) => item)
+        // );
         var tableItem = {
-          deviceImei: devices[i]?.deviceIMEI,
-          driverName: devices[i]?.driverName,
-          driverNumber: devices[i]?.driverPhoneNumber,
-          vehicleNumber: devices[i]?.plate,
-          deviceNumber: devices[i]?.simNumber,
-          vehicleType: devices[i]?.model.name,
-          vehicleCompany: devices[i]?.model.name,
-          operations: operation(requests[i]?._id, devices[i]?._id),
+          deviceImei: requests[i]?.deviceIMEI,
+          driverName: requests[i]?.driverName,
+          driverNumber: requests[i]?.driverPhoneNumber,
+          vehicleNumber: requests[i]?.plate,
+          deviceNumber: requests[i]?.simNumber,
+          vehicleType: requests[i]?.model.name,
+          vehicleCompany: requests[i]?.model.name,
+          operations: operation(requests[i]?._id, categoryCurrentRequest._id),
         };
         tableItems.push(tableItem);
       }
@@ -160,18 +178,18 @@ const ManageVehicleList = () => {
       var tableItems = [];
       if (requests.length !== 0) {
         for (var i = 0; i < requests.length; i++) {
-          const devices = requests.flatMap((obj) =>
-            obj.devices.map((item) => item)
-          );
+          // const devices = requests.flatMap((obj) =>
+          //   obj.devices.map((item) => item)
+          // );
           var tableItem = {
-            deviceImei: devices[i]?.deviceIMEI,
-            driverName: devices[i]?.driverName,
-            driverNumber: devices[i]?.driverPhoneNumber,
-            vehicleNumber: devices[i]?.plate,
-            deviceNumber: devices[i]?.simNumber,
-            vehicleType: devices[i]?.model.name,
-            vehicleCompany: devices[i]?.model.name,
-            operations: operation(requests[i]?._id, devices[i]?._id),
+            deviceImei: requests[i]?.deviceIMEI,
+            driverName: requests[i]?.driverName,
+            driverNumber: requests[i]?.driverPhoneNumber,
+            vehicleNumber: requests[i]?.plate,
+            deviceNumber: requests[i]?.simNumber,
+            vehicleType: requests[i]?.model.name,
+            vehicleCompany: requests[i]?.model.name,
+            operations: operation(requests[i]?._id, categoryCurrentRequest._id),
           };
           tableItems.push(tableItem);
         }
@@ -209,7 +227,7 @@ const ManageVehicleList = () => {
                 <Fragment>
                   <ManageVehicleTable
                     // requests={categoryList}
-                    requests={categoryManageVehicleList}
+                    requests={dataList}
                     columns={columns}
                     data={data}
                     onSort={handleSort}

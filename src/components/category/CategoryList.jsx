@@ -42,6 +42,7 @@ import CategoryManageVehicleModal from "./modals/CategoryManageVehicleModal";
 import CategoryAddModal from "./modals/CategoryAddModal";
 import Loading from "../common/Loading";
 import { RsetLoading, selectLoading } from "../../slices/mainSlices";
+import { selectCategoryCurrentRequest } from "../../slices/categorySlices";
 
 const dataList = [
   {
@@ -98,13 +99,16 @@ const CategoryList = () => {
     selectCategoryManageVehicleModal
   );
   const categoryAddModal = useSelector(selectCategoryAddModal);
+  const categoryCurrentRequest = useSelector(selectCategoryCurrentRequest);
   const loading = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(handleCategoryList());
-  }, []);
+  }, [categoryCurrentRequest]);
 
   console.log(categoryList);
+
+  console.log(categoryCurrentRequest);
 
   const getColumnSearchProps = (dataIndex, placeholder) => ({
     filterDropdown: ({
@@ -343,6 +347,8 @@ const CategoryList = () => {
           size="sm"
           active
           onClick={() => {
+            console.log(request);
+            dispatch(RsetCategoryCurrentRequest(request));
             dispatch(RsetCategoryManageVehicleModal(true));
           }}
         >

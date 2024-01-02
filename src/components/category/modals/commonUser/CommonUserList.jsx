@@ -21,6 +21,7 @@ import {
   RsetFormErrors,
   selectFormErrors,
 } from "../../../../slices/mainSlices";
+import { handleVehicleTypeList } from "../../../../slices/categorySlices";
 
 const dataList = [
   {
@@ -62,6 +63,10 @@ const CommonUserList = () => {
   const formErrors = useSelector(selectFormErrors);
 
   const vehicleTypeIsValid = vehicleType.length !== 0;
+
+  useEffect(() => {
+    dispatch(handleVehicleTypeList());
+  }, []);
 
   const validation = () => {
     let errors = {};

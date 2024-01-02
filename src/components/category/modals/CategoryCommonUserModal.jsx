@@ -14,6 +14,7 @@ import {
   selectCategoryCommonUserOptions,
   RsetCategoryCommonUserOptions,
 } from "../../../slices/categorySlices";
+import { handleCommonUserList } from "../../../slices/mainSlices";
 
 const CategoryCommonUserModal = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,10 @@ const CategoryCommonUserModal = () => {
     }
     return errors;
   };
+
+  useEffect(() => {
+    dispatch(handleCommonUserList());
+  }, []);
 
   const handleCommonUserModal = (e) => {
     e.preventDefault();
@@ -58,7 +63,6 @@ const CategoryCommonUserModal = () => {
     dispatch(RsetCategoryCommonUser(""));
   };
 
-  
   return (
     <Modal
       size="lg"
